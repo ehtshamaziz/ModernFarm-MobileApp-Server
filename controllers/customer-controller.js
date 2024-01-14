@@ -244,17 +244,17 @@ const clearTempUserData = (email) => {
   delete tempStore[email];
 };
 
-exports.GetCustomers = GetCustomers;
-exports.GetCustomerByID = GetCustomerByID;
-exports.CreateCustomer = CreateCustomer;
-exports.UpdateCustomer = UpdateCustomer;
-exports.DeleteCustomer = DeleteCustomer;
-
-exports.RegisterCustomer = RegisterCustomer;
-exports.LoginCustomer = LoginCustomer;
-exports.VerifyResetOTP = VerifyResetOTP;
-exports.NewPassword = NewPassword;
-
-exports.RegisterCustomerInitiate = RegisterCustomerInitiate;
-exports.OtpEmail = OtpEmail;
-exports.GetTempData = GetTempData;
+module.exports = {
+  GetCustomers,
+  GetCustomerByID,
+  CreateCustomer,
+  UpdateCustomer,
+  DeleteCustomer,
+  RegisterCustomer,
+  LoginCustomer,
+  VerifyResetOTP,
+  NewPassword,
+  RegisterCustomerInitiate,
+  OtpEmail,
+  GetTempData,
+};
