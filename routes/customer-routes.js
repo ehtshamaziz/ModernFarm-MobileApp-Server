@@ -3,9 +3,9 @@ const customerController = require("../controllers/customer-controller");
 const { createJWT, verifyJWT } = require("../middleware/jwt");
 
 const router = express.Router();
-const multer = require('multer');
+const multer = require("multer");
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: "uploads/" });
 
 // CUSTOMER ROUTES
 
@@ -25,34 +25,24 @@ router.patch("/:id", customerController.UpdateCustomer);
 router.delete("/:id", customerController.DeleteCustomer);
 
 // INITIATE USER
-router.post("/initiate",upload.single('imageUri'),customerController.RegisterCustomerInitiate);
-
-
+router.post(
+  "/initiate",
+  upload.single("imageUri"),
+  customerController.RegisterCustomerInitiate
+);
 
 // REGISTER CUSTOMER
-router.post("/register", customerController.RegisterCustomer);
-
-
-// TEST PROTECTED ROUTE
-router.get("/test", verifyJWT, customerController.ProtectedRoute);
-
+router.post("/register", customerController.RegisterCustomer, createJWT);
 
 //Login Customer
-router.post('/login', customerController.LoginCustomer, createJWT);
+router.post("/login", customerController.LoginCustomer, createJWT);
 
-router.post('/sendEmail', customerController.OptEmail);
+router.post("/sendEmail", customerController.OtpEmail);
 
-router.post('/reset', customerController.VerifyResetOTP);
-router.post('/newpassword', customerController.NewPassword);
+router.post("/reset", customerController.VerifyResetOTP);
 
+router.get("/temp-data", customerController.GetTempData);
 
-// 
-// // GOOGLE AUTHENTICATION
-// router.get("/login/google", customerController.GoogleAuthenticate);
-// router.get(
-//   "/login/google/dashboard",
-//   customerController.GoogleAuthenticateRedirect,
-//   customerController.GoogleAuthenticated
-// );
+router.post("/newpassword", customerController.NewPassword);
 
 module.exports = router;
