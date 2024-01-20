@@ -6,9 +6,9 @@ const farmSchema = new mongoose.Schema({
   country: { type: String, required: true },
   currencyType: { type: String },
   phoneNumber: { type: String },
-  location: {
-    text: { type: String, required: true },
-    link: { type: String },
+  location: { type: String,
+    // text: { type: String, required: true },
+    // link: { type: String },
   },
 });
 

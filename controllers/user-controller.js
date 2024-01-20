@@ -23,6 +23,7 @@ const UploadFileMulter = upload.single("imageUri");
 
 // GET ALL USERS
 const GetUsers = async (req, res, next) => {
+  console.log(req.token);
   console.log("Get all users");
   try {
     const user = await User.find();
@@ -119,7 +120,9 @@ const RegisterUser = async (req, res, next) => {
     console.log("Image URL: ", imageURL);
     console.log("Req File URL: ", req.file.path);
 
+
     const hashedPassword = await bcrypt.hash(password, 10);
+
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -193,15 +196,21 @@ const LoginUser = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
+      console.log("Invalid Credentials");
+
       return res.status(401).json({ message: "Invalid Credentials" });
     }
 
     if (user.otpVerification && user.otpVerification.otp) {
+      console.log("Invalid email");
+
       return res.status(401).json({ message: "Email not verified" });
+      
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
+      console.log("Invalid Credentials");
       return res.status(401).json({ message: "Invalid Credentials" });
     }
 
@@ -254,6 +263,7 @@ const VerifyResetOTP = async (req, res, next) => {
             return res.status(200).json({
               message: `OTP successfully verified`,
               userId: userId,
+              email:user.email
             });
           }
         }

@@ -5,10 +5,11 @@ const contactSchema = new mongoose.Schema({
   lastName: { type: String },
   category: { type: String, required: true },
   location: {
-    text: { type: String, required: true },
-    link: { type: String },
+    type: String,
+    // text: { type: String, required: true },
+    // link: { type: String },
   },
-  mobileNumber: { type: String, required: true },
+  phoneNumber: { type: String, required: true },
   email: { type: String },
 });
 

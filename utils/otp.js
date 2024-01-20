@@ -34,10 +34,17 @@ const sendResetOTP = async (user, res) => {
 };
 
 const generateOTP = async () => {
+   try{
   const otp = Math.floor(Math.random() * 9000) + 1000;
   console.log("OTP: ", otp);
-  const hashedOTP = await bcrypt.hash(otp, 10);
+ 
+  const otpString = otp.toString();
+  const hashedOTP = await bcrypt.hash(otpString, 10);
   return { otp, hashedOTP };
+}
+catch(err){
+     return err;
+  }
 };
 
 module.exports = {

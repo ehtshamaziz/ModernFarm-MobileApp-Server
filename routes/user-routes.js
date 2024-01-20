@@ -10,7 +10,7 @@ const upload = multer({ dest: "uploads/" });
 // USER ROUTES
 
 // GET ALL USERS
-router.get("/", userController.GetUsers);
+router.get("/", userController.GetUsers, verifyJWT);
 
 // GET USER BY ID
 router.get("/single/:id", userController.GetUserByID);
