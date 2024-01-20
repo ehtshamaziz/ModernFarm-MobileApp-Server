@@ -120,9 +120,7 @@ const RegisterUser = async (req, res, next) => {
     console.log("Image URL: ", imageURL);
     console.log("Req File URL: ", req.file.path);
 
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -188,6 +186,26 @@ const VerifyOTP = async (req, res, next) => {
   }
 };
 
+// RESEND REGISTRATION OTP
+const ResendRegistrationOTP = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      if (!existingUser.otpVerification) {
+        return res.status(409).json({ message: "User is already verified" });
+      } else {
+        sendOTPVerification(existingUser, res);
+      }
+    } else {
+      return res.status(500).json({ message: "User does not exist" });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 // LOGIN USER
 const LoginUser = async (req, res, next) => {
   const { email, password } = req.body;
@@ -205,7 +223,6 @@ const LoginUser = async (req, res, next) => {
       console.log("Invalid email");
 
       return res.status(401).json({ message: "Email not verified" });
-      
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -248,8 +265,8 @@ const VerifyResetOTP = async (req, res, next) => {
       if (!user.reset || !user.reset.otp) {
         throw new Error("No OTP Details. Please try again.");
       } else {
-        const { expiresAt } = user.otpVerification;
-        const hashedOTP = user.otpVerification.otp;
+        const { expiresAt } = user.reset;
+        const hashedOTP = user.reset.otp;
 
         if (expiresAt < Date.now()) {
           throw new Error("OTP has expired. Please request again.");
@@ -263,11 +280,31 @@ const VerifyResetOTP = async (req, res, next) => {
             return res.status(200).json({
               message: `OTP successfully verified`,
               userId: userId,
-              email:user.email
+              email: user.email,
             });
           }
         }
       }
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+// RESEND REGISTRATION OTP
+const ResendResetOTP = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      if (!existingUser.otpVerification) {
+        return res.status(409).json({ message: "User is already verified" });
+      } else {
+        sendResetOTP(existingUser, res);
+      }
+    } else {
+      return res.status(500).json({ message: "User does not exist" });
     }
   } catch (err) {
     next(err);
@@ -303,4 +340,6 @@ module.exports = {
   VerifyOTP,
   RequestPasswordReset,
   VerifyResetOTP,
+  ResendRegistrationOTP,
+  ResendResetOTP,
 };

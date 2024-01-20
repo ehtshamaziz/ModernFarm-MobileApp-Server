@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const contactSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String },
+  imageURL: { type: String },
   category: { type: String, required: true },
   location: {
     type: String,

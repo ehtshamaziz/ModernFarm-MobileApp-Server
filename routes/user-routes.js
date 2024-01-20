@@ -1,16 +1,12 @@
 const express = require("express");
 const userController = require("../controllers/user-controller");
 const { createJWT, verifyJWT } = require("../middleware/jwt");
-
 const router = express.Router();
-const multer = require("multer");
-
-const upload = multer({ dest: "uploads/" });
 
 // USER ROUTES
 
 // GET ALL USERS
-router.get("/", userController.GetUsers, verifyJWT);
+router.get("/", userController.GetUsers);
 
 // GET USER BY ID
 router.get("/single/:id", userController.GetUserByID);
@@ -34,7 +30,7 @@ router.delete("/:id", userController.DeleteUser);
 // // REGISTER USER
 // router.post("/register", userController.RegisterUser, createJWT);
 
-// REGISTER USER
+// REGISTER USER AND SEND OTP
 router.post(
   "/register",
   userController.UploadFileMulter,
@@ -44,6 +40,9 @@ router.post(
 // VERIFY OTP FOR USER REGISTRATION
 router.post("/register/verify", userController.VerifyOTP, createJWT);
 
+// RESEND REGISTRATION OTP
+router.post("/register/resend", userController.ResendRegistrationOTP);
+
 //Login User
 router.post("/login", userController.LoginUser, createJWT);
 
@@ -52,6 +51,9 @@ router.post("/reset", userController.RequestPasswordReset);
 
 // VERIFY PASSWORD RESET OTP
 router.post("/reset/verify", userController.VerifyResetOTP);
+
+// RESEND RESET OTP
+router.post("/reset/resend", userController.ResendResetOTP);
 
 // router.post("/sendEmail", userController.OtpEmail);
 
