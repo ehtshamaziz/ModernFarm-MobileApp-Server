@@ -10,6 +10,9 @@ router.get("/", productController.GetProducts);
 // GET PRODUCT BY ID
 router.get("/single/:id", productController.GetProductByID);
 
+// GET ALL PRODUCTS FOR A SPECIFIC USER
+router.get("/user/:id", productController.GetUserProducts);
+
 // CREATE NEW PRODUCT
 router.post("/", productController.CreateProduct);
 

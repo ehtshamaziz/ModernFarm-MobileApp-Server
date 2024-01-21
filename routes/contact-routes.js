@@ -10,6 +10,9 @@ router.get("/", contactController.GetContacts);
 // GET CONTACT BY ID
 router.get("/single/:id", contactController.GetContactByID);
 
+// GET ALL CONTACTS FOR A SPECIFIC USER
+router.get("/user/:id", contactController.GetUserContacts);
+
 // CREATE NEW CONTACT
 router.post("/", contactController.CreateContact);
 

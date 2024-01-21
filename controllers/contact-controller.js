@@ -29,6 +29,17 @@ const GetContactByID = async (req, res, next) => {
   }
 };
 
+// GET ALL CONTACTS FOR A SPECIFIC USER
+const GetUserContacts = async (req, res, next) => {
+  console.log("Get all user contacts");
+  try {
+    const contacts = await Contact.find({ user: req.params.id });
+    return res.status(200).send(contacts);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // CREATE NEW CONTACT
 const CreateContact = async (req, res, next) => {
   const contact = new Contact(req.body);
@@ -68,4 +79,5 @@ module.exports = {
   CreateContact,
   UpdateContact,
   DeleteContact,
+  GetUserContacts,
 };

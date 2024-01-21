@@ -8,11 +8,10 @@ const cloudinary = require("cloudinary").v2;
 
 // Import routes
 const userRoutes = require("./routes/user-routes");
-const farmRoutes=require("./routes/farm-routes");
-const productRoutes=require("./routes/product-routes");
-const contactRoutes=require("./routes/contact-routes");
-
-
+const farmRoutes = require("./routes/farm-routes");
+const productRoutes = require("./routes/product-routes");
+const contactRoutes = require("./routes/contact-routes");
+const { UploadImageMulter, UploadImage } = require("./middleware/image");
 
 const app = express();
 
@@ -42,11 +41,11 @@ app.use("/farm", farmRoutes);
 app.use("/product", productRoutes);
 app.use("/contact", contactRoutes);
 
-
-
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Success" });
 });
+
+app.post("/image/upload", UploadImageMulter, UploadImage);
 
 // Error handling
 app.use((req, res, next) => {

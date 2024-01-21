@@ -6,6 +6,7 @@ const productSchema = new mongoose.Schema({
     required: true,
     // enum: ["Nutrition", "Medicines", "Farm Tools & Equipment"],
   },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   name: { type: String, required: true },
   imageURL: { type: String },
   //   productForm: { type: String },

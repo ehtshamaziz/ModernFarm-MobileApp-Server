@@ -29,6 +29,17 @@ const GetFarmByID = async (req, res, next) => {
   }
 };
 
+// GET ALL FARMS FOR A SPECIFIC USER
+const GetUserFarms = async (req, res, next) => {
+  console.log("Get all user farms");
+  try {
+    const farms = await Farm.find({ user: req.params.id });
+    return res.status(200).send(farms);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // CREATE NEW FARM
 const CreateFarm = async (req, res, next) => {
   const farm = new Farm(req.body);
@@ -68,4 +79,5 @@ module.exports = {
   CreateFarm,
   UpdateFarm,
   DeleteFarm,
+  GetUserFarms,
 };

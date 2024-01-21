@@ -10,6 +10,9 @@ router.get("/", farmController.GetFarms);
 // GET FARM BY ID
 router.get("/single/:id", farmController.GetFarmByID);
 
+// GET ALL FARMS FOR A SPECIFIC USER
+router.get("/user/:id", farmController.GetUserFarms);
+
 // CREATE NEW FARM
 router.post("/", farmController.CreateFarm);
 

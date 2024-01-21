@@ -29,6 +29,17 @@ const GetProductByID = async (req, res, next) => {
   }
 };
 
+// GET ALL PRODUCTS FOR A SPECIFIC USER
+const GetUserProducts = async (req, res, next) => {
+  console.log("Get all user products");
+  try {
+    const products = await Product.find({ user: req.params.id });
+    return res.status(200).send(products);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // CREATE NEW PRODUCT
 const CreateProduct = async (req, res, next) => {
   const product = new Product(req.body);
@@ -39,6 +50,7 @@ const CreateProduct = async (req, res, next) => {
     next(err);
   }
 };
+// https://res.cloudinary.com/dqnz3rzt5/image/upload/v1705765421/ModernFarm/zsyp6lmzqllowy7bbuwp.webp
 
 // UPDATE PRODUCT
 const UpdateProduct = async (req, res, next) => {
@@ -68,4 +80,5 @@ module.exports = {
   CreateProduct,
   UpdateProduct,
   DeleteProduct,
+  GetUserProducts,
 };

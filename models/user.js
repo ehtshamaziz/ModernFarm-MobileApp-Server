@@ -11,7 +11,8 @@ const userSchema = new mongoose.Schema({
     default:
       "https://res.cloudinary.com/dqnz3rzt5/image/upload/v1679141386/avatar_sofpb7.jpg",
   },
-  farms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Farm" }],
+  country: { type: String },
+  // farms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Farm" }],
   accessRights: {
     species: { type: Boolean, default: true },
     myBirds: { type: Boolean, default: true },
