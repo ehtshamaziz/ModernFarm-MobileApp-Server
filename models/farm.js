@@ -7,6 +7,8 @@ const farmSchema = new mongoose.Schema({
   country: { type: String, required: true },
   currencyType: { type: String },
   phoneNumber: { type: String },
+  countryFlag:{type:String},
+  countryFlagCurrency:{type:String},
   location: {
     // type: String,
     text: { type: String },
