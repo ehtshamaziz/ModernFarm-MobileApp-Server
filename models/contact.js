@@ -7,7 +7,6 @@ const contactSchema = new mongoose.Schema({
   imageURL: { type: String },
   category: { type: String, required: true },
   location: {
-    // type: String,
     text: { type: String, required: true },
     link: { type: String },
   },
