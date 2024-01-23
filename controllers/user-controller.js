@@ -112,7 +112,7 @@ const DeleteUser = async (req, res, next) => {
 
 // USER REGISTRATION
 const RegisterUser = async (req, res, next) => {
-  const { firstName, familyName, phoneNumber, email, password } = req.body;
+  const { firstName, familyName, phoneNumber, email, password ,countryCode,country, countryFlag, currency} = req.body;
 
   try {
     const imageURL =
@@ -135,6 +135,10 @@ const RegisterUser = async (req, res, next) => {
         existingUser.phoneNumber = phoneNumber;
         existingUser.password = hashedPassword;
         existingUser.imageURL = imageURL;
+        existingUser.country.countryName=country;
+        existingUser.country.countryFlag=countryFlag;
+        existingUser.country.currency=currency;
+        existingUser.country.callingCode=countryCode;
         sendOTPVerification(existingUser, res);
       }
     } else {
@@ -145,6 +149,13 @@ const RegisterUser = async (req, res, next) => {
         email,
         password: hashedPassword,
         imageURL,
+        country:{
+          countryName : country,
+          countryFlag : countryFlag,
+          currency : currency,
+          callingCode : countryCode
+        }
+    
       });
       sendOTPVerification(newUser, res);
     }
