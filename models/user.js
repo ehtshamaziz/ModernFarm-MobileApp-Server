@@ -11,13 +11,11 @@ const userSchema = new mongoose.Schema({
     default:
       "https://res.cloudinary.com/dqnz3rzt5/image/upload/v1679141386/avatar_sofpb7.jpg",
   },
-  country:{
-  countryName: { type: String },
-  countryFlag:{ type: String},
-  callingCode:{type:String},
-
-  currency:{type:String},
-
+  country: {
+    countryName: { type: String },
+    countryFlag: { type: String },
+    callingCode: { type: String },
+    currency: { type: String },
   },
 
   // farms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Farm" }],
