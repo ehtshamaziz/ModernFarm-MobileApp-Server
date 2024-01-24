@@ -77,39 +77,6 @@ const DeleteUser = async (req, res, next) => {
   }
 };
 
-// // INITIATE USER REGISTRATION ON SIGNUP AND SEND OTP
-// const RegisterUserInitiate = async (req, res, next) => {
-//   const { firstName, familyName, phoneNumber, countryCode, email, password } =
-//     req.body;
-
-//   const imageFile = req.file;
-//   const imageFilePath = imageFile ? imageFile.path : null;
-//   console.error(imageFile);
-
-//   try {
-//     const existingUser = await User.findOne({ email: email });
-//     if (existingUser) {
-//       return res.status(409).json({ message: "Email already in use" });
-//     }
-//     const otp = generateOTP();
-//     saveOTP(email, otp);
-//     await sendOTP(email, otp);
-
-//     saveTempUserData(email, {
-//       firstName,
-//       familyName,
-//       phoneNumber,
-//       countryCode,
-//       email,
-//       password,
-//       imageFilePath,
-//     });
-//     res.status(200).json({ message: "OTP sent to email" });
-//   } catch (err) {
-//     next("Error is: " + err);
-//   }
-// };
-
 // USER REGISTRATION
 const RegisterUser = async (req, res, next) => {
   const { firstName, familyName, phoneNumber, email, password, country } =
