@@ -57,7 +57,7 @@ const CreateUser = async (req, res, next) => {
 // UPDATE USER
 const UpdateUser = async (req, res, next) => {
   try {
-    console.log(req.body)
+    console.log(req.body);
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
@@ -112,15 +112,15 @@ const DeleteUser = async (req, res, next) => {
 
 // USER REGISTRATION
 const RegisterUser = async (req, res, next) => {
-  const { firstName, familyName, phoneNumber, email, password ,countryCode,country, countryFlag, currency} = req.body;
+  const { firstName, familyName, phoneNumber, email, password, country } =
+    req.body;
 
   try {
     const imageURL =
       req.file.path ||
       "https://res.cloudinary.com/dqnz3rzt5/image/upload/v1679141386/avatar_sofpb7.jpg";
-    console.log("Image URL: ", imageURL);
-    console.log("Req File URL: ", req.file.path);
 
+    console.log("Password While Registering: ", password);
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const existingUser = await User.findOne({ email });
@@ -135,10 +135,7 @@ const RegisterUser = async (req, res, next) => {
         existingUser.phoneNumber = phoneNumber;
         existingUser.password = hashedPassword;
         existingUser.imageURL = imageURL;
-        existingUser.country.countryName=country;
-        existingUser.country.countryFlag=countryFlag;
-        existingUser.country.currency=currency;
-        existingUser.country.callingCode=countryCode;
+        existingUser.country = country;
         sendOTPVerification(existingUser, res);
       }
     } else {
@@ -149,13 +146,7 @@ const RegisterUser = async (req, res, next) => {
         email,
         password: hashedPassword,
         imageURL,
-        country:{
-          countryName : country,
-          countryFlag : countryFlag,
-          currency : currency,
-          callingCode : countryCode
-        }
-    
+        country: country,
       });
       sendOTPVerification(newUser, res);
     }
@@ -227,19 +218,18 @@ const LoginUser = async (req, res, next) => {
 
     if (!user) {
       console.log("Invalid Credentials");
-
       return res.status(401).json({ message: "Invalid Credentials" });
     }
 
     if (user.otpVerification && user.otpVerification.otp) {
       console.log("Invalid email");
-
       return res.status(401).json({ message: "Email not verified" });
     }
 
+    console.log("Entered Password: ", password);
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      console.log("Invalid Credentials");
+      console.log("Invalid Password");
       return res.status(401).json({ message: "Invalid Credentials" });
     }
 
