@@ -117,11 +117,13 @@ const RegisterUser = async (req, res, next) => {
 
   try {
     const imageURL =
-      req.file.path ||
+      req.file?.path ||
       "https://res.cloudinary.com/dqnz3rzt5/image/upload/v1679141386/avatar_sofpb7.jpg";
 
     console.log("Password While Registering: ", password);
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const countryObj = JSON.parse(country);
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -135,7 +137,7 @@ const RegisterUser = async (req, res, next) => {
         existingUser.phoneNumber = phoneNumber;
         existingUser.password = hashedPassword;
         existingUser.imageURL = imageURL;
-        existingUser.country = country;
+        existingUser.country = countryObj;
         sendOTPVerification(existingUser, res);
       }
     } else {
@@ -146,7 +148,7 @@ const RegisterUser = async (req, res, next) => {
         email,
         password: hashedPassword,
         imageURL,
-        country: country,
+        country: countryObj,
       });
       sendOTPVerification(newUser, res);
     }
