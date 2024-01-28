@@ -87,14 +87,12 @@ const RegisterUser = async (req, res, next) => {
       req.file?.path ||
       "https://res.cloudinary.com/dqnz3rzt5/image/upload/v1679141386/avatar_sofpb7.jpg";
 
-    console.log("Password While Registering: ", password);
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const countryObj = JSON.parse(country);
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      if (!existingUser.otpVerification) {
+      if (existingUser.toObject().otpVerification === null) {
         return res
           .status(409)
           .json({ message: "User with this email already exists" });
@@ -107,6 +105,7 @@ const RegisterUser = async (req, res, next) => {
         existingUser.country = countryObj;
         sendOTPVerification(existingUser, res);
       }
+      return res.status(500).send("NO");
     } else {
       const newUser = new User({
         firstName,
