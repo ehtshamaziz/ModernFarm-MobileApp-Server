@@ -105,7 +105,6 @@ const RegisterUser = async (req, res, next) => {
         existingUser.country = countryObj;
         sendOTPVerification(existingUser, res);
       }
-      return res.status(500).send("NO");
     } else {
       const newUser = new User({
         firstName,
