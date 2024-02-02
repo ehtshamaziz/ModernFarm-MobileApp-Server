@@ -1,25 +1,29 @@
-const mongoose=require('mongoose');
+const mongoose = require("mongoose");
 
-var birdSchema=new mongoose.Schema({
-    imageURL: { type: String },
-    farmName:{type:String ,required:true},
-    farmType:{type:String ,required:true},
-    birdName:{type:String },
-    birdSpecie:{type:String ,required:true},
-    birdRace:{type:String },
-    gender:{type:String ,required:true},
-    cageNumber:{type:Number ,required:true},
-    ringNumber:{type:Number },
-    birthDate:{type:Date },
-    exactBirthDate:{type:Date },
-    status:{type:String },
-    motherOfBird:{type:String },
-    fatherOfBird:{type:String },
-    birdOwner:{type:String ,required:true},
-    source:{type:String ,required:true},
-    price:{type:Number },
-   
-})
+var birdSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  farm: { type: mongoose.Schema.Types.ObjectId, ref: "Farm", required: true },
+  imageURL: { type: String, required: true },
+  birdName: { type: String, required: true },
+  birdSpecie: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Specie",
+    required: true,
+  },
+  birdRace: { type: String },
+  gender: { type: String, required: true },
+  cageNumber: { type: String, required: true },
+  ringNumber: { type: String, required: true },
+  birthDate: { type: Number },
+  exactBirthDate: { type: Date },
+  status: { type: String },
+  motherOfBird: { type: mongoose.Schema.Types.ObjectId, ref: "Bird" },
+  fatherOfBird: { type: mongoose.Schema.Types.ObjectId, ref: "Bird" },
+  birdOwner: { type: mongoose.Schema.Types.ObjectId, ref: "Contact" },
+  source: { type: String },
+  price: { type: Number },
+  dateAdded: { type: Date, default: Date.now },
+});
 
-const Bird = mongoose.model("Bird",birdSchema);
+const Bird = mongoose.model("Bird", birdSchema);
 module.export = Bird;
