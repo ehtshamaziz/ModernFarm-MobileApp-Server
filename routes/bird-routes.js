@@ -12,7 +12,7 @@ router.get("/single/:id", BirdController.GetBirdsByID);
 // GET ALL BIRD FOR A SPECIFIC USER
 router.get("/user/:id", BirdController.GetUserBirds);
 
-// CREATE BIRD FARM
+// Add BIRD 
 router.post("/", BirdController.AddBirds);
 
 // UPDATE BIRD BY ID
