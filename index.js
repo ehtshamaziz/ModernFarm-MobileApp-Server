@@ -11,7 +11,7 @@ const userRoutes = require("./routes/user-routes");
 const farmRoutes = require("./routes/farm-routes");
 const productRoutes = require("./routes/product-routes");
 const contactRoutes = require("./routes/contact-routes");
-const specieRoutes=require("./routes/species-routes")
+const specieRoutes = require("./routes/specie-routes");
 const { UploadImageMulter, UploadImage } = require("./middleware/image");
 
 const app = express();
@@ -41,7 +41,7 @@ app.use("/user", userRoutes);
 app.use("/farm", farmRoutes);
 app.use("/product", productRoutes);
 app.use("/contact", contactRoutes);
-app.use("/species", specieRoutes)
+app.use("/species", specieRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Success" });

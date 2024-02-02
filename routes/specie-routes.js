@@ -1,5 +1,5 @@
 const express =require("express");
-const speciesController = require("../controllers/species-controller");
+const speciesController = require("../controllers/specie-controller");
 const router=express.Router();
 
 // Post Species

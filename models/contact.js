@@ -14,8 +14,6 @@ const contactSchema = new mongoose.Schema({
   country: {
     callingCode: { type: String, required: true },
     countryFlag: { type: String },
-    countryName: { type: String },
-    currency: { type: String },
   },
   email: { type: String },
 });
