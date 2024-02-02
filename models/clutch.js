@@ -9,7 +9,7 @@ const clutchSchema = new mongoose.Schema({
   clutchNumber: { type: String, required: true },
   method: { type: String },
   incubationStartDate: { type: Date },
-  eggs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Egg" }],
+  // eggs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Egg" }],
   //   fertilityVerificationDate: { type: Date },
   //   hatchingDate: { type: Date },
   //   bandingStartDate: { type: Date },
