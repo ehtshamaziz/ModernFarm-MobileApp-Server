@@ -43,7 +43,7 @@ app.use("/farm", farmRoutes);
 app.use("/product", productRoutes);
 app.use("/contact", contactRoutes);
 app.use("/species", specieRoutes)
-app.use("/bird/",birdRoutes)
+app.use("/bird",birdRoutes)
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Success" });

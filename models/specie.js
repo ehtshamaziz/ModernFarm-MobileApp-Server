@@ -1,10 +1,9 @@
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 
 const SpecieSchema = new mongoose.Schema({
-     specieType: {
+  specieType: {
     type: String,
     required: true,
-    // enum: ["Nutrition", "Medicines", "Farm Tools & Equipment"],
   },
   name: { type: String, required: true },
   imageURL: { type: String },
@@ -15,9 +14,9 @@ const SpecieSchema = new mongoose.Schema({
   startFeedingAfter: { type: Number, required: true },
   fertilityDays: { type: Number, required: true },
   eggInterval: { type: Number, required: true },
-  approval:{type:Boolean}
+  approval: { type: Boolean },
 });
 
-const Specie=mongoose.model("Specie",SpecieSchema);
+const Specie = mongoose.model("Specie", SpecieSchema);
 
-module.exports=Specie;
+module.exports = Specie;

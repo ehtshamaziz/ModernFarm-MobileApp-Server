@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema({
     currency: { type: String },
   },
 
-  // farms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Farm" }],
   accessRights: {
     species: { type: Boolean, default: true },
     myBirds: { type: Boolean, default: true },
