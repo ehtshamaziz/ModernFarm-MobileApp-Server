@@ -11,7 +11,7 @@ const userRoutes = require("./routes/user-routes");
 const farmRoutes = require("./routes/farm-routes");
 const productRoutes = require("./routes/product-routes");
 const contactRoutes = require("./routes/contact-routes");
-const specieRoutes=require("./routes/species-routes")
+const specieRoutes=require("./routes/specie-routes")
 const birdRoutes=require("./routes/bird-routes");
 const { UploadImageMulter, UploadImage } = require("./middleware/image");
 

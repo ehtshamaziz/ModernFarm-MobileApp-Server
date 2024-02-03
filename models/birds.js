@@ -26,4 +26,4 @@ var birdSchema = new mongoose.Schema({
 });
 
 const Bird = mongoose.model("Bird", birdSchema);
-module.export = Bird;
+module.exports = Bird;
