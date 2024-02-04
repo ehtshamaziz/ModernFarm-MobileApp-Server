@@ -12,9 +12,9 @@ const PostSpecie = async (req, res, next) => {
 };
 
 const GetSpecies = async (req, res, next) => {
-  console.log("Get species");
+  console.log("Get all approved species");
   try {
-    const species = await Specie.find();
+    const species = await Specie.find({ approval: true });
     return res.status(200).json(species);
   } catch (e) {
     next(e);
