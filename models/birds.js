@@ -4,6 +4,7 @@ var birdSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   farm: { type: mongoose.Schema.Types.ObjectId, ref: "Farm", required: true },
   imageURL: { type: String, required: true },
+  birdId: { type: String, required: true },
   birdName: { type: String, required: true },
   birdSpecie: {
     type: mongoose.Schema.Types.ObjectId,
