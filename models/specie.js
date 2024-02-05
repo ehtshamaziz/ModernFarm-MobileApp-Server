@@ -14,7 +14,7 @@ const SpecieSchema = new mongoose.Schema({
   startFeedingAfter: { type: Number, required: true },
   fertilityDays: { type: Number, required: true },
   eggInterval: { type: Number, required: true },
-  approval: { type: Boolean },
+  approval: { type: Boolean, default: false },
 });
 
 const Specie = mongoose.model("Specie", SpecieSchema);
