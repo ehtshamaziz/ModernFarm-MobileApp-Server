@@ -13,8 +13,9 @@ const productRoutes = require("./routes/product-routes");
 const contactRoutes = require("./routes/contact-routes");
 const specieRoutes=require("./routes/specie-routes")
 const birdRoutes=require("./routes/bird-routes");
+const coupleRoutes=require("./routes/couple-routes");
 const { UploadImageMulter, UploadImage } = require("./middleware/image");
-
+const clutchRoutes=require('./routes/clutch-routes');
 const app = express();
 
 // CONFIGURE CLOUDINARY
@@ -42,8 +43,10 @@ app.use("/user", userRoutes);
 app.use("/farm", farmRoutes);
 app.use("/product", productRoutes);
 app.use("/contact", contactRoutes);
-app.use("/species", specieRoutes)
-app.use("/bird",birdRoutes)
+app.use("/species", specieRoutes);
+app.use("/bird",birdRoutes);
+app.use("/couple",coupleRoutes);
+app.use("/clutch",clutchRoutes)
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Success" });
