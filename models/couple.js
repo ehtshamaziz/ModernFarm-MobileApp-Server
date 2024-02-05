@@ -3,8 +3,6 @@ const mongoose = require("mongoose");
 const coupleSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   farm: { type: mongoose.Schema.Types.ObjectId, ref: "Farm", required: true },
-  // farmType: { type: String, required: true },
-  // farmName: { type: String, required: true },
   coupleId: { type: String, required: true, unique: true },
   femaleBird: {
     type: mongoose.Schema.Types.ObjectId,

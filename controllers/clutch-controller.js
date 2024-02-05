@@ -21,7 +21,7 @@ const GetClutchesByID = async (req, res, next) => {
   }
 };
 
-// GET ALL CLUTCH FOR A SPECIFIC USER
+// GET ALL CLUTCH FOR A SPECIFIC COUPLE
 const GetCoupleClutches = async (req, res, next) => {
   console.log("Get all clutch for a couple");
   try {
