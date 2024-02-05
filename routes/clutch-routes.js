@@ -1,7 +1,6 @@
-const express=require("express");
-const ClutchController=require("../controllers/clutch-controller");
-const router=express.Router();
-
+const express = require("express");
+const ClutchController = require("../controllers/clutch-controller");
+const router = express.Router();
 
 // GET ALL CLUTCH
 router.get("/", ClutchController.GetClutches);
@@ -10,14 +9,12 @@ router.get("/", ClutchController.GetClutches);
 router.get("/single/:id", ClutchController.GetClutchesByID);
 
 // GET ALL CLUTCH FOR A SPECIFIC USER
-router.get("/user/:id", ClutchController.GetCoupleClutches);
+router.get("/user/:id", ClutchController.GetUserClutches);
 
+// GET ALL CLUTCHES FOR A SPECIFIC COUPLE
+router.get("/couple/:id", ClutchController.GetCoupleClutches);
 
-// GET ALL CLUTCH FOR A SPECIFIC USER
-router.get("/all/user/:id", ClutchController.GetUserClutches);
-
-
-// Add CLUTCH 
+// Add CLUTCH
 router.post("/", ClutchController.AddClutches);
 
 // UPDATE CLUTCH BY ID
