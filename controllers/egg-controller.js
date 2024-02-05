@@ -28,6 +28,7 @@ const GetUserEggs = async (req, res, next) => {
     const egg = await Egg.find({ clutch: req.params.id });
     return res.status(200).send(egg);
   } catch (err) {
+    console.log("Not Found ")
     next(err);
   }
 };
