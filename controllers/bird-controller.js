@@ -1,5 +1,4 @@
-const Bird=require('../models/birds');
-
+const Bird = require("../models/birds");
 
 const GetBirds = async (req, res, next) => {
   console.log("Get all birds");
@@ -25,7 +24,11 @@ const GetBirdsByID = async (req, res, next) => {
 const GetUserBirds = async (req, res, next) => {
   console.log("Get all user bird");
   try {
-    const bird = await Bird.find({ user: req.params.id });
+    const bird = await Bird.find({ user: req.params.id })
+      .populate("farm", "farmType farmName _id")
+      .populate("motherOfBird", "_id birdName")
+      .populate("fatherOfBird", "_id birdName")
+      .populate("birdOwner", "_id firstName lastName");
     return res.status(200).send(bird);
   } catch (err) {
     next(err);
@@ -65,7 +68,7 @@ const UpdateBird = async (req, res, next) => {
 };
 
 // DELETE BIRD
-const DeleteBird= async (req, res, next) => {
+const DeleteBird = async (req, res, next) => {
   try {
     const bird = await Bird.findByIdAndDelete(req.params.id);
     return res.status(200).json(bird);
