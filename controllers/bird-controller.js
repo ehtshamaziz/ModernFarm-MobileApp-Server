@@ -33,10 +33,19 @@ const GetUserBirds = async (req, res, next) => {
 };
 
 // CREATE NEW BIRD
-const AddBirds= async (req, res, next) => {
-  const bird = new Bird(req.body);
+const AddBirds = async (req, res, next) => {
   try {
+    const lastBird = await Bird.findOne({}, {}, { sort: { birdId: -1 } });
+    let birdId = "BIRD-1";
+
+    if (lastBird && lastBird.birdId) {
+      const lastId = parseInt(lastBird.birdId.split("-")[1]);
+      birdId = `BIRD-${lastId + 1}`;
+    }
+
+    const bird = new Bird({ ...req.body, birdId });
     await bird.save();
+
     return res.status(200).json(bird);
   } catch (err) {
     next(err);
