@@ -22,10 +22,22 @@ const GetClutchesByID = async (req, res, next) => {
 };
 
 // GET ALL CLUTCH FOR A SPECIFIC USER
-const GetUserClutches = async (req, res, next) => {
-  console.log("Get all couple clutch");
+const GetCoupleClutches = async (req, res, next) => {
+  console.log("Get all clutch for a couple");
   try {
     const clutch = await Clutch.find({ couple: req.params.id });
+    return res.status(200).send(clutch);
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+// GET ALL CLUTCH FOR A SPECIFIC USER
+const GetUserClutches = async (req, res, next) => {
+  console.log("Get all clutch for a user");
+  try {
+    const clutch = await Clutch.find({ user: req.params.id });
     return res.status(200).send(clutch);
   } catch (err) {
     next(err);
@@ -70,6 +82,7 @@ module.exports = {
   GetClutchesByID,
   AddClutches,
   GetUserClutches,
+  GetCoupleClutches,
   UpdateClutch,
   DeleteClutch,
 };

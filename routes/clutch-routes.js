@@ -10,7 +10,12 @@ router.get("/", ClutchController.GetClutches);
 router.get("/single/:id", ClutchController.GetClutchesByID);
 
 // GET ALL CLUTCH FOR A SPECIFIC USER
-router.get("/user/:id", ClutchController.GetUserClutches);
+router.get("/user/:id", ClutchController.GetCoupleClutches);
+
+
+// GET ALL CLUTCH FOR A SPECIFIC USER
+router.get("/all/user/:id", ClutchController.GetUserClutches);
+
 
 // Add CLUTCH 
 router.post("/", ClutchController.AddClutches);
