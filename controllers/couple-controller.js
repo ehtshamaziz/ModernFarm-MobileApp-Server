@@ -1,4 +1,5 @@
 const Couple = require("../models/couple");
+const Clutch = require("../models/clutch");
 
 const GetCouples = async (req, res, next) => {
   console.log("Get all couples");
@@ -24,12 +25,26 @@ const GetCouplesByID = async (req, res, next) => {
 const GetUserCouples = async (req, res, next) => {
   console.log("Get all user couple");
   try {
-    const couple = await Couple.find({ user: req.params.id })
-      .populate("femaleBird")
-      .populate("maleBird")
+    const couples = await Couple.find({ user: req.params.id })
+      .populate(
+        "femaleBird",
+        "_id birdName birdId gender price birdSpecie imageURL"
+      )
+      .populate(
+        "maleBird",
+        "_id birdName birdId gender price birdSpecie imageURL"
+      )
       .populate("farm", "farmType farmName _id");
 
-    return res.status(200).send(couple);
+    const couplesWithClutches = await Promise.all(
+      couples.map(async (couple) => {
+        const clutchesCount = await Clutch.countDocuments({
+          couple: couple._id,
+        });
+        return { ...couple.toObject(), clutches: clutchesCount };
+      })
+    );
+    return res.status(200).send(couplesWithClutches);
   } catch (err) {
     next(err);
   }
