@@ -18,8 +18,8 @@ var birdSchema = new mongoose.Schema({
   birthDate: { type: Number },
   exactBirthDate: { type: Date },
   status: { type: String },
-  motherOfBird: { type: mongoose.Schema.Types.ObjectId, ref: "Bird" },
-  fatherOfBird: { type: mongoose.Schema.Types.ObjectId, ref: "Bird" },
+  couple:{type:mongoose.Schema.Types.ObjectId,ref:"Couple"},
+
   birdOwner: { type: mongoose.Schema.Types.ObjectId, ref: "Contact" },
   source: { type: String },
   price: { type: Number },
