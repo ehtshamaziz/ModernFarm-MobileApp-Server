@@ -26,6 +26,7 @@ const GetUserBirds = async (req, res, next) => {
   try {
     const bird = await Bird.find({ user: req.params.id })
       .populate("farm", "farmType farmName _id")
+      .populate("couple","coupleId")
       .populate("birdOwner", "_id firstName lastName");
     return res.status(200).send(bird);
   } catch (err) {
