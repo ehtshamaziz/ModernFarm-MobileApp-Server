@@ -1,5 +1,4 @@
-const Clutch=require('../models/clutch');
-
+const Clutch = require("../models/clutch");
 
 const GetClutches = async (req, res, next) => {
   console.log("Get all clutch");
@@ -32,7 +31,6 @@ const GetCoupleClutches = async (req, res, next) => {
   }
 };
 
-
 // GET ALL CLUTCH FOR A SPECIFIC USER
 const GetUserClutches = async (req, res, next) => {
   console.log("Get all clutch for a user");
@@ -45,9 +43,18 @@ const GetUserClutches = async (req, res, next) => {
 };
 
 // CREATE NEW CLUTCH
-const AddClutches= async (req, res, next) => {
-  const clutch = new Clutch(req.body);
+const AddClutches = async (req, res, next) => {
   try {
+    const { couple } = req.body;
+
+    const highestClutch = await Clutch.findOne({ couple: couple }).sort({
+      clutchNumber: -1,
+    });
+    const clutchNumber = highestClutch
+      ? (parseInt(highestClutch.clutchNumber) + 1).toString().padStart(3, "0")
+      : "001";
+
+    const clutch = new Clutch({ ...req.body, clutchNumber });
     await clutch.save();
     return res.status(200).json(clutch);
   } catch (err) {
@@ -68,7 +75,7 @@ const UpdateClutch = async (req, res, next) => {
 };
 
 // DELETE CLUTCH
-const DeleteClutch= async (req, res, next) => {
+const DeleteClutch = async (req, res, next) => {
   try {
     const clutch = await Clutch.findByIdAndDelete(req.params.id);
     return res.status(200).json(clutch);

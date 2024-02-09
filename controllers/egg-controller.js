@@ -1,5 +1,4 @@
-const Egg=require('../models/egg');
-
+const Egg = require("../models/egg");
 
 const GetEggs = async (req, res, next) => {
   console.log("Get all eggs");
@@ -28,15 +27,23 @@ const GetUserEggs = async (req, res, next) => {
     const egg = await Egg.find({ clutch: req.params.id });
     return res.status(200).send(egg);
   } catch (err) {
-    console.log("Not Found ")
+    console.log("Not Found ");
     next(err);
   }
 };
 
 // CREATE NEW BIRD
-const AddEggs= async (req, res, next) => {
-  const egg = new Egg(req.body);
+const AddEggs = async (req, res, next) => {
   try {
+    const { clutch } = req.body;
+
+    const highestEgg = await Egg.findOne({ clutch: clutch }).sort({
+      eggNumber: -1,
+    });
+    const eggNumber = highestEgg
+      ? (parseInt(highestEgg.eggNumber) + 1).toString().padStart(3, "0")
+      : "001";
+    const egg = new Egg({ ...req.body, eggNumber });
     await egg.save();
     return res.status(200).json(egg);
   } catch (err) {
@@ -57,7 +64,7 @@ const UpdateEgg = async (req, res, next) => {
 };
 
 // DELETE BIRD
-const DeleteEgg= async (req, res, next) => {
+const DeleteEgg = async (req, res, next) => {
   try {
     const egg = await Egg.findByIdAndDelete(req.params.id);
     return res.status(200).json(egg);
