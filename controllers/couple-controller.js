@@ -53,6 +53,16 @@ const GetUserCouples = async (req, res, next) => {
 // CREATE NEW COUPLE
 const AddCouple = async (req, res, next) => {
   try {
+
+    console.log("LLLLLLLLLLLLLLLLL")
+    const {maleBird,femaleBird}=req.body;
+    const existingCouple=await Couple.findOne({maleBird,femaleBird});
+    if (existingCouple) {
+      return res.status(300).json({ message: "This male and female bird couple already exists." });
+    }
+    
+
+
     const lastCouple = await Couple.findOne({}, {}, { sort: { coupleId: -1 } });
     let coupleId = "COUPLE-1";
 
