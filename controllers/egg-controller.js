@@ -24,7 +24,8 @@ const GetEggsByID = async (req, res, next) => {
 const GetUserEggs = async (req, res, next) => {
   console.log("Get all user egg");
   try {
-    const egg = await Egg.find({ clutch: req.params.id });
+    const egg = await Egg.find({ clutch: req.params.id })
+    .populate("clutch","incubationStartDate")
     return res.status(200).send(egg);
   } catch (err) {
     console.log("Not Found ");

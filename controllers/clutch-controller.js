@@ -24,7 +24,15 @@ const GetClutchesByID = async (req, res, next) => {
 const GetCoupleClutches = async (req, res, next) => {
   console.log("Get all clutch for a couple");
   try {
-    const clutch = await Clutch.find({ couple: req.params.id });
+    const clutch = await Clutch.find({ couple: req.params.id })
+        .populate({
+        path: 'couple',
+        populate: {
+          path: 'specie',
+          model: 'Specie',
+        }
+      })
+       
     return res.status(200).send(clutch);
   } catch (err) {
     next(err);

@@ -14,7 +14,9 @@ const GetCouples = async (req, res, next) => {
 // GET SINGLE COUPLE
 const GetCouplesByID = async (req, res, next) => {
   try {
-    const couple = await Couple.findById(req.params.id);
+    const couple = await Couple.findById(req.params.id)
+    .populate("farm","farmName farmType")
+    .populate("specie","name")
     return res.status(200).send(couple);
   } catch (err) {
     next(err);
@@ -34,7 +36,8 @@ const GetUserCouples = async (req, res, next) => {
         "maleBird",
         "_id birdName birdId gender price birdSpecie imageURL"
       )
-      .populate("farm", "farmType farmName _id");
+      .populate("farm", "farmType farmName _id")
+      .populate("specie")
 
     const couplesWithClutches = await Promise.all(
       couples.map(async (couple) => {
@@ -54,7 +57,6 @@ const GetUserCouples = async (req, res, next) => {
 const AddCouple = async (req, res, next) => {
   try {
 
-    console.log("LLLLLLLLLLLLLLLLL")
     const {maleBird,femaleBird}=req.body;
     const existingCouple=await Couple.findOne({maleBird,femaleBird});
     if (existingCouple) {
