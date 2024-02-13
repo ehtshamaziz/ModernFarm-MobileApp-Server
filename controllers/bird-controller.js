@@ -1,4 +1,6 @@
 const Bird = require("../models/birds");
+const Couple=require("../models/couple");
+const Egg=require("../models/egg");
 
 const GetBirds = async (req, res, next) => {
   console.log("Get all birds");
@@ -39,6 +41,7 @@ const GetUserBirds = async (req, res, next) => {
 // CREATE NEW BIRD
 const AddBirds = async (req, res, next) => {
   try {
+  
     const lastBird = await Bird.findOne({}, {}, { sort: { birdId: -1 } });
     let birdId = "BIRD-1";
 
@@ -49,6 +52,32 @@ const AddBirds = async (req, res, next) => {
 
     const bird = new Bird({ ...req.body, birdId });
     await bird.save();
+
+    if (req.body.couple) {
+  
+      const coupleId = req.body.couple; 
+      console.log(coupleId);
+    try {
+      const updatedCouple = await Couple.findByIdAndUpdate(coupleId, 
+      { $push: { descendants: bird._id } }, 
+      { new: true } 
+    );
+    console.log(updatedCouple);
+  } catch (error) {
+  
+    console.error("Error updating Couple document:", error);
+  }}
+
+  if(req.body.eggID){
+    try{
+      const updateEgg=await Egg.findByIdAndUpdate(req.body.eggID,{$set:{status:"excluded"}},{ new: true })
+
+    console.log(updateEgg);
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
 
     return res.status(200).json(bird);
   } catch (err) {

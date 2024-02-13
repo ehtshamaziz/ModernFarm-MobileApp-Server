@@ -18,7 +18,7 @@ const coupleSchema = new mongoose.Schema({
   cageNumber: { type: String },
   status: { type: String },
   specie:{ type: mongoose.Schema.Types.ObjectId, ref: "Specie", required: true },
-  descendents: [
+  descendants: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Bird",

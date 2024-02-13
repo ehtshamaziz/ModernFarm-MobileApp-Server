@@ -1,4 +1,6 @@
 const Clutch = require("../models/clutch");
+const Egg=require("../models/egg");
+
 
 const GetClutches = async (req, res, next) => {
   console.log("Get all clutch");
@@ -32,8 +34,16 @@ const GetCoupleClutches = async (req, res, next) => {
           model: 'Specie',
         }
       })
+      const couplesWithClutches = await Promise.all(
+      clutch.map(async (clutch) => {
+        const eggsCount = await Egg.countDocuments({
+          clutch: clutch._id,
+        });
+        return { ...clutch.toObject(), eggs: eggsCount };
+      })
+    );
        
-    return res.status(200).send(clutch);
+    return res.status(200).send(couplesWithClutches);
   } catch (err) {
     next(err);
   }
