@@ -43,13 +43,14 @@ const AddBirds = async (req, res, next) => {
   try {
   
     const lastBird = await Bird.findOne({}, {}, { sort: { birdId: -1 } });
-    let birdId = "BIRD-1";
+    let birdId = "BIRD-001";
 
     if (lastBird && lastBird.birdId) {
       const lastId = parseInt(lastBird.birdId.split("-")[1]);
-      birdId = `BIRD-${lastId + 1}`;
+      const newId = lastId + 1;
+      const paddedId = String(newId).padStart(3, '0'); 
+      birdId = `BIRD-${paddedId}`;
     }
-
     const bird = new Bird({ ...req.body, birdId });
     await bird.save();
 
@@ -70,7 +71,7 @@ const AddBirds = async (req, res, next) => {
 
   if(req.body.eggID){
     try{
-      const updateEgg=await Egg.findByIdAndUpdate(req.body.eggID,{$set:{status:"excluded"}},{ new: true })
+      const updateEgg=await Egg.findByIdAndUpdate(req.body.eggID,{$set:{status:"birdAddedFromEgg"}},{ new: true })
 
     console.log(updateEgg);
     } catch (error) {

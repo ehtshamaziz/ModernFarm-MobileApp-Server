@@ -66,11 +66,14 @@ const AddCouple = async (req, res, next) => {
 
 
     const lastCouple = await Couple.findOne({}, {}, { sort: { coupleId: -1 } });
-    let coupleId = "COUPLE-1";
+    let coupleId = "COUPLE-001";
+
 
     if (lastCouple && lastCouple.coupleId) {
       const lastId = parseInt(lastCouple.coupleId.split("-")[1]);
-      coupleId = `COUPLE-${lastId + 1}`;
+      const newId = lastId + 1;
+      const paddedId = String(newId).padStart(3, '0'); 
+      coupleId = `COUPLE-${paddedId}`;
     }
 
     const couple = new Couple({ ...req.body, coupleId });
