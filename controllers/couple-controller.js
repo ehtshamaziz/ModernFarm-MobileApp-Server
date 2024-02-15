@@ -38,6 +38,9 @@ const GetUserCouples = async (req, res, next) => {
       )
       .populate("farm", "farmType farmName _id")
       .populate("specie")
+      .populate("descendants","status")
+
+      console.log(couples)
 
     const couplesWithClutches = await Promise.all(
       couples.map(async (couple) => {

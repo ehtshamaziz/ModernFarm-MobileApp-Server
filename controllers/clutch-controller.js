@@ -35,12 +35,36 @@ const GetCoupleClutches = async (req, res, next) => {
         }
       })
       const couplesWithClutches = await Promise.all(
-      clutch.map(async (clutch) => {
-        const eggsCount = await Egg.countDocuments({
+  clutch.map(async (clutch) => {
+    // Define all statuses you want to count
+    const statuses = [
+      'hatched',
+      'unknown',
+      'fertilized',
+      'unfertilized',
+      'excluded',
+      'notHatched',
+      'birdAddedFromEgg',
+      'transferredToAnotherPair',
+    ];
+
+    const counts = await Promise.all(
+      statuses.map((status) =>
+        Egg.countDocuments({
           clutch: clutch._id,
-        });
-        return { ...clutch.toObject(), eggs: eggsCount };
-      })
+          status,
+        })
+      )
+    );
+
+    const countsByStatus = statuses.reduce((acc, status, index) => {
+      acc[status] = counts[index];
+      return acc;
+    }, {});
+
+    return { ...clutch.toObject(), ...countsByStatus };
+  })
+
     );
        
     return res.status(200).send(couplesWithClutches);

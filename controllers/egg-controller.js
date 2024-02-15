@@ -1,3 +1,4 @@
+const Clutch = require("../models/clutch");
 const Egg = require("../models/egg");
 
 const GetEggs = async (req, res, next) => {
@@ -27,7 +28,17 @@ const GetUserEggs = async (req, res, next) => {
     const egg = await Egg.find({ clutch: req.params.id })
     .populate("clutch","incubationStartDate")
     .populate("lastTransferID","coupleId")
-    .populate("parentCouple","coupleId")
+    .populate("birdID")
+    .populate({
+      path:"parentCouple",
+      select:"coupleId specie",
+      populate:{
+        path:"specie",
+        select:"incubation startFeedingAfter"
+      }
+    })
+    console.log("peeepeepepeps")
+    console.log(egg)
     return res.status(200).send(egg);
   } catch (err) {
     console.log("Not Found ");
@@ -35,12 +46,42 @@ const GetUserEggs = async (req, res, next) => {
   }
 };
 
-// CREATE NEW BIRD
+// GET ALL THE EGGS OF A COUPLE
+const GetCouplesEggs = async (req,res,next)=>{
+  //console.log(req.body);
+    try {
+    const clutch = await Clutch.find({couple: req.params.id})  
+    console.log(clutch)
+    const eggs=await Promise.all(
+      clutch.map((clutch)=>
+      Egg.find({
+        clutch :clutch._id
+      }))
+    )
+    // const sum = eggs.reduce((acc, curr) => acc + curr, 0);
+
+    // const eggs = await Egg.find({ clutch: { $in: clutch.map(clutch => clutch._id) } });
+  //  const eggs = await Egg.find({ clutch: { $in: clutch.map(clutch => clutch._id) } });
+    // .populate("clutch","incubationStartDate")
+    // .populate("lastTransferID","coupleId")
+    // .populate("parentCouple","coupleId")
+    // console.log({...eggs.toObject()})
+    // console.log("helooooo")
+    // console.log(eggs)
+    // console.log(sum)
+    return res.status(200).send(eggs);
+  } catch (err) {
+    console.log("Not Found ");
+    next(err);
+  }
+}
+
+// CREATE NEW EGG
 const AddEggs = async (req, res, next) => {
   try {
-    const { clutch } = req.body;
+    // const { clutch } = req.body;
 
-    const highestEgg = await Egg.findOne({ clutch: clutch }).sort({
+    const highestEgg = await Egg.findOne().sort({
       eggNumber: -1,
     });
     const eggNumber = highestEgg
@@ -83,4 +124,5 @@ module.exports = {
   GetUserEggs,
   UpdateEgg,
   DeleteEgg,
+  GetCouplesEggs
 };

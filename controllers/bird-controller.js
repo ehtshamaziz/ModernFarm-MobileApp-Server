@@ -41,6 +41,7 @@ const GetUserBirds = async (req, res, next) => {
 // CREATE NEW BIRD
 const AddBirds = async (req, res, next) => {
   try {
+    const { eggID, ...rest } = req.body;
   
     const lastBird = await Bird.findOne({}, {}, { sort: { birdId: -1 } });
     let birdId = "BIRD-001";
@@ -51,7 +52,7 @@ const AddBirds = async (req, res, next) => {
       const paddedId = String(newId).padStart(3, '0'); 
       birdId = `BIRD-${paddedId}`;
     }
-    const bird = new Bird({ ...req.body, birdId });
+    const bird = new Bird({ ...rest, birdId });
     await bird.save();
 
     if (req.body.couple) {
@@ -64,21 +65,19 @@ const AddBirds = async (req, res, next) => {
       { new: true } 
     );
     console.log(updatedCouple);
-  } catch (error) {
-  
-    console.error("Error updating Couple document:", error);
-  }}
-
-  if(req.body.eggID){
+    if(req.body.eggID){
     try{
-      const updateEgg=await Egg.findByIdAndUpdate(req.body.eggID,{$set:{status:"birdAddedFromEgg"}},{ new: true })
+      const updateEgg=await Egg.findByIdAndUpdate(req.body.eggID,{$set:{birdID:bird._id}},{ new: true })
 
     console.log(updateEgg);
     } catch (error) {
       console.log(error);
     }
-
   }
+  } catch (error) {
+  
+    console.error("Error updating Couple document:", error);
+  }}
 
     return res.status(200).json(bird);
   } catch (err) {
