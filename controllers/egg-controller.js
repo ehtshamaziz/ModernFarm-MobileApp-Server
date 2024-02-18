@@ -34,7 +34,7 @@ const GetUserEggs = async (req, res, next) => {
       select:"coupleId specie",
       populate:{
         path:"specie",
-        select:"incubation startFeedingAfter"
+        select:"incubation startFeedingAfter addRingAfter fertilityDays"
       }
     })
     console.log("peeepeepepeps")
@@ -58,23 +58,24 @@ const GetCouplesEggs = async (req,res,next)=>{
         clutch :clutch._id
       }))
     )
-    // const sum = eggs.reduce((acc, curr) => acc + curr, 0);
-
-    // const eggs = await Egg.find({ clutch: { $in: clutch.map(clutch => clutch._id) } });
-  //  const eggs = await Egg.find({ clutch: { $in: clutch.map(clutch => clutch._id) } });
-    // .populate("clutch","incubationStartDate")
-    // .populate("lastTransferID","coupleId")
-    // .populate("parentCouple","coupleId")
-    // console.log({...eggs.toObject()})
-    // console.log("helooooo")
-    // console.log(eggs)
-    // console.log(sum)
     return res.status(200).send(eggs);
   } catch (err) {
     console.log("Not Found ");
     next(err);
   }
 }
+  const GetParentCouplesEggs = async (req,res,next)=>{
+  //console.log(req.body);
+    try {
+    const eggs = await Egg.find({parentCouple: req.params.id})  
+    
+    return res.status(200).send(eggs);
+  } catch (err) {
+    console.log("Not Found ");
+    next(err);
+  }
+}
+
 
 // CREATE NEW EGG
 const AddEggs = async (req, res, next) => {
@@ -124,5 +125,7 @@ module.exports = {
   GetUserEggs,
   UpdateEgg,
   DeleteEgg,
-  GetCouplesEggs
+  GetParentCouplesEggs,
+  GetCouplesEggs,
+
 };

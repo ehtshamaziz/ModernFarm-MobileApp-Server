@@ -18,6 +18,8 @@ router.post("/", EggController.AddEggs);
 
 router.get("/couple/:id",EggController.GetCouplesEggs);
 
+
+router.get("/parentCouple/:id",EggController.GetParentCouplesEggs);
 // UPDATE BIRD BY ID
 router.patch("/:id", EggController.UpdateEgg);
 

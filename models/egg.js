@@ -8,6 +8,8 @@ const eggSchema = new mongoose.Schema({
   },
   parentCouple:{type: mongoose.Schema.Types.ObjectId,
   ref:"Couple",
+  required: true,
+  
   },
   lastTransferID:{type: mongoose.Schema.Types.ObjectId,
   ref:"Couple",
