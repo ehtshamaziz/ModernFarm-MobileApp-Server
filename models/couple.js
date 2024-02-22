@@ -17,6 +17,7 @@ const coupleSchema = new mongoose.Schema({
   formationDate: { type: Date },
   cageNumber: { type: String },
   status: { type: String },
+  is_archived:{type:Boolean,default: false},
   specie:{ type: mongoose.Schema.Types.ObjectId, ref: "Specie", required: true },
   descendants: [
     {

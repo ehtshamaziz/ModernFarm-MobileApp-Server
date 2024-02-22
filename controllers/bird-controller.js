@@ -97,6 +97,8 @@ const UpdateBird = async (req, res, next) => {
   }
 };
 
+
+
 // DELETE BIRD
 const DeleteBird = async (req, res, next) => {
   try {

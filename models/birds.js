@@ -20,7 +20,7 @@ var birdSchema = new mongoose.Schema({
   exactBirthDate: { type: Date },
   status: { type: String },
   couple:{type:mongoose.Schema.Types.ObjectId,ref:"Couple"},
-
+  is_archived:{type:Boolean,default: false},
   birdOwner: { type: mongoose.Schema.Types.ObjectId, ref: "Contact" },
   source: { type: String },
   price: { type: Number },
