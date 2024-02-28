@@ -80,9 +80,9 @@ const GetCouplesEggs = async (req,res,next)=>{
 // CREATE NEW EGG
 const AddEggs = async (req, res, next) => {
   try {
-    // const { clutch } = req.body;
+    const { clutch } = req.body;
 
-    const highestEgg = await Egg.findOne().sort({
+    const highestEgg = await Egg.findOne({ clutch: clutch }).sort({
       eggNumber: -1,
     });
     const eggNumber = highestEgg

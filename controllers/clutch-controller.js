@@ -34,7 +34,7 @@ const GetCoupleClutches = async (req, res, next) => {
           model: 'Specie',
         }
       })
-      const couplesWithClutches = await Promise.all(
+  const couplesWithClutches = await Promise.all(
   clutch.map(async (clutch) => {
     // Define all statuses you want to count
     const statuses = [
@@ -57,12 +57,14 @@ const GetCoupleClutches = async (req, res, next) => {
       )
     );
 
+    const totalCount = counts.reduce((accumulator, currentCount) => accumulator + currentCount, 0);
+
     const countsByStatus = statuses.reduce((acc, status, index) => {
       acc[status] = counts[index];
       return acc;
     }, {});
 
-    return { ...clutch.toObject(), ...countsByStatus };
+    return { ...clutch.toObject(), ...countsByStatus, totalCount };
   })
 
     );

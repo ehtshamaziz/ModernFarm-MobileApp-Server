@@ -17,6 +17,8 @@ const coupleRoutes=require("./routes/couple-routes");
 const { UploadImageMulter, UploadImage } = require("./middleware/image");
 const clutchRoutes=require('./routes/clutch-routes');
 const eggRoutes=require('./routes/egg-routes.js');
+const diseaseRoutes=require('./routes/disease-route.js');
+const treatmentRoutes=require('./routes/treatment-routes.js')
 const app = express();
 
 // CONFIGURE CLOUDINARY
@@ -48,7 +50,9 @@ app.use("/species", specieRoutes);
 app.use("/bird",birdRoutes);
 app.use("/couple",coupleRoutes);
 app.use("/clutch",clutchRoutes);
-app.use("/egg",eggRoutes)
+app.use("/egg",eggRoutes);
+app.use("/disease", diseaseRoutes);
+app.use("/treatment",treatmentRoutes)
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Success" });

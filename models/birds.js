@@ -21,6 +21,7 @@ var birdSchema = new mongoose.Schema({
   status: { type: String },
   couple:{type:mongoose.Schema.Types.ObjectId,ref:"Couple"},
   is_archived:{type:Boolean,default: false},
+  initialCageNumber:{type:String},
   birdOwner: { type: mongoose.Schema.Types.ObjectId, ref: "Contact" },
   source: { type: String },
   price: { type: Number },
