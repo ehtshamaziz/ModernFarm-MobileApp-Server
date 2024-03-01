@@ -1,5 +1,6 @@
 const Clutch = require("../models/clutch");
 const Egg = require("../models/egg");
+const Task=require('../models/tasks');
 
 const GetEggs = async (req, res, next) => {
   console.log("Get all eggs");
@@ -64,6 +65,7 @@ const GetCouplesEggs = async (req,res,next)=>{
     next(err);
   }
 }
+
   const GetParentCouplesEggs = async (req,res,next)=>{
   //console.log(req.body);
     try {
@@ -77,10 +79,18 @@ const GetCouplesEggs = async (req,res,next)=>{
 }
 
 
+function addDaysToDate(date, days) {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
 // CREATE NEW EGG
 const AddEggs = async (req, res, next) => {
   try {
     const { clutch } = req.body;
+    const {eggsLaidDate} = req.body;
+
 
     const highestEgg = await Egg.findOne({ clutch: clutch }).sort({
       eggNumber: -1,
@@ -90,6 +100,44 @@ const AddEggs = async (req, res, next) => {
       : "001";
     const egg = new Egg({ ...req.body, eggNumber });
     await egg.save();
+
+  const clutches = await Clutch.findById({_id:clutch})
+  .populate({
+      path:"couple",
+      select:"coupleId specie cageNumber user farm",
+      populate:{
+        path:"specie",
+        select:"incubation startFeedingAfter addRingAfter fertilityDays"
+      }
+    })
+    // Extract the incubationStartDate from the query result
+
+    const earlyFeedingDays = clutches.couple.specie.startFeedingAfter;
+    const fertilityDays = clutches.couple.specie.fertilityDays;
+    const incubationDays = clutches.couple.specie.incubation;
+    const addRingAfterDays = clutches.couple.specie.addRingAfter;
+    const clutchNumber = clutches.clutchNumber;
+    const coupleId=clutches.couple.coupleId;
+    const cageNumber=clutches.couple.cageNumber;
+    const user=clutches.couple.user;
+
+    const farm=clutches.couple.farm;
+    console.log("farm")
+    console.log(farm);
+    console.log(user);
+
+// Convert string date to Date object if necessary
+    const eggsLaidDateObj = new Date(eggsLaidDate);
+
+// Calculate the dates by adding days to eggsLaidDate
+    const earlyFeedingDate = addDaysToDate(eggsLaidDateObj, earlyFeedingDays);
+    const fertilityVerificationDate = addDaysToDate(eggsLaidDateObj, fertilityDays);
+    const hatchingDate = addDaysToDate(eggsLaidDateObj, incubationDays);
+    const ringAddingDate = addDaysToDate(eggsLaidDateObj, addRingAfterDays);
+
+
+    const task=new Task({eggId: egg._id,fertilityDate:fertilityVerificationDate,hatchingDate:hatchingDate,birdRecordDate:ringAddingDate,earlyFeedingDate:earlyFeedingDate, eggLaidDate:eggsLaidDateObj, clutchNumber:clutchNumber, coupleId:coupleId, cageNumber:cageNumber,user:user, farm:farm});
+    await task.save()
     return res.status(200).json(egg);
   } catch (err) {
     next(err);
