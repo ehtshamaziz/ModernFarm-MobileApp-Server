@@ -30,7 +30,7 @@ const GetUserTreatment = async (req, res, next) => {
     .populate("diseaseSelection","diseaseName")
     .populate("farm","farmName farmType")
     .populate("medicineSelection", "name")
-    .populate("bird","birdName")
+    .populate("bird","birdId")
     .populate("couple","coupleId")
     
     return res.status(200).send(treatment);

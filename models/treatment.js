@@ -6,8 +6,8 @@ const treatmentSchema = new mongoose.Schema({
   farm: { type: mongoose.Schema.Types.ObjectId, ref: "Farm", required: true },
   diseaseSelection:{type:mongoose.Schema.Types.ObjectId,ref:"Disease"},
   medicineSelection:{type:mongoose.Schema.Types.ObjectId,ref:"Product"},
-  bird:{type:mongoose.Schema.Types.ObjectId,ref:"Bird"},
-  couple:{type:mongoose.Schema.Types.ObjectId,ref:"Couple"},
+  bird:[{type:mongoose.Schema.Types.ObjectId,ref:"Bird"}],
+  couple:[{type:mongoose.Schema.Types.ObjectId,ref:"Couple"}],
 
   treatmentName:{type: String, required: true},
   medicineRecipe:{type:String},
