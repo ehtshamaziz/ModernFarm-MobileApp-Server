@@ -1,7 +1,14 @@
 const Treatment = require("../models/treatment");
+const Task=require("../models/tasks");
+const User=require("../models/user");
+const Worker=require("../models/workers")
 
-Treatment
-// GET ALL TREATMENT
+
+
+var admin = require('firebase-admin');
+
+
+// GET ALL TREATMENT           
 const GetTreatment = async (req, res, next) => {
   console.log("Get all Treatment");
   try {
@@ -39,16 +46,85 @@ const GetUserTreatment = async (req, res, next) => {
   }
 };
 
+
+
 // CREATE NEW TREATMENT
 const CreateTreatment = async (req, res, next) => {
-  const treatment = new Treatment(req.body);
+ 
   try {
-    await treatment.save();
+   const treatment =  new Treatment(req.body);
+   await treatment.save();     
+
+
+  if(treatment.couple && treatment.couple.length){
+    await Promise.all(treatment.couple.map(async (element)=>{
+
+    
+    const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm});
+    await task.save();
+    await sendMessage(task)
+    }))
+  }
+  if(treatment.bird && treatment.bird.length){
+      await Promise.all(treatment.bird.map(async(element)=>{
+   
+    const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm});
+   await task.save();
+        await sendMessage(task)
+    })
+      )
+  }
+
+    // await treatment.save();
     return res.status(200).json(treatment);
   } catch (err) {
     next(err);
   }
 };
+
+
+
+async function getTokensFromDatastore(userId) {
+  try {
+    // Assuming your DeviceToken fmodel has a `userId` field
+    const tokensData = await User.find({ _id: userId }).exec();
+    const tokens = tokensData.map(tokenDoc => tokenDoc.token);
+    console.log(tokens)
+    return tokens;
+  } catch (error) {
+    console.error('Failed to fetch tokens from datastore:', error);
+    throw error; // Rethrow the error to handle it in the calling context
+  }
+}
+
+   async function sendMessage(task) {
+  // Fetch workers who are eligible for fertilityTest notifications
+  const workers = await Worker.find({
+    farm: task.farm,
+    $or:[
+      {    'notificationRights.medicine': true
+},
+    ]
+  }).exec(); // Make sure to await the query
+
+  console.log("ssssssssdddddfffff")
+  console.log(workers)
+  // For each worker, fetch their device token and send a notification
+  for (const worker of workers) {
+    const tokens = await getTokensFromDatastore(worker._id); // Assuming worker.userId exists and corresponds to userId in Device
+
+    console.log("Tokensss");
+    console.log(tokens)
+    if (tokens.length > 0) {
+      console.log("Sending message to", worker._id);
+      const response = await admin.messaging().sendMulticast({
+        tokens, // Array of device tokens
+        data: { hello: 'world!' }, // Your data payload
+      });
+      console.log(response); // Log the response from sending the message
+    }
+  }
+}
 
 
 // UPDATE TREATMENT

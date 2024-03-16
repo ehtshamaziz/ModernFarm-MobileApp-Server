@@ -20,6 +20,8 @@ const eggRoutes=require('./routes/egg-routes.js');
 const diseaseRoutes=require('./routes/disease-route.js');
 const treatmentRoutes=require('./routes/treatment-routes.js')
 const taskRoutes=require("./routes/tasks-routes.js");
+const nutritionRoutes=require("./routes/nutrition-routes.js");
+const workerRoutes=require("./routes/worker-routes.js");
 const app = express();
 
 // CONFIGURE CLOUDINARY
@@ -55,6 +57,23 @@ app.use("/egg",eggRoutes);
 app.use("/disease", diseaseRoutes);
 app.use("/treatment",treatmentRoutes);
 app.use("/task",taskRoutes)
+app.use("/nutrition",nutritionRoutes);
+app.use("/worker",workerRoutes);
+
+    var admin = require('firebase-admin');
+
+    const fs = require('fs');
+    const path = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+    const serviceAccount = JSON.parse(fs.readFileSync(path, 'utf8'));
+
+  // ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT) 
+  // : require('./path/to/serviceAccountKey.json'); // Fallback for local development
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  // databaseURL: 'https://<DATABASE_NAME>.firebaseio.com',
+});
+
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Success" });

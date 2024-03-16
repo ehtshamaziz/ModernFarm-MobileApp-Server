@@ -11,7 +11,7 @@ var birdSchema = new mongoose.Schema({
     ref: "Specie",
     required: true,
   },
-  // eggID:{type :String},
+  eggID:{ type: mongoose.Schema.Types.ObjectId, ref: "Egg" },
   birdRace: { type: String },
   gender: { type: String, required: true },
   cageNumber: { type: String, required: true },
