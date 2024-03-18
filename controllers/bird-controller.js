@@ -85,9 +85,12 @@ const AddBirds = async (req, res, next) => {
     try{
       console.log(req.body.eggID);
       await Egg.findByIdAndUpdate(req.body.eggID,{$set:{birdID:bird._id}},{ new: true })
-     const task=new Task({eggBirdId: bird._id,user:bird.user,farm:bird.farm});
+     const task=new Task({eggBirdId: bird._id,user:bird.user,farm:bird.farm,taskType:'birdRecord'});
+     const task2=new Task({eggBirdId: bird._id,user:bird.user,farm:bird.farm,taskType:'earlyFeeding'});
      await task.save();
+     await task2.save();
      await sendMessage(task);
+     await sendMessage(task2);
 
 
     } catch (error) {

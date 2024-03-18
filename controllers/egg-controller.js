@@ -114,11 +114,14 @@ const AddEggs = async (req, res, next) => {
       select:"coupleId specie cageNumber user farm",
   });
 
-     const task=new Task({eggId: egg._id,user:clutches.couple.user,farm:clutches.couple.farm});
+     const task=new Task({eggId: egg._id,user:clutches.couple.user,farm:clutches.couple.farm,taskType:'fertility'});
+    const task2=new Task({eggId: egg._id,user:clutches.couple.user,farm:clutches.couple.farm,taskType:'hatching'});
      await task.save();
-
+     await task2.save();
 
        await sendMessage(task);
+       await sendMessage(task2);
+
       //  await sendMessage(task);
 
       //  const workers=Worker({});

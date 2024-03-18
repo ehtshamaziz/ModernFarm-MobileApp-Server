@@ -59,20 +59,44 @@ app.use("/treatment",treatmentRoutes);
 app.use("/task",taskRoutes)
 app.use("/nutrition",nutritionRoutes);
 app.use("/worker",workerRoutes);
+const axios = require('axios');
 
     var admin = require('firebase-admin');
 
-    const fs = require('fs');
-    const path = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
-    const serviceAccount = JSON.parse(fs.readFileSync(path, 'utf8'));
+//     const fs = require('fs');
+//     const path = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+//     // const serviceAccount = JSON.parse(fs.readFileSync(path, 'utf8'));
 
-  // ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT) 
-  // : require('./path/to/serviceAccountKey.json'); // Fallback for local development
+//   // ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT) 
+//   // : require('./path/to/serviceAccountKey.json'); // Fallback for local development
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  // databaseURL: 'https://<DATABASE_NAME>.firebaseio.com',
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert(path),
+//   // databaseURL: 'https://<DATABASE_NAME>.firebaseio.com',
+// });
+
+
+const initializeFirebaseAdmin = async () => {
+    try {
+        const serviceAccountUrl = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+
+        // Fetch the service account JSON from the URL
+        const response = await axios.get(serviceAccountUrl);
+        const serviceAccount = response.data;
+
+        // Initialize Firebase Admin SDK with the fetched credentials
+        admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount)
+            // databaseURL: 'https://<DATABASE_NAME>.firebaseio.com',
+        });
+
+        console.log('Firebase Admin initialized successfully.');
+    } catch (error) {
+        console.error('Error initializing Firebase Admin:', error);
+    }
+};
+
+initializeFirebaseAdmin();
 
 
 app.get("/", (req, res) => {

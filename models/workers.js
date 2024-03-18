@@ -26,7 +26,7 @@ const workersSchema = new mongoose.Schema({
     myCouples: { type: Boolean, default: false },
     nutrition: { type: Boolean, default: false },
     medicalCare: { type: Boolean, default: false },
-    tasks: { type: Boolean, default: false },
+    tasks: { type: Boolean, default: true },
     myWorkers: { type: Boolean, default: false },
     incomeExpenses: { type: Boolean, default: false },
     archives: { type: Boolean, default: false },

@@ -188,6 +188,9 @@ for (let task of tasks) {
     }
   });
 
+  }else{
+      tasks = await Tasks.find({ user: req.params.id})
+
   }
     
     // if (req.query.hatching === 'true') {

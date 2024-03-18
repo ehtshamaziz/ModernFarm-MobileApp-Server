@@ -60,7 +60,7 @@ const CreateTreatment = async (req, res, next) => {
     await Promise.all(treatment.couple.map(async (element)=>{
 
     
-    const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm});
+    const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment'});
     await task.save();
     await sendMessage(task)
     }))
@@ -68,7 +68,7 @@ const CreateTreatment = async (req, res, next) => {
   if(treatment.bird && treatment.bird.length){
       await Promise.all(treatment.bird.map(async(element)=>{
    
-    const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm});
+    const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment'});
    await task.save();
         await sendMessage(task)
     })
