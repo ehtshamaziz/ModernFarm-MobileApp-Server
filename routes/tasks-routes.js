@@ -13,6 +13,8 @@ router.get("/single/:id", tasksController.GetTasksByID);
 // GET ALL TASKS FOR A SPECIFIC USER
 router.get("/user/:id", tasksController.GetUserTasks);
 
+router.get('/send/user/:id',tasksController.SendNotification);
+
 // CREATE NEW TASKS
 router.post("/", tasksController.CreateTasks);
 

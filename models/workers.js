@@ -36,6 +36,7 @@ const workersSchema = new mongoose.Schema({
     farmNotes: { type: Boolean, default: false },
     contacts: { type: Boolean, default: false },
     products: { type: Boolean, default: false },
+    settings: { type: Boolean, default: false }
   },
 //   otpVerification: {
 //     otp: { type: String },

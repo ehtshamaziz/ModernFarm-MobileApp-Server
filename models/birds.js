@@ -15,7 +15,7 @@ var birdSchema = new mongoose.Schema({
   birdRace: { type: String },
   gender: { type: String, required: true },
   cageNumber: { type: String, required: true },
-  ringNumber: { type: String, required: true },
+  ringNumber: { type: String},
   birthDate: { type: Number },
   exactBirthDate: { type: Date },
   status: { type: String },

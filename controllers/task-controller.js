@@ -37,7 +37,6 @@ const GetUserTasks = async (req, res, next) => {
     let tasks;
 
   if(req.query.birdTasks==='true'){
-    console.log("eggggggg taskkkkkss")
      tasks = await Tasks.find({ user: req.params.id ,
             eggBirdId: { $exists: true, $ne: null } // This condition checks for tasks where birdId exists and is not null.
 })
@@ -125,7 +124,7 @@ for (let task of tasks) {
 console.log(tasks);
 
 for (let task of tasks) {
-  console.log("a")
+ 
   // Initialize an array to hold populate options
   const populateOptions = [];
   
@@ -157,7 +156,6 @@ for (let task of tasks) {
 
 
   if (populateOptions.length > 0) {
-  console.log("Nutrition task222");
 
     await Tasks.populate(task, populateOptions);
     console.log(task);
@@ -191,6 +189,7 @@ for (let task of tasks) {
   }else{
       tasks = await Tasks.find({ user: req.params.id})
 
+
   }
     
     // if (req.query.hatching === 'true') {
@@ -202,6 +201,18 @@ for (let task of tasks) {
     next(err);
   }
 };
+
+const SendNotification=async (req,res,next)=>{
+    const tasks = new Tasks(req.body);
+
+  try{
+      tasks = await Tasks.find({ user: req.params.id})
+      await sendAllMessage(tasks);
+
+  }catch(error){
+    console.log(error)
+  }
+}
 
 // CREATE NEW TASKS
 const CreateTasks = async (req, res, next) => {
@@ -240,6 +251,39 @@ async function getTokensFromDatastore(userId) {
   } catch (error) {
     console.error('Failed to fetch tokens from datastore:', error);
     throw error; // Rethrow the error to handle it in the calling context
+  }
+}
+
+
+   async function sendAllMessage(task) {
+  // Fetch workers who are eligible for fertilityTest notifications
+  const workers = await Worker.find({
+    farm: task.farm,
+    $or:[
+      {    'notificationRights.medicine': true,
+      'notificationRights.fertilityTest': true,
+      'notificationRights.hatching': true,
+      'notificationRights.externalFeeding': true,
+      'notificationRights.ringNumber': true,
+      'notificationRights.nutrition': true
+},
+    ]
+  }).exec(); // Make sure to await the query
+
+  // For each worker, fetch their device token and send a notification
+  for (const worker of workers) {
+    const tokens = await getTokensFromDatastore(worker._id); // Assuming worker.userId exists and corresponds to userId in Device
+
+    console.log("Tokensss");
+    console.log(tokens)
+    if (tokens.length > 0) {
+      console.log("Sending message to", worker._id);
+      const response = await admin.messaging().sendMulticast({
+        tokens, // Array of device tokens
+        data: { hello: 'world!' }, // Your data payload
+      });
+      console.log(response); // Log the response from sending the message
+    }
   }
 }
 
@@ -291,6 +335,7 @@ module.exports={
     GetTasks,
     GetTasksByID,
     GetUserTasks,
+    SendNotification,
     CreateTasks,
     UpdateTasks,
     DeleteTasks
