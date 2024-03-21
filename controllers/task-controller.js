@@ -42,14 +42,15 @@ const GetUserTasks = async (req, res, next) => {
 })
     .populate({
     path: "eggBirdId",
-    select: "birdId birdSpecie eggID cageNumber",
-    populate:{
+    select: "birdId birdSpecie birdName eggID cageNumber farm birdId gender birthDate exactBirthDate status source price imageURL couple ringNumber ",
+     populate: [
+    {
       path: "eggID",
       select: "clutch eggNumber eggsLaidDate",
-    populate: {
-      path: "clutch",
-      select: "couple clutchNumber",
       populate: {
+        path: "clutch",
+        select: "couple clutchNumber",
+        populate: {
         path: "couple",
         select: "coupleId specie",
         populate: {
@@ -57,8 +58,41 @@ const GetUserTasks = async (req, res, next) => {
           select: "addRingAfter incubation addRingAfter startFeedingAfter"
         }
       }
+      }
+    },
+    {
+      path: "farm", 
+      select: "farmName _id farmType" 
+    },
+       {
+      path: "birdSpecie", 
+      select: "_id name specieType" 
+    },
+      {
+      path: "couple", 
+      select: "_id coupleId" 
     }
-    }
+  ]
+    // populate:{
+    //   path: "eggID",
+    //   select: "clutch eggNumber eggsLaidDate",
+    // populate: {
+    //   path: "clutch",
+    //   select: "couple clutchNumber",
+    //   populate: {
+    //     path: "couple",
+    //     select: "coupleId specie",
+    //     populate: {
+    //       path: "specie",
+    //       select: "addRingAfter incubation addRingAfter startFeedingAfter"
+    //     }
+    //   }
+    // }
+    // }
+  })
+  .populate({
+    path: "eggBirdId.farm",
+    select: "_id farmType farmName"
   });
   console.log(tasks)
   }
@@ -260,7 +294,7 @@ async function getTokensFromDatastore(userId) {
   const workers = await Worker.find({
     farm: task.farm,
     $or:[
-      {    'notificationRights.medicine': true,
+      {'notificationRights.medicine': true,
       'notificationRights.fertilityTest': true,
       'notificationRights.hatching': true,
       'notificationRights.externalFeeding': true,
