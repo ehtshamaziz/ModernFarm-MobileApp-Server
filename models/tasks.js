@@ -10,9 +10,9 @@ const TaskSchema= new mongoose.Schema({
     eggBirdId:{type:mongoose.Schema.Types.ObjectId,ref:"Bird"},
     action:{type:Boolean, default:false},
     treatmentId:{type:mongoose.Schema.Types.ObjectId,ref:"Treatment"},
+    treatmentDate:{type:Date},
     nutritionId:{type:mongoose.Schema.Types.ObjectId,ref:"Nutrition"},
     taskType:{type:String, required:true}
-    // fertilityDate:{type:Date},
     // hatchingDate:{type:Date},
     // birdRecordDate:{type:Date},
     // earlyFeedingDate:{type:Date},

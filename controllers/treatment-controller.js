@@ -58,19 +58,51 @@ const CreateTreatment = async (req, res, next) => {
 
   if(treatment.couple && treatment.couple.length){
     await Promise.all(treatment.couple.map(async (element)=>{
+      
+  for(let p=1; p<=treatment.treatmentRecurrancePeriod;p++){
+              const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',treatmentDate:treatment.treatmentStartDate});
+              await task.save();
+              await sendMessage(task)
+          }
+        let treatmentStartDate = new Date(treatment.treatmentStartDate);
 
-    
-    const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment'});
-    await task.save();
-    await sendMessage(task)
+        for(let i=1; i<=treatment.durationOfTreatment;i++){
+          treatmentStartDate.setDate(treatmentStartDate.getDate() + 1);
+          for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
+              const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',treatmentDate:treatmentStartDate});
+              await task.save();
+              await sendMessage(task)
+              treatment.treatmentStartDate = treatmentStartDate;
+              await treatment.save();
+          }
+
+        }
     }))
   }
   if(treatment.bird && treatment.bird.length){
       await Promise.all(treatment.bird.map(async(element)=>{
+       
+        for(let p=1; p<=treatment.treatmentRecurrancePeriod;p++){
+              const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',treatmentDate:treatment.treatmentStartDate});
+              await task.save();
+              await sendMessage(task)
+          }
+        let treatmentStartDate = new Date(treatment.treatmentStartDate);
+
+        for(let i=1; i<=treatment.durationOfTreatment;i++){
+          treatmentStartDate.setDate(treatmentStartDate.getDate() + 1);
+          for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
+              const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',treatmentDate:treatmentStartDate});
+              await task.save();
+              await sendMessage(task)
+              treatment.treatmentStartDate = treatmentStartDate;
+              await treatment.save();
+          }
+
+        }
+
    
-    const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment'});
-   await task.save();
-        await sendMessage(task)
+
     })
       )
   }
