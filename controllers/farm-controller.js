@@ -12,7 +12,8 @@ const Farm = require("../models/farm");
 const GetFarms = async (req, res, next) => {
   console.log("Get all farms");
   try {
-    const farm = await Farm.find();
+    const farm = await Farm.find()
+    .populate("user")
     return res.status(200).send(farm);
   } catch (err) {
     next(err);
