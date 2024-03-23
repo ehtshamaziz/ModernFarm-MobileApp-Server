@@ -13,7 +13,10 @@ const GetFarms = async (req, res, next) => {
   console.log("Get all farms");
   try {
     const farm = await Farm.find()
-    .populate("user")
+    .populate({
+      path:"user",
+      select:"email firstName familyName imageURL _id"
+    })
     return res.status(200).send(farm);
   } catch (err) {
     next(err);
@@ -54,10 +57,15 @@ const CreateFarm = async (req, res, next) => {
 
 // UPDATE FARM
 const UpdateFarm = async (req, res, next) => {
+  console.log("bodyyyy")
+  console.log(req.body)
+  console.log(req.params.id)
+
   try {
     const farm = await Farm.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+
     return res.status(200).json(farm);
   } catch (err) {
     next(err);
