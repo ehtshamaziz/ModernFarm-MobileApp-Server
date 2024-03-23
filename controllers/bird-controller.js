@@ -13,7 +13,20 @@ const Worker=require("../models/workers");
 const GetBirds = async (req, res, next) => {
   console.log("Get all birds");
   try {
-    const bird = await Bird.find();
+    const bird = await Bird.find()
+  .populate({
+    path: 'farm',
+    select: 'farmName farmType'
+  })
+  .populate({
+    path: 'birdOwner',
+    select: 'firstName lastName'
+  })
+  .populate({
+    path: 'birdSpecie',
+    select: 'name'
+  });
+
     return res.status(200).send(bird);
   } catch (err) {
     next(err);
