@@ -8,7 +8,7 @@ couple:[{type:mongoose.Schema.Types.ObjectId, ref:"Couple"}],
 mealType:{type:String},
 mealDescription:{type:String},
 quantity:{type:Number},
-Date:{ type: Date, default: Date.now}
+nutritionDate:{ type: Date, default: Date.now}
 
 })
 

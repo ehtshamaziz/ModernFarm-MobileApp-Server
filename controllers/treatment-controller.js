@@ -165,6 +165,14 @@ const UpdateTreatment = async (req, res, next) => {
     const treatment = await Treatment.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    await treatment.save();
+    const task =await Task.updateMany(
+      {treatmentId:treatment._id},
+      { $set:{ treatmentDate:treatment.treatmentStartDate}}
+      );
+
+    await task.save();
+
     return res.status(200).json(treatment);
   } catch (err) {
     next(err);
@@ -175,6 +183,10 @@ const UpdateTreatment = async (req, res, next) => {
 const DeleteTreatment = async (req, res, next) => {
   try {
     const treatment = await Treatment.findByIdAndDelete(req.params.id);
+     await Task.deleteMany({
+      treatmentId: req.params.id
+
+    });
     return res.status(200).json(treatment);
   } catch (err) {
     next(err);

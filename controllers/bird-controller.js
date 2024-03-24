@@ -222,6 +222,10 @@ const UpdateBird = async (req, res, next) => {
 const DeleteBird = async (req, res, next) => {
   try {
     const bird = await Bird.findByIdAndDelete(req.params.id);
+    await Task.deleteMany({
+      eggBirdId: req.params.id
+    });
+    
     return res.status(200).json(bird);
   } catch (err) {
     next(err);
