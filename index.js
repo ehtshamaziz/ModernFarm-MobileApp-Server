@@ -49,7 +49,7 @@ app.use("/user", userRoutes);
 app.use("/farm", farmRoutes);
 app.use("/product", productRoutes);
 app.use("/contact", contactRoutes);
-app.use("/species", specieRoutes);
+app.use("/specie", specieRoutes);
 app.use("/bird",birdRoutes);
 app.use("/couple",coupleRoutes);
 app.use("/clutch",clutchRoutes);
