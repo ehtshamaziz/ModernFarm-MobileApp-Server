@@ -34,6 +34,13 @@ const userSchema = new mongoose.Schema({
     farmNotes: { type: Boolean, default: true },
     contacts: { type: Boolean, default: true },
     products: { type: Boolean, default: true },
+
+    fertilityTask: { type: Boolean, default: true },
+    hatchingTask: { type: Boolean, default: true },
+    birdRecordTask: { type: Boolean, default: true },
+    earlyFeedingTask: { type: Boolean, default: true },
+    nutritionTask: { type: Boolean, default: true },
+    medicalCareTask: { type: Boolean, default: true },
   },
   otpVerification: {
     otp: { type: String },

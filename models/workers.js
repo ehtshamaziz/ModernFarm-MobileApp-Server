@@ -36,7 +36,14 @@ const workersSchema = new mongoose.Schema({
     farmNotes: { type: Boolean, default: false },
     contacts: { type: Boolean, default: false },
     products: { type: Boolean, default: false },
-    settings: { type: Boolean, default: false }
+    settings: { type: Boolean, default: false },
+
+    fertilityTask: { type: Boolean, default: false },
+    hatchingTask: { type: Boolean, default: false },
+    birdRecordTask: { type: Boolean, default: false },
+    earlyFeedingTask: { type: Boolean, default: false },
+    nutritionTask: { type: Boolean, default: false },
+    medicalCareTask: { type: Boolean, default: false },
   },
 //   otpVerification: {
 //     otp: { type: String },

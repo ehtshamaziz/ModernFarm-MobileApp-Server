@@ -6,8 +6,33 @@ const Bird = require("../models/birds");
 const GetCouples = async (req, res, next) => {
   console.log("Get all couples");
   try {
-    const couple = await Couple.find();
-    return res.status(200).send(couple);
+    const couple = await Couple.find()
+     .populate(
+        "femaleBird",
+        "_id birdName birdId gender price birdSpecie imageURL"
+      )
+      .populate(
+        "maleBird",
+        "_id birdName birdId gender price birdSpecie imageURL"
+      )
+      
+      let couplesWithClutches = (await Promise.all(
+      couple.map(async (couple) => {
+      const clutchesCount = await Clutch.countDocuments({
+      couple: couple._id,
+      });
+      console.log(clutchesCount);
+
+      return { ...couple.toObject(), clutches: clutchesCount };
+       })
+       ))
+
+      if (req.query.filterClutches === 'true') {
+      couplesWithClutches = couplesWithClutches.filter(coupleWithClutch => coupleWithClutch.clutches > 0);
+    }
+    
+    console.log(couplesWithClutches)
+    return res.status(200).send(couplesWithClutches);
   } catch (err) {
     next(err);
   }
