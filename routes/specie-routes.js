@@ -7,7 +7,7 @@ router.post("/",speciesController.PostSpecie);
 
 
 // Patch Species
-router.patch("/",speciesController.UpdateSpecie);
+router.patch("/:id",speciesController.UpdateSpecie);
 
 
 // Get Species
