@@ -17,6 +17,21 @@ const sendOTPVerification = async (user, res) => {
   });
 };
 
+const sendWorkerOTPVerification = async (user, res) => {
+  const otp = await generateOTP();
+  user.otpVerification = {
+    otp: otp.hashedOTP,
+  };
+
+  await sendOTP(user.email, otp.otp);
+  await user.save();
+
+  return res.status(200).json({
+    message: `OTP has been sent successfully`,
+    userId: user._id,
+  });
+};
+
 const sendResetOTP = async (user, res) => {
   const otp = await generateOTP();
   user.reset = {
@@ -50,4 +65,5 @@ module.exports = {
   sendOTPVerification,
   generateOTP,
   sendResetOTP,
+  sendWorkerOTPVerification
 };

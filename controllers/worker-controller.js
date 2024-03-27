@@ -1,4 +1,8 @@
+const workers = require('../models/workers');
 const Worker=require('../models/workers')
+const { sendWorkerOTPVerification, sendResetOTP } = require("../utils/otp");
+const bcrypt = require("bcrypt");
+
 
 // GET ALL WORKERS
 const GetWorkers = async (req, res, next) => {
@@ -42,12 +46,48 @@ const GetUserWorkers = async (req, res, next) => {
 const CreateWorkers = async (req, res, next) => {
   const workers = new Worker(req.body);
   try {
-    await workers.save();
-    return res.status(200).json(workers);
+    sendWorkerOTPVerification(workers, res);
+
+    // return res.status(200).json(workers);
+
   } catch (err) {
     next(err);
   }
 };
+
+const VerifyWorker = async (req, res, next) => {
+  try {
+    let { email, otp } = req.body;
+    if (!email || !otp) {
+      throw new Error("Empty OTP or User Details.");
+    } else {
+      const user = await Worker.findOne({email:email});
+    console.log(user)
+    user.otpVerified=true;
+    await user.save()
+    console.log("userssss")
+      if (!user.otpVerification || !user.otpVerification.otp) {
+        throw new Error("No OTP Details. Please try again.");
+      } else {
+        const hashedOTP = user.otpVerification.otp;
+
+   
+          const validOTP = await bcrypt.compare(otp, hashedOTP);
+          if (!validOTP) {
+            throw new Error("Invalid OTP.");
+          } else {
+
+            req.user = user;
+            res.status(200).json(user);
+          }
+        
+      }
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 // UPDATE WORKERS
 const UpdateWorkers = async (req, res, next) => {
@@ -100,6 +140,16 @@ const LoginWorker = async (req, res, next) => {
   const { email, password,token } = req.body;
 
   try {
+    const worker = await Worker.findOne(
+      {
+        email:email,
+        otpVerified:false
+    }
+    )
+    if(worker){
+      return res.status(201).json({message:"OTP not verified"})
+    }
+
     const user = await Worker.findOneAndUpdate(
     {email: email }, // query to find the user by email
     { $set: { token: token } }, // update operation to set the token
@@ -131,6 +181,7 @@ const LoginWorker = async (req, res, next) => {
 module.exports={
     LoginWorker,
     GetWorkers,
+    VerifyWorker,
     GetWorkersByID,
     GetUserWorkers,
     CreateWorkers,

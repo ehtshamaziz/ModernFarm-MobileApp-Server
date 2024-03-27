@@ -45,10 +45,12 @@ const workersSchema = new mongoose.Schema({
     nutritionTask: { type: Boolean, default: false },
     medicalCareTask: { type: Boolean, default: false },
   },
-//   otpVerification: {
-//     otp: { type: String },
-//     expiresAt: { type: Date },
-//   },
+  otpVerification: {
+    otp: { type: String },
+    expiresAt: { type: Date },
+  },
+  otpVerified:{type:Boolean, default:false},
+
 //   reset: {
 //     otp: { type: String },
 //     expiresAt: { type: Date },

@@ -17,6 +17,10 @@ router.get("/user/:id", workersController.GetUserWorkers);
 // CREATE NEW FARM
 router.post("/", workersController.CreateWorkers);
 
+
+router.post("/verify", workersController.VerifyWorker);
+
+
 // UPDATE FARM BY ID
 router.patch("/:id", workersController.UpdateWorkers);
 
