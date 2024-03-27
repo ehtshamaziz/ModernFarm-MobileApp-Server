@@ -8,7 +8,16 @@ const bcrypt = require("bcrypt");
 const GetWorkers = async (req, res, next) => {
   console.log("Get all workers");
   try {
-    const workers = await Worker.find();
+    const workers = await Worker.find()
+    .populate({
+      path:"farm",
+      select:"farmName user",
+      populate:{
+        path:"user",
+        select:"firstName lastName"
+      }
+
+    });
     return res.status(200).send(workers);
   } catch (err) {
     next(err);
