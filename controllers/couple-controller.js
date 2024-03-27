@@ -15,6 +15,7 @@ const GetCouples = async (req, res, next) => {
         "maleBird",
         "_id birdName birdId gender price birdSpecie imageURL"
       )
+      .populate("specie")
       
       let couplesWithClutches = (await Promise.all(
       couple.map(async (couple) => {
