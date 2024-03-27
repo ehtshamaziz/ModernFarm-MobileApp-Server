@@ -5,6 +5,11 @@ const router=express.Router();
 // Post Species
 router.post("/",speciesController.PostSpecie);
 
+
+// Patch Species
+router.patch("/",speciesController.UpdateSpecie);
+
+
 // Get Species
 router.get("/",speciesController.GetSpecies);
 

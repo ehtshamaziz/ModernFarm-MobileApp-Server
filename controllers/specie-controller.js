@@ -11,6 +11,19 @@ const PostSpecie = async (req, res, next) => {
   }
 };
 
+
+const UpdateSpecie=async (req,res,next)=>{
+try{
+  const specie=await Specie.findByIdAndUpdate(req.params.id, req.body ,{new:true});
+  return res.status(200).json(specie);
+  
+}catch(e){
+  next(e)
+}
+
+}
+
+
 const GetSpecies = async (req, res, next) => {
   console.log("Get all approved species");
   try {
@@ -34,5 +47,6 @@ const DeleteSpecie =async (req,res, next)=>{
 module.exports = {
   PostSpecie,
   GetSpecies,
+  UpdateSpecie,
   DeleteSpecie,
 };

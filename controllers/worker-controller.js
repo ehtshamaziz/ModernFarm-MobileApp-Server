@@ -147,7 +147,8 @@ const DeleteWorkers = async (req, res, next) => {
 const LoginWorker = async (req, res, next) => {
   console.log("Workerss")
   const { email, password,token } = req.body;
-
+  console.log(token);
+  
   try {
     const worker = await Worker.findOne(
       {

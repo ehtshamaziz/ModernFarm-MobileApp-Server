@@ -282,8 +282,9 @@ const UpdateTasks = async (req, res, next) => {
 async function getTokensFromDatastore(userId) {
   try {
     // Assuming your DeviceToken fmodel has a `userId` field
-    const tokensData = await User.find({ _id: userId }).exec();
+    const tokensData = await Worker.find({ _id: userId }).exec();
     const tokens = tokensData.map(tokenDoc => tokenDoc.token);
+    console.log("kkkkkkkkkkkkkkkkkkkkk")
     console.log(tokens)
     return tokens;
   } catch (error) {
@@ -294,20 +295,24 @@ async function getTokensFromDatastore(userId) {
 
 
    async function sendAllMessage(task) {
-  // Fetch workers who are eligible for fertilityTest notifications
-  const workers = await Worker.find({
-    farm: task.farm,
-    $or:[
-      {'notificationRights.medicine': true,
-      'notificationRights.fertilityTest': true,
-      'notificationRights.hatching': true,
-      'notificationRights.externalFeeding': true,
-      'notificationRights.ringNumber': true,
-      'notificationRights.nutrition': true
-},
-    ]
-  }).exec(); // Make sure to await the query
 
+    console.log(task[0].farm)
+    // console.log(task)
+    console.log("ppppppppppppp")
+
+  const workers = await Worker.find({
+    farm: task[0].farm,
+    $or:[
+      {'notificationRights.medicine': true},
+      {'notificationRights.fertilityTest': true},
+      {'notificationRights.hatching': true},
+      {'notificationRights.externalFeeding': true},
+      {'notificationRights.ringNumber': true},
+      {'notificationRights.nutrition': true},
+    ]
+  }); // Make sure to await the query
+
+  console.log("lkkkkk")
   console.log(workers);
   // For each worker, fetch their device token and send a notification
   for (const worker of workers) {

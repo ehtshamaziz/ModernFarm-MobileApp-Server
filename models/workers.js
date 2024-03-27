@@ -67,7 +67,9 @@ const workersSchema = new mongoose.Schema({
     medicine:{type:Boolean, default:false},
     nutrition:{type:Boolean, default:false},
 
-  }
+  },
+      token: { type: String, required: true },
+
 });
 
 module.exports = mongoose.model("Workers", workersSchema);
