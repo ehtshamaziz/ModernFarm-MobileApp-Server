@@ -21,7 +21,18 @@ const GetSpecies = async (req, res, next) => {
   }
 };
 
+const DeleteSpecie =async (req,res, next)=>{
+  try{
+    const species= await Specie.deleteOne(req.params.id);
+    return res.status(200).json(species)
+
+  }catch(error){
+    next(error)
+  }
+}
+
 module.exports = {
   PostSpecie,
   GetSpecies,
+  DeleteSpecie,
 };

@@ -8,4 +8,7 @@ router.post("/",speciesController.PostSpecie);
 // Get Species
 router.get("/",speciesController.GetSpecies);
 
+
+router.delete("/",speciesController.DeleteSpecie);
+
 module.exports=router;

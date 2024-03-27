@@ -43,6 +43,7 @@ const GetUserProducts = async (req, res, next) => {
 // CREATE NEW PRODUCT
 const CreateProduct = async (req, res, next) => {
   const product = new Product(req.body);
+  console.log(req.body);
   try {
     await product.save();
     return res.status(200).json(product);
