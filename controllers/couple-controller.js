@@ -27,11 +27,11 @@ const GetCouples = async (req, res, next) => {
        })
        ))
 
-      if (req.query.filterClutches === 'true') {
-      couplesWithClutches = couplesWithClutches.filter(coupleWithClutch => coupleWithClutch.clutches > 0);
-    }
+    //   if (req.query.filterClutches === 'true') {
+    //   couplesWithClutches = couplesWithClutches.filter(coupleWithClutch => coupleWithClutch.clutches > 0);
+    // }
     
-    console.log(couplesWithClutches)
+    // console.log(couplesWithClutches)
     return res.status(200).send(couplesWithClutches);
   } catch (err) {
     next(err);

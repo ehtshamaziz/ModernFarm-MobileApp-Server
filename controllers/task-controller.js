@@ -237,10 +237,14 @@ for (let task of tasks) {
 };
 
 const SendNotification=async (req,res,next)=>{
-    const tasks = new Tasks(req.body);
+    
+  // const tasks = new Tasks(req.body);
+
+  console.log("helppp")
 
   try{
-      tasks = await Tasks.find({ user: req.params.id})
+     const tasks = await Tasks.find({ user: req.params.id, action:false})
+      console.log(tasks);
       await sendAllMessage(tasks);
 
   }catch(error){
@@ -304,6 +308,7 @@ async function getTokensFromDatastore(userId) {
     ]
   }).exec(); // Make sure to await the query
 
+  console.log(workers);
   // For each worker, fetch their device token and send a notification
   for (const worker of workers) {
     const tokens = await getTokensFromDatastore(worker._id); // Assuming worker.userId exists and corresponds to userId in Device
