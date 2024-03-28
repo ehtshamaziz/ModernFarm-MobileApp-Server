@@ -388,6 +388,7 @@ const SendAllTasks=async (req,res,next)=>{
   try{
 
     const task= await Tasks.find({taskType:req.query.param});
+    console.log(task)
     return res.status(200).json(task)
 
 
