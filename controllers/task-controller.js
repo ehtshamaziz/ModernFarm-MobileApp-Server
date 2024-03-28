@@ -374,10 +374,6 @@ async function getTokensFromDatastore(userId) {
   }
 }
 
-
-
-
-
 // DELETE TASKS
 const DeleteTasks = async (req, res, next) => {
   try {
@@ -388,6 +384,20 @@ const DeleteTasks = async (req, res, next) => {
   }
 };
 
+const SendAllTasks=async (req,res,next)=>{
+  try{
+
+    const task= await Tasks.find({taskType:req.query.param});
+    return res.status(200).json(task)
+
+
+  }catch(e){
+    next(e);
+  }
+
+}
+
+
 
 module.exports={
     GetTasks,
@@ -396,6 +406,7 @@ module.exports={
     SendNotification,
     CreateTasks,
     UpdateTasks,
-    DeleteTasks
+    DeleteTasks,
+   SendAllTasks
 
 }
