@@ -387,6 +387,7 @@ const DeleteTasks = async (req, res, next) => {
 const SendAllTasks=async (req,res,next)=>{
   try{
 
+    console.log(req.query.params);
     const task= await Tasks.find({taskType:req.query.param});
     console.log(task)
     return res.status(200).json(task)
