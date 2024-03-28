@@ -405,7 +405,7 @@ const SendAllTasks=async (req,res,next)=>{
         populate: {
         path: "couple",
         select: "coupleId maleBird femaleBird",
-       populate: [
+        populate: [
             {
               path: "femaleBird",
               select: "imageURL"
@@ -556,9 +556,19 @@ for (let task of tasks) {
       select: "incubationStartDate couple clutchNumber",
       populate: {
         path: "couple",
-        select: "coupleId cageNumber specie",
+        select: "coupleId cageNumber",
    
-      }
+      },
+      populate: [
+            {
+              path: "femaleBird",
+              select: "imageURL"
+            },
+            {
+              path: "maleBird",
+              select: "imageURL"
+            }
+          ]
     }
   });
     // console.log(req.query.params);
