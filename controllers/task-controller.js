@@ -404,11 +404,7 @@ const SendAllTasks=async (req,res,next)=>{
         select: "couple clutchNumber",
         populate: {
         path: "couple",
-        select: "coupleId specie",
-        populate: {
-          path: "specie",
-          select: "addRingAfter incubation addRingAfter startFeedingAfter"
-        }
+        select: "coupleId ",
       }
       }
     },
@@ -549,10 +545,7 @@ for (let task of tasks) {
       populate: {
         path: "couple",
         select: "coupleId cageNumber specie",
-        populate: {
-          path: "specie",
-          select: "fertilityDays incubation addRingAfter startFeedingAfter"
-        }
+   
       }
     }
   });
