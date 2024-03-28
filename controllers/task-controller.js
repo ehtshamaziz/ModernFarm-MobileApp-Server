@@ -243,9 +243,15 @@ const SendNotification=async (req,res,next)=>{
   console.log("helppp")
 
   try{
-     const tasks = await Tasks.find({ user: req.params.id, action:false})
+    const currentDate = new Date();
+    // currentDate.setHours(0, 0, 0, 0);
+     
+     const tasks = await Tasks.find({ user: req.params.id, action:false,taskDate: { $lte: currentDate }})
       console.log(tasks);
+      if(tasks.length>=0){
       await sendAllMessage(tasks);
+
+      }
 
   }catch(error){
     console.log(error)
@@ -294,41 +300,49 @@ async function getTokensFromDatastore(userId) {
 }
 
 
-   async function sendAllMessage(task) {
+   async function sendAllMessage(tasks) {
 
-    console.log(task[0].farm)
-    // console.log(task)
-    console.log("ppppppppppppp")
+      for (const task of tasks) {
+        console.log(task.farm);
 
-  const workers = await Worker.find({
-    farm: task[0].farm,
-    $or:[
-      {'notificationRights.medicine': true},
-      {'notificationRights.fertilityTest': true},
-      {'notificationRights.hatching': true},
-      {'notificationRights.externalFeeding': true},
-      {'notificationRights.ringNumber': true},
-      {'notificationRights.nutrition': true},
-    ]
-  }); // Make sure to await the query
+        const workers = await Worker.find({
+            farm: task.farm,
+            $or: [
+                {'notificationRights.medicine': true},
+                {'notificationRights.fertilityTest': true},
+                {'notificationRights.hatching': true},
+                {'notificationRights.externalFeeding': true},
+                {'notificationRights.ringNumber': true},
+                {'notificationRights.nutrition': true},
+            ]
+        });
 
-  console.log("lkkkkk")
-  console.log(workers);
-  // For each worker, fetch their device token and send a notification
-  for (const worker of workers) {
-    const tokens = await getTokensFromDatastore(worker._id); // Assuming worker.userId exists and corresponds to userId in Device
+        console.log("Workers found for task:", workers);
 
-    console.log("Tokensss");
-    console.log(tokens)
-    if (tokens.length > 0) {
-      console.log("Sending message to", worker._id);
-      const response = await admin.messaging().sendMulticast({
-        tokens, // Array of device tokens
-        data: { hello: 'world!' }, // Your data payload
-      });
-      console.log(response); // Log the response from sending the message
+        for (const worker of workers) {
+            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+
+            console.log("Tokens for worker", worker._id, tokens);
+
+            if (tokens.length > 0) {
+                console.log("Sending message for task", task._id, "to worker", worker._id);
+                 admin.messaging().sendMulticast({
+                    tokens, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`, 
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(response.successCount + ' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+            }
+        }
     }
-  }
 }
 
    async function sendMessage(task) {

@@ -51,7 +51,7 @@ const CreateNutritions = async (req, res, next) => {
     await Promise.all(nutrition.couple.map(async (element)=>{
 
 
-    const task=new Task({nutritionDate:nutrition.nutritionDate,nutritionId: nutrition._id,coupleId:element,user:nutrition.user,farm:nutrition.farm,taskType:'nutrition'});
+    const task=new Task({taskDate:nutrition.nutritionDate,nutritionId: nutrition._id,coupleId:element,user:nutrition.user,farm:nutrition.farm,taskType:'nutrition'});
     await task.save();
     sendMessage(task)
 
@@ -63,7 +63,7 @@ const CreateNutritions = async (req, res, next) => {
       console.log(nutrition.bird.length)
       console.log("birdssssssssss nutrition")
 
-    const task=new Task({nutritionDate:nutrition.nutritionDate,nutritionId: nutrition._id,birdId:element,user:nutrition.user,farm:nutrition.farm,taskType:'nutrition'});
+    const task=new Task({taskDate:nutrition.nutritionDate,nutritionId: nutrition._id,birdId:element,user:nutrition.user,farm:nutrition.farm,taskType:'nutrition'});
     await task.save();
     sendMessage(task)
 

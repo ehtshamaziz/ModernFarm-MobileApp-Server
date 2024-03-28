@@ -114,8 +114,31 @@ const AddEggs = async (req, res, next) => {
       select:"coupleId specie cageNumber user farm",
   });
 
-     const task=new Task({eggId: egg._id,user:clutches.couple.user,farm:clutches.couple.farm,taskType:'fertility'});
-    const task2=new Task({eggId: egg._id,user:clutches.couple.user,farm:clutches.couple.farm,taskType:'hatching'});
+  const eggs = await Egg.findById(egg._id)
+  .populate({
+    path: 'clutch', 
+    select: 'couple', 
+    populate: {
+      path: 'couple', 
+      select: 'specie user farm', 
+      populate: {
+        path: 'specie',
+        select: 'fertilityDays incubation' 
+      }
+    }
+  });
+   const fertilityDate = new Date(eggs?.eggsLaidDate);
+   const fertilityDays = eggs.clutch.couple.specie.fertilityDays;
+   fertilityDate.setDate(fertilityDate.getDate() + fertilityDays);
+
+   const hatchingDate = new Date(eggs?.eggsLaidDate);
+   const incubationDays = eggs.clutch.couple.specie.incubation;
+   hatchingDate.setDate(hatchingDate.getDate() + incubationDays);
+
+
+
+     const task=new Task({eggId: egg._id,user:clutches.couple.user,farm:clutches.couple.farm,taskType:'fertility',taskDate:fertilityDate});
+    const task2=new Task({eggId: egg._id,user:clutches.couple.user,farm:clutches.couple.farm,taskType:'hatching', taskDate:hatchingDate});
      await task.save();
      await task2.save();
 
