@@ -388,7 +388,7 @@ const SendAllTasks=async (req,res,next)=>{
   try{
     let tasks;
 
-    if(req.query.params==='birdRecord'|| 'earlyFeeding'){
+    if(req.query.params==='birdRecord' || req.query.params === 'earlyFeeding'){
      tasks = await Tasks.find({ 
             eggBirdId: { $exists: true, $ne: null } 
 })
@@ -536,7 +536,7 @@ for (let task of tasks) {
 
   }
   
-  else  if(req.query.params==='hatching'||'fertility'){
+  else if(req.query.params==='hatching' || req.query.params ==='fertility'){
      tasks = await Tasks.find({ 
               $or: [
       { eggId: { $exists: true, $ne: null } }],} )
