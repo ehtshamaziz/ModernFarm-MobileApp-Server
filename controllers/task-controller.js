@@ -290,7 +290,6 @@ async function getTokensFromDatastore(userId) {
     // Assuming your DeviceToken fmodel has a `userId` field
     const tokensData = await Worker.find({ _id: userId }).exec();
     const tokens = tokensData.map(tokenDoc => tokenDoc.token);
-    console.log("kkkkkkkkkkkkkkkkkkkkk")
     console.log(tokens)
     return tokens;
   } catch (error) {
@@ -331,6 +330,7 @@ async function getTokensFromDatastore(userId) {
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
+                        type:`${task.taskType}`
                         // Example of including task-specific data
                     },
                 })
@@ -345,32 +345,39 @@ async function getTokensFromDatastore(userId) {
     }
 }
 
+
+
    async function sendMessage(task) {
   // Fetch workers who are eligible for fertilityTest notifications
-  const workers = await Worker.find({
-    farm: task.farm,
-    $or:[
-      {    'notificationRights.medicine': true
-},
-    ]
-  }).exec(); // Make sure to await the query
+  const owner = await User.findById(task.user)
 
-  console.log("ssssssssdddddfffff")
-  console.log(workers)
-  // For each worker, fetch their device token and send a notification
-  for (const worker of workers) {
-    const tokens = await getTokensFromDatastore(worker._id); // Assuming worker.userId exists and corresponds to userId in Device
+  console.log("owners")
+  console.log(owner);
+  const tokens =  owner.token;
+  console.log(tokens)
 
-    console.log("Tokensss");
-    console.log(tokens)
-    if (tokens.length > 0) {
-      console.log("Sending message to", worker._id);
-      const response = await admin.messaging().sendMulticast({
-        tokens, // Array of device tokens
-        data: { hello: 'world!' }, // Your data payload
-      });
-      console.log(response); // Log the response from sending the message
+  if (tokens) {
+      console.log("Sending message to",owner.firstName);
+       const message = {
+    token:tokens,  // Device token
+    data: {
+      hello: 'world!',
+      taskId: `${task._id}`,
+      type: `${task.taskType}`
+    },
+    notification: {  // If you want to send a notification as well
+      title: 'New Task Available',
+      body: `A new task of type ${task.taskType} is available.`
     }
+  };
+      admin.messaging().send(message).then((response) => {
+        console.log(response.successCount + ' messages were sent successfully for task', task._id);
+      })
+      .catch((error) => {
+        console.log('Error sending multicast message for task', task._id, ':', error);
+      }); // Log the response from sending the message
+    } else {
+    console.log("No token found for owner:", owner.name);
   }
 }
 
@@ -572,10 +579,7 @@ for (let task of tasks) {
            },
     }
   });
-    // console.log(req.query.params);
-    // const tasksType=req.query.params;
-    // const task= await Tasks.find({taskType:tasksType});
-    // console.log(task)
+  
     return res.status(200).json(tasks)
 
 

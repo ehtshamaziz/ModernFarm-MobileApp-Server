@@ -1,9 +1,6 @@
 const Treatment = require("../models/treatment");
 const Task=require("../models/tasks");
 const User=require("../models/user");
-const Worker=require("../models/workers")
-
-
 
 var admin = require('firebase-admin');
 
@@ -62,7 +59,6 @@ const CreateTreatment = async (req, res, next) => {
   for(let p=1; p<=treatment.treatmentRecurrancePeriod;p++){
               const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatment.treatmentStartDate});
               await task.save();
-              await sendMessage(task)
           }
         let treatmentStartDate = new Date(treatment.treatmentStartDate);
 
@@ -71,7 +67,6 @@ const CreateTreatment = async (req, res, next) => {
           for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
               const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatmentStartDate});
               await task.save();
-              await sendMessage(task)
               treatment.treatmentStartDate = treatmentStartDate;
               await treatment.save();
           }
@@ -85,7 +80,6 @@ const CreateTreatment = async (req, res, next) => {
         for(let p=1; p<=treatment.treatmentRecurrancePeriod;p++){
               const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatment.treatmentStartDate});
               await task.save();
-              await sendMessage(task)
           }
         let treatmentStartDate = new Date(treatment.treatmentStartDate);
 
@@ -94,7 +88,6 @@ const CreateTreatment = async (req, res, next) => {
           for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
               const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatmentStartDate});
               await task.save();
-              await sendMessage(task)
               treatment.treatmentStartDate = treatmentStartDate;
               await treatment.save();
           }
@@ -114,49 +107,6 @@ const CreateTreatment = async (req, res, next) => {
   }
 };
 
-
-
-async function getTokensFromDatastore(userId) {
-  try {
-    // Assuming your DeviceToken fmodel has a `userId` field
-    const tokensData = await User.find({ _id: userId }).exec();
-    const tokens = tokensData.map(tokenDoc => tokenDoc.token);
-    console.log(tokens)
-    return tokens;
-  } catch (error) {
-    console.error('Failed to fetch tokens from datastore:', error);
-    throw error; // Rethrow the error to handle it in the calling context
-  }
-}
-
-   async function sendMessage(task) {
-  // Fetch workers who are eligible for fertilityTest notifications
-  const workers = await Worker.find({
-    farm: task.farm,
-    $or:[
-      {    'notificationRights.medicine': true
-},
-    ]
-  }).exec(); // Make sure to await the query
-
-  console.log("ssssssssdddddfffff")
-  console.log(workers)
-  // For each worker, fetch their device token and send a notification
-  for (const worker of workers) {
-    const tokens = await getTokensFromDatastore(worker._id); // Assuming worker.userId exists and corresponds to userId in Device
-
-    console.log("Tokensss");
-    console.log(tokens)
-    if (tokens.length > 0) {
-      console.log("Sending message to", worker._id);
-      const response = await admin.messaging().sendMulticast({
-        tokens, // Array of device tokens
-        data: { hello: 'world!' }, // Your data payload
-      });
-      console.log(response); // Log the response from sending the message
-    }
-  }
-}
 
 
 // UPDATE TREATMENT

@@ -3,7 +3,7 @@ const Couple=require("../models/couple");
 const Egg=require("../models/egg");
 const Task=require("../models/tasks");
 const User= require("../models/user");
-const Worker=require("../models/workers");
+
 
     var admin = require('firebase-admin');
 
@@ -137,8 +137,7 @@ const AddBirds = async (req, res, next) => {
      const task2=new Task({eggBirdId: bird._id,user:bird.user,farm:bird.farm,taskType:'earlyFeeding',taskDate:earlyStageFeedingDate});
      await task.save();
      await task2.save();
-     await sendMessage(task);
-     await sendMessage(task2);
+
 
 
     } catch (error) {
@@ -158,50 +157,8 @@ const AddBirds = async (req, res, next) => {
 
 
 
-async function getTokensFromDatastore(userId) {
-  try {
-    // Assuming your DeviceToken fmodel has a `userId` field
-    const tokensData = await User.find({ _id: userId }).exec();
-    const tokens = tokensData.map(tokenDoc => tokenDoc.token);
-    console.log(tokens)
-    return tokens;
-  } catch (error) {
-    console.error('Failed to fetch tokens from datastore:', error);
-    throw error; // Rethrow the error to handle it in the calling context
-  }
-}
 
-   async function sendMessage(task) {
-  // Fetch workers who are eligible for fertilityTest notifications
-  const workers = await Worker.find({
-    farm: task.farm,
-    $or:[
-      {    'notificationRights.externalFeeding': true
-},
-  {    'notificationRights.ringNumber': true
-},
-    ]
-  }).exec(); // Make sure to await the query
-
-
-  // For each worker, fetch their device token and send a notification
-  for (const worker of workers) {
-    const tokens = await getTokensFromDatastore(worker._id); // Assuming worker.userId exists and corresponds to userId in Device
-
-    console.log("Tokensss");
-    console.log(tokens)
-    if (tokens.length > 0) {
-      console.log("Sending message to", worker._id);
-      const response = await admin.messaging().sendMulticast({
-        tokens, // Array of device tokens
-        data: { hello: 'world!' }, // Your data payload
-      });
-      console.log(response); // Log the response from sending the message
-    }
-  }
-}
-
-
+   
 // UPDATE BIRD
 const UpdateBird = async (req, res, next) => {
   try {
