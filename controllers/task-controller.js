@@ -404,8 +404,20 @@ const SendAllTasks=async (req,res,next)=>{
         select: "couple clutchNumber",
         populate: {
         path: "couple",
-        select: "coupleId ",
-      }
+        select: "coupleId maleBird femaleBird",
+       populate: [
+            {
+              path: "femaleBird",
+              select: "imageURL"
+            },
+            {
+              path: "maleBird",
+              select: "imageURL"
+            }
+          ]
+        
+      },
+     
       }
     },
     {
