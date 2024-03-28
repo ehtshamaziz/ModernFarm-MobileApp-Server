@@ -558,7 +558,7 @@ for (let task of tasks) {
         path: "couple",
         select: "coupleId cageNumber",
    
-      },
+     
       populate: [
             {
               path: "femaleBird",
@@ -569,6 +569,7 @@ for (let task of tasks) {
               select: "imageURL"
             }
           ]
+           },
     }
   });
     // console.log(req.query.params);
