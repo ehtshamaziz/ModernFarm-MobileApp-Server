@@ -187,10 +187,10 @@ const LoginUser = async ( req, res, next) => {
 
   try {
     
-    const user = await User.findOneAndUpdate(
+    const user = await User.findOne(
     {email: email }, // query to find the user by email
-    { $set: { token: token } }, // update operation to set the token
-    { new: true, runValidators: true } );
+    // { new: true, runValidators: true } 
+    );
     await user.save();
 
     // const userId=user._id;
@@ -218,7 +218,11 @@ const LoginUser = async ( req, res, next) => {
 
 // Send messages to our users
   //  await sendMessage(user._id);
-
+    await User.findOneAndUpdate(
+    {email: email }, // query to find the user by email
+    { $set: { token: token } }, // update operation to set the token
+    { new: true, runValidators: true } );
+    
 
     req.user = user;
     next();
