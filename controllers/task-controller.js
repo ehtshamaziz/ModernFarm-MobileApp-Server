@@ -505,7 +505,7 @@ for (let task of tasks) {
   }
   else if(req.query.params==='nutrition'){
   console.log("Nutrition task");
-  tasks = await Tasks.find({ user: req.params.id ,
+  tasks = await Tasks.find({ 
               $or: [
       { nutritionId: { $exists: true, $ne: null } },
       // { birdId: { $exists: true, $ne: null } },
@@ -513,7 +513,6 @@ for (let task of tasks) {
     ]
  // This condition checks for tasks where birdId exists and is not null.
 })
-console.log(tasks);
 
 for (let task of tasks) {
  
@@ -522,7 +521,6 @@ for (let task of tasks) {
   
   // Check if treatmentId exists and push its populate option
   if (task.nutritionId) {
-  console.log("b")
 
     populateOptions.push({
       path: 'nutritionId',
