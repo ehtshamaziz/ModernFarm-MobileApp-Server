@@ -285,11 +285,12 @@ const UpdateTasks = async (req, res, next) => {
 
 
 
-async function getTokensFromDatastore(userId) {
+async function getTokensFromDatastore(userId,task) {
   try {
     // Assuming your DeviceToken fmodel has a `userId` field
-    const tokensData = await Worker.find({ _id: userId }).exec();
-    const tokens = tokensData.map(tokenDoc => tokenDoc.token);
+    const worker = await Worker.findOneAndUpdate( {_id: userId} ,{$push:{notifications:task}},{ new: true }
+).exec();
+    const tokens = worker.token;
     console.log(tokens)
     return tokens;
   } catch (error) {
@@ -319,23 +320,24 @@ async function getTokensFromDatastore(userId) {
         console.log("Workers found for task:", workers);
 
         for (const worker of workers) {
-            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+            const tokens = await getTokensFromDatastore(worker._id, task); // Assuming getTokensFromDatastore returns tokens array
 
             console.log("Tokens for worker", worker._id, tokens);
 
-            if (tokens.length > 0) {
+            if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", worker._id);
-                 admin.messaging().sendMulticast({
-                    tokens, // Array of device tokens
+                 admin.messaging().send({
+                    token:tokens, // Array of device tokens
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
-                        type:`${task.taskType}`
+                        type:`${task.taskType}`,
+                        workerName:`${worker.fullName}`
                         // Example of including task-specific data
                     },
                 })
                 .then((response) => {
-                    console.log(response.successCount + ' messages were sent successfully for task', task._id);
+                    console.log(' messages were sent successfully for task', task._id);
                 })
                 .catch((error) => {
                     console.log('Error sending multicast message for task', task._id, ':', error);
@@ -392,6 +394,8 @@ const DeleteTasks = async (req, res, next) => {
 };
 
 const SendAllTasks=async (req,res,next)=>{
+
+  console.log(req.body)
   try{
     let tasks;
 

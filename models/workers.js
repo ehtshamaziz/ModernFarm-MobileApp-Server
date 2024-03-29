@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+// const Task = require("./tasks.js");
 
 const workersSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -69,6 +70,7 @@ const workersSchema = new mongoose.Schema({
 
   },
       token: { type: String, required: true },
+      notifications:[String]
 
 });
 
