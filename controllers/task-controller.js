@@ -395,7 +395,7 @@ const DeleteTasks = async (req, res, next) => {
 
 const SendAllTasks=async (req,res,next)=>{
 
-  console.log(req.body)
+  console.log(req.params)
   try{
     let tasks;
 
@@ -450,6 +450,8 @@ const SendAllTasks=async (req,res,next)=>{
     path: "eggBirdId.farm",
     select: "_id farmType farmName"
   });
+console.log("birdRecord");
+
   console.log(tasks)
   }
   else if(req.query.params==='treatment'){
@@ -584,10 +586,11 @@ for (let task of tasks) {
     }
   });
   
-    return res.status(200).json(tasks)
 
 
 }
+    return res.status(200).json(tasks)
+
   }catch(e){
     next(e);
   }
