@@ -4,7 +4,6 @@ const User=require("../models/user");
 const Worker=require("../models/workers");
 
 
-
 var admin = require('firebase-admin');
 
 
@@ -320,7 +319,7 @@ async function getTokensFromDatastore(userId,task) {
         console.log("Workers found for task:", workers);
 
         for (const worker of workers) {
-            const tokens = await getTokensFromDatastore(worker._id, task); // Assuming getTokensFromDatastore returns tokens array
+            const tokens = await getTokensFromDatastore(worker._id, task._id); // Assuming getTokensFromDatastore returns tokens array
 
             console.log("Tokens for worker", worker._id, tokens);
 
@@ -551,8 +550,6 @@ for (let task of tasks) {
     console.log(task);
   }
 }
-
-
   }
   
   else if(req.query.params==='hatching' || req.query.params ==='fertility'){
