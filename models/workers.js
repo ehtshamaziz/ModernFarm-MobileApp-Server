@@ -69,7 +69,6 @@ const workersSchema = new mongoose.Schema({
 
   },
       token: { type: String, required: true },
-      notifications:[{type: mongoose.Schema.Types.ObjectId, ref: "Task", }]
 
 });
 

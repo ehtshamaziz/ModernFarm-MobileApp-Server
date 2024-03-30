@@ -52,44 +52,45 @@ const CreateTreatment = async (req, res, next) => {
    const treatment =  new Treatment(req.body);
    await treatment.save();     
 
+   console.log(req.body)
 
-  if(treatment.couple && treatment.couple.length){
+  if(treatment.couple && treatment.couple.length>0){
     await Promise.all(treatment.couple.map(async (element)=>{
       
-  for(let p=1; p<=treatment.treatmentRecurrancePeriod;p++){
-              const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatment.treatmentStartDate});
-              await task.save();
-          }
+  // for(let p=1; p<=treatment.treatmentRecurrancePeriod;p++){
+  //             const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatment.treatmentStartDate});
+  //             await task.save();
+  //         }
         let treatmentStartDate = new Date(treatment.treatmentStartDate);
 
-        for(let i=1; i<=treatment.durationOfTreatment;i++){
-          treatmentStartDate.setDate(treatmentStartDate.getDate() + 1);
+        for(let i=0; i<treatment.durationOfTreatment;i++){
+          treatmentStartDate.setDate(treatmentStartDate.getDate() + I);
           for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
               const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatmentStartDate});
               await task.save();
-              treatment.treatmentStartDate = treatmentStartDate;
-              await treatment.save();
+              // treatment.treatmentStartDate = treatmentStartDate;
+              // await treatment.save();
           }
 
         }
     }))
   }
-  if(treatment.bird && treatment.bird.length){
+  if(treatment.bird && treatment.bird.length>0){
       await Promise.all(treatment.bird.map(async(element)=>{
        
-        for(let p=1; p<=treatment.treatmentRecurrancePeriod;p++){
-              const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatment.treatmentStartDate});
-              await task.save();
-          }
+        // for(let p=1; p<=treatment.treatmentRecurrancePeriod;p++){
+        //       const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatment.treatmentStartDate});
+        //       await task.save();
+        //   }
         let treatmentStartDate = new Date(treatment.treatmentStartDate);
 
-        for(let i=1; i<=treatment.durationOfTreatment;i++){
-          treatmentStartDate.setDate(treatmentStartDate.getDate() + 1);
+        for(let i=0; i<treatment.durationOfTreatment;i++){
+          treatmentStartDate.setDate(treatmentStartDate.getDate() + i);
           for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
               const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatmentStartDate});
               await task.save();
-              treatment.treatmentStartDate = treatmentStartDate;
-              await treatment.save();
+              // treatment.treatmentStartDate = treatmentStartDate;
+              // await treatment.save();
           }
 
         }

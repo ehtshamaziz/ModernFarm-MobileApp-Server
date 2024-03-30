@@ -11,6 +11,30 @@ var admin = require('firebase-admin');
 const GetTasks = async (req, res, next) => {
   console.log("Get all Tasks");
   try {
+    if(req.query.ids){
+
+    const idsString= req.query.ids;
+    const idsArray= idsString.split(",")
+    const tasks = await Tasks.find({_id: {$in : idsArray} });
+
+       const populatedTasks = await Promise.all(tasks.map(async (task) => {
+        if (task.taskType==='treatment') {
+            return Tasks.populate(task, { path: 'treatmentId' });
+        } else if (task.taskType==='nutrition') {
+            return Tasks.populate(task, { path: 'nutritionId' });
+        }
+         else if (task.taskType==='hatching' || task.taskType==='fertility') {
+            return Tasks.populate(task, { path: 'eggId' });
+        }
+         else if (task.taskType==='birdRecord' || task.taskType==='earlyFeeding') {
+            return Tasks.populate(task, { path: 'eggBirdId' });
+        }
+       
+        return task;
+    }));
+
+    return res.status(200).send(populatedTasks);
+    }
     const tasks = await Tasks.find();
     return res.status(200).send(tasks);
   } catch (err) {
@@ -284,11 +308,10 @@ const UpdateTasks = async (req, res, next) => {
 
 
 
-async function getTokensFromDatastore(userId,task) {
+async function getTokensFromDatastore(userId) {
   try {
     // Assuming your DeviceToken fmodel has a `userId` field
-    const worker = await Worker.findOneAndUpdate( {_id: userId} ,{$push:{notifications:task}},{ new: true }
-).exec();
+    const worker = await Worker.findById(userId).exec();
     const tokens = worker.token;
     console.log(tokens)
     return tokens;
@@ -319,7 +342,7 @@ async function getTokensFromDatastore(userId,task) {
         console.log("Workers found for task:", workers);
 
         for (const worker of workers) {
-            const tokens = await getTokensFromDatastore(worker._id, task._id); // Assuming getTokensFromDatastore returns tokens array
+            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
 
             console.log("Tokens for worker", worker._id, tokens);
 

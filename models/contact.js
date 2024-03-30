@@ -12,6 +12,7 @@ const contactSchema = new mongoose.Schema({
   },
   phoneNumber: { type: String, required: true },
   country: {
+    countryName: { type: String },
     callingCode: { type: String, required: true },
     countryFlag: { type: String },
   },

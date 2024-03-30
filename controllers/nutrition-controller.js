@@ -59,8 +59,6 @@ const CreateNutritions = async (req, res, next) => {
   if(nutrition.bird && nutrition.bird.length){
     await Promise.all(nutrition.bird.map(async(element)=>{
 
-      console.log(nutrition.bird.length)
-      console.log("birdssssssssss nutrition")
 
     const task=new Task({taskDate:nutrition.nutritionDate,nutritionId: nutrition._id,birdId:element,user:nutrition.user,farm:nutrition.farm,taskType:'nutrition'});
     await task.save();
