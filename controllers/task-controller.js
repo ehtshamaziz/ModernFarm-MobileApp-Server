@@ -354,7 +354,10 @@ async function getTokensFromDatastore(userId) {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
                         type:`${task.taskType}`,
-                        workerName:`${worker.fullName}`
+                        workerName:`${worker.fullName}`,
+                        description:`${task.taskType} task has to be done on ${task.taskDate}`,
+                        url: "modernfarm://AllNotifications",
+
                         // Example of including task-specific data
                     },
                 })
@@ -387,7 +390,10 @@ async function getTokensFromDatastore(userId) {
     data: {
       hello: 'world!',
       taskId: `${task._id}`,
-      type: `${task.taskType}`
+      type: `${task.taskType}`,
+      description:`${task.taskType} task has been completed by`,
+
+
     },
     notification: {  // If you want to send a notification as well
       title: 'New Task Available',
