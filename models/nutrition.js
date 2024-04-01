@@ -6,9 +6,11 @@ farm:{type:mongoose.Schema.Types.ObjectId, ref:"Farm"},
 bird:[{type:mongoose.Schema.Types.ObjectId, ref:"Bird"}],
 couple:[{type:mongoose.Schema.Types.ObjectId, ref:"Couple"}],
 mealType:{type:String},
+dosage:{type:String},
 mealDescription:{type:String},
-quantity:{type:Number},
-nutritionDate:{ type: Date, default: Date.now}
+quantity:{type:String},
+nutritionDate:{ type: Date, default: Date.now},
+appliedTo: {type: String,required:true},
 
 })
 

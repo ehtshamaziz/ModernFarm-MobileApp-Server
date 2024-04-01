@@ -477,6 +477,10 @@ const SendAllTasks=async (req,res,next)=>{
   .populate({
     path: "eggBirdId.farm",
     select: "_id farmType farmName"
+  })
+    .populate({
+    path: "user",
+    select: "firstName"
   });
 console.log("birdRecord");
 
@@ -574,7 +578,11 @@ for (let task of tasks) {
 
 
   if (populateOptions.length > 0) {
-
+    populateOptions.push({
+      path: 'user',
+      select:'firstName'
+      // Specify select fields if needed
+    });
     await Tasks.populate(task, populateOptions);
     console.log(task);
   }
@@ -608,6 +616,10 @@ for (let task of tasks) {
           ]
            },
     }
+  }) 
+  .populate({
+    path: "user",
+    select: "firstName"
   });
   
 
@@ -631,6 +643,6 @@ module.exports={
     CreateTasks,
     UpdateTasks,
     DeleteTasks,
-   SendAllTasks
+    SendAllTasks
 
 }
