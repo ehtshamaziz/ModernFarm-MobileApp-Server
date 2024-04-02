@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-    token: { type: String, required: true },
+    token: { type: String },
 
 });
 
