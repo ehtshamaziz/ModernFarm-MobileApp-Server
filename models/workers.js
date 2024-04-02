@@ -60,7 +60,7 @@ const workersSchema = new mongoose.Schema({
     default: Date.now,
   },
   notificationRights:{
-    fertilityTest:{type:Boolean, default:false},
+    fertility:{type:Boolean, default:false},
     hatching:{type:Boolean, default:false},
     externalFeeding:{type:Boolean, default:false},
     ringNumber:{type:Boolean, default:false},

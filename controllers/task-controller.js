@@ -327,17 +327,107 @@ async function getTokensFromDatastore(userId) {
       for (const task of tasks) {
         console.log(task.farm);
 
-        const workers = await Worker.find({
+        if(task.taskType==='hatching'){
+           const workers = await Worker.find({
             farm: task.farm,
-            $or: [
-                {'notificationRights.medicine': true},
-                {'notificationRights.fertilityTest': true},
-                {'notificationRights.hatching': true},
-                {'notificationRights.externalFeeding': true},
-                {'notificationRights.ringNumber': true},
-                {'notificationRights.nutrition': true},
-            ]
+           'notificationRights.hatching': true,
+          
         });
+       const populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggId",
+              select:"eggNumber parentCouple clutch",
+              populate:[
+                {path:"clutch",select:"clutchNumber"},
+                {path:"parentCouple",select:"coupleId"}
+              ]
+            });
+        console.log("Workers found for task:", workers);
+
+        for (const worker of workers) {
+            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+     
+
+            console.log("Tokens for worker", worker._id, tokens);
+
+            if (tokens && tokens.length > 0){
+                console.log("Sending message for task", task._id, "to worker", worker._id);
+                 admin.messaging().send({
+                    token:tokens, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`, 
+                        type:`${task.taskType}`,
+                        workerName:`${worker.fullName}`,
+                        description:`${task.taskType} task of ${populatedTask.eggId.eggNumber} whose clutch is ${populatedTask.eggId.clutch.clutchNumber} and parent couple is ${populatedTask.eggId.parentCouple.couple} to be done on ${task.taskDate}`,
+                        url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+            }
+        }
+        }
+         else if (task.taskType==='fertility'){
+           const workers = await Worker.find({
+            farm: task.farm,
+           'notificationRights.fertility': true,
+          
+        });
+         const populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggId",
+              select:"eggNumber parentCouple clutch",
+              populate:[
+                {path:"clutch",select:"clutchNumber"},
+                {path:"parentCouple",select:"coupleId"}
+              ]
+            });
+        console.log("Workers found for task:", workers);
+
+        for (const worker of workers) {
+            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+
+            console.log("Tokens for worker", worker._id, tokens);
+
+            if (tokens && tokens.length > 0){
+                console.log("Sending message for task", task._id, "to worker", worker._id);
+                 admin.messaging().send({
+                    token:tokens, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`, 
+                        type:`${task.taskType}`,
+                        workerName:`${worker.fullName}`,
+                        description:`${task.taskType} task of ${populatedTask.eggId.eggNumber} whose clutch is ${populatedTask.eggId.clutch.clutchNumber} and parent couple is ${populatedTask.eggId.parentCouple.couple} to be done on ${task.taskDate}`,
+                        url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+            }
+        }
+        }
+        else if (task.taskType==='treatment'){
+           const workers = await Worker.find({
+            farm: task.farm,
+           'notificationRights.medicine': true,
+          
+        });
+      const populatedTask = await Tasks.findById(task._id).populate([
+          { path:"birdId",select:"birdId"},
+          { path:"coupleId",select:"coupleId"}
+          ]);
 
         console.log("Workers found for task:", workers);
 
@@ -355,7 +445,7 @@ async function getTokensFromDatastore(userId) {
                         taskId: `${task._id}`, 
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
-                        description:`${task.taskType} task has to be done on ${task.taskDate}`,
+                        description: `Treatment task has to be done ${task.birdId ? 'of bird ' + populatedTask.birdId.birdId : ''} ${task.coupleId ? 'for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate}`,                        
                         url: "modernfarm://AllNotifications",
 
                         // Example of including task-specific data
@@ -369,6 +459,148 @@ async function getTokensFromDatastore(userId) {
                 });
             }
         }
+        }
+        else if (task.taskType==='nutrition'){
+           const workers = await Worker.find({
+            farm: task.farm,
+           'notificationRights.nutrition': true,
+          
+        });
+
+        console.log("Workers found for task:", workers);
+
+          const populatedTask = await Tasks.findById(task._id).populate([
+          { path:"birdId",select:"birdId"},
+          { path:"coupleId",select:"coupleId"}
+          ]);
+
+
+        for (const worker of workers) {
+            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+
+            console.log("Tokens for worker", worker._id, tokens);
+
+
+            if (tokens && tokens.length > 0){
+                console.log("Sending message for task", task._id, "to worker", worker._id);
+                 admin.messaging().send({
+                    token:tokens, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`, 
+                        type:`${task.taskType}`,
+                        workerName:`${worker.fullName}`,
+                        description: `Nutrition task has to be done ${task.birdId ? 'of bird ' + populatedTask.birdId.birdId : ''} ${task.coupleId ? 'for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate}`,                        
+                         url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+            }
+        }
+        }
+        else if (task.taskType==='externalFeeding'){
+           const workers = await Worker.find({
+            farm: task.farm,
+           'notificationRights.externalFeeding': true,
+          
+        });
+               const populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggBirdId",
+              select:"birdId birdName eggId",
+              // populate:[
+              //   {path:"clutch",select:"clutchNumber"},
+              //   {path:"parentCouple",select:"coupleId"}
+              // ]
+            });
+
+        console.log("Workers found for task:", workers);
+
+        for (const worker of workers) {
+            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+
+            console.log("Tokens for worker", worker._id, tokens);
+
+            if (tokens && tokens.length > 0){
+                console.log("Sending message for task", task._id, "to worker", worker._id);
+                 admin.messaging().send({
+                    token:tokens, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`, 
+                        type:`${task.taskType}`,
+                        workerName:`${worker.fullName}`,
+                        description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate}`,
+                        url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+            }
+        }
+        }
+         else if (task.taskType==='birdRecord'){
+           const workers = await Worker.find({
+            farm: task.farm,
+           'notificationRights.ringNumber': true,
+          
+        });
+         const populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggBirdId",
+              select:"birdId birdName eggId",
+              // populate:[
+              //   {path:"clutch",select:"clutchNumber"},
+              //   {path:"parentCouple",select:"coupleId"}
+              // ]
+            });
+
+        console.log("Workers found for task:", workers);
+
+        for (const worker of workers) {
+            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+
+            console.log("Tokens for worker", worker._id, tokens);
+
+            if (tokens && tokens.length > 0){
+                console.log("Sending message for task", task._id, "to worker", worker._id);
+                 admin.messaging().send({
+                    token:tokens, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`, 
+                        type:`${task.taskType}`,
+                        workerName:`${worker.fullName}`,
+                        description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate}`,
+                        url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+            }
+        }
+        }
+        
+
+
+       
     }
 }
 
@@ -528,7 +760,15 @@ for (let task of tasks) {
 
   if (populateOptions.length > 0) {
   console.log("Medical task222");
-
+  populateOptions.push({
+      path: 'user',
+      select:'firstName'
+    });
+      populateOptions.push({
+      path: 'farm',
+      select:'farmName'
+      // Specify select fields if needed
+    });
     await Tasks.populate(task, populateOptions);
   }
 }
