@@ -18,7 +18,7 @@ router.get("/user/:id", workersController.GetUserWorkers);
 router.post("/", workersController.CreateWorkers);
 
 
-router.post("/verify", workersController.VerifyWorker);
+router.post("/verify", workersController.VerifyWorker, createJWT);
 
 
 // UPDATE FARM BY ID

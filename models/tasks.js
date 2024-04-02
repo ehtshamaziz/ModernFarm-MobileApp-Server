@@ -15,7 +15,8 @@ const TaskSchema= new mongoose.Schema({
     // nutritionDate:{type:Date},
     actionTime:{type:Date},
     nutritionId:{type:mongoose.Schema.Types.ObjectId,ref:"Nutrition"},
-    taskType:{type:String, required:true}
+    taskType:{type:String, required:true},
+    workerId:{type:mongoose.Schema.Types.ObjectId,ref:"Worker"}
     // hatchingDate:{type:Date},
     // birdRecordDate:{type:Date},
     // earlyFeedingDate:{type:Date},

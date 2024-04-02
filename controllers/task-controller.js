@@ -19,10 +19,34 @@ const GetTasks = async (req, res, next) => {
 
        const populatedTasks = await Promise.all(tasks.map(async (task) => {
         if (task.taskType==='treatment') {
-            return Tasks.populate(task, { path: 'treatmentId' });
-        } else if (task.taskType==='nutrition') {
-            return Tasks.populate(task, { path: 'nutritionId' });
-        }
+             let populateOptions = [{ path: 'treatmentId' }];
+
+    // Check if `birdId` exists and add it to the population options
+              if (task.birdId) {
+             populateOptions.push({ path: 'birdId' });
+                  }
+
+    // Check if `coupleId` exists and add it to the population options
+                if (task.coupleId) {
+                    populateOptions.push({ path: 'coupleId' });
+                              }
+
+          return Tasks.populate(task, populateOptions);       
+   } else if (task.taskType==='nutrition') {
+         let populateOptions = [{ path: 'nutritionId' }];
+
+    // Check if `birdId` exists and add it to the population options
+          if (task.birdId) {
+              populateOptions.push({ path: 'birdId' });
+          }
+
+    // Check if `coupleId` exists and add it to the population options
+         if (task.coupleId) {
+                populateOptions.push({ path: 'coupleId' });
+             }
+
+        return Tasks.populate(task, populateOptions);    
+      }
          else if (task.taskType==='hatching' || task.taskType==='fertility') {
             return Tasks.populate(task, { path: 'eggId' });
         }
@@ -272,7 +296,7 @@ const SendNotification=async (req,res,next)=>{
      const tasks = await Tasks.find({ user: req.params.id, action:false,taskDate: { $lte: currentDate }})
       console.log(tasks);
       if(tasks.length>=0){
-      await sendAllMessage(tasks);
+      // await sendAllMessage(tasks);
 
       }
 
@@ -358,7 +382,7 @@ async function getTokensFromDatastore(userId) {
                         taskId: `${task._id}`, 
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
-                        description:`${task.taskType} task of ${populatedTask.eggId.eggNumber} whose clutch is ${populatedTask.eggId.clutch.clutchNumber} and parent couple is ${populatedTask.eggId.parentCouple.couple} to be done on ${task.taskDate}`,
+                       description: `Hatching task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
                         url: "modernfarm://AllNotifications",
 
                         // Example of including task-specific data
@@ -403,7 +427,7 @@ async function getTokensFromDatastore(userId) {
                         taskId: `${task._id}`, 
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
-                        description:`${task.taskType} task of ${populatedTask.eggId.eggNumber} whose clutch is ${populatedTask.eggId.clutch.clutchNumber} and parent couple is ${populatedTask.eggId.parentCouple.couple} to be done on ${task.taskDate}`,
+                       description: `Fertility task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
                         url: "modernfarm://AllNotifications",
 
                         // Example of including task-specific data
@@ -445,7 +469,8 @@ async function getTokensFromDatastore(userId) {
                         taskId: `${task._id}`, 
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
-                        description: `Treatment task has to be done ${task.birdId ? 'of bird ' + populatedTask.birdId.birdId : ''} ${task.coupleId ? 'for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate}`,                        
+                        description: `A treatment task is scheduled ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} on ${task.taskDate.toLocaleDateString()}.`,
+                       
                         url: "modernfarm://AllNotifications",
 
                         // Example of including task-specific data
@@ -490,8 +515,9 @@ async function getTokensFromDatastore(userId) {
                         taskId: `${task._id}`, 
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
-                        description: `Nutrition task has to be done ${task.birdId ? 'of bird ' + populatedTask.birdId.birdId : ''} ${task.coupleId ? 'for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate}`,                        
-                         url: "modernfarm://AllNotifications",
+                        description: `A nutrition task is scheduled ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? ' and for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate.toLocaleDateString()}.`,
+                    
+                        url: "modernfarm://AllNotifications",
 
                         // Example of including task-specific data
                     },
@@ -536,7 +562,7 @@ async function getTokensFromDatastore(userId) {
                         taskId: `${task._id}`, 
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
-                        description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate}`,
+                        description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
                         url: "modernfarm://AllNotifications",
 
                         // Example of including task-specific data
@@ -582,7 +608,7 @@ async function getTokensFromDatastore(userId) {
                         taskId: `${task._id}`, 
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
-                        description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate}`,
+                        description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
                         url: "modernfarm://AllNotifications",
 
                         // Example of including task-specific data
@@ -607,9 +633,12 @@ async function getTokensFromDatastore(userId) {
 
 
    async function sendMessage(task) {
-  // Fetch workers who are eligible for fertilityTest notifications
-  const owner = await User.findById(task.user)
 
+    const owner = await User.findById(task.user)
+let worker;
+    if(task.workerId){
+       worker=await Worker.findById(task.workerId)
+    }
   console.log("owners")
   console.log(owner);
   const tokens =  owner.token;
@@ -623,7 +652,8 @@ async function getTokensFromDatastore(userId) {
       hello: 'world!',
       taskId: `${task._id}`,
       type: `${task.taskType}`,
-      description:`${task.taskType} task has been completed by`,
+      description:`${task.taskType} task has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
+      taskType:"owner",
 
 
     },

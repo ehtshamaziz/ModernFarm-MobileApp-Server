@@ -41,6 +41,7 @@ const userSchema = new mongoose.Schema({
     earlyFeedingTask: { type: Boolean, default: true },
     nutritionTask: { type: Boolean, default: true },
     medicalCareTask: { type: Boolean, default: true },
+    settings: { type: Boolean, default: true },
   },
   otpVerification: {
     otp: { type: String },

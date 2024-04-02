@@ -88,7 +88,8 @@ const VerifyWorker = async (req, res, next) => {
           } else {
 
             req.user = user;
-            res.status(200).json(user);
+            next();
+            // res.status(200).json(user);
           }
         
       }
