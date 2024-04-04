@@ -296,7 +296,7 @@ const SendNotification=async (req,res,next)=>{
      const tasks = await Tasks.find({ user: req.params.id, action:false,taskDate: { $lte: currentDate }})
       console.log(tasks);
       if(tasks.length>=0){
-      // await sendAllMessage(tasks);
+      await sendAllMessage(tasks);
 
       }
 
