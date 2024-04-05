@@ -144,6 +144,15 @@ const DeleteTreatment = async (req, res, next) => {
   }
 };
 
+const GetError=async (req,res,next)=>{
+  try{
+    console.log("BBBBBBBBBB")
+    console.log(req.body)
+  }catch(error){
+    console.log(error)
+  }
+}
+
 module.exports = {
   GetTreatment,
   GetTreatmentByID,
@@ -151,4 +160,5 @@ module.exports = {
   UpdateTreatment,
   DeleteTreatment,
   GetUserTreatment,
+  GetError
 };

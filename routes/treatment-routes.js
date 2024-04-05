@@ -16,6 +16,8 @@ router.get("/user/:id", treatmentController.GetUserTreatment);
 // CREATE NEW TREATMENT
 router.post("/", treatmentController.CreateTreatment);
 
+router.post("/error",treatmentController.GetError);
+
 // UPDATE TREATMENT BY ID
 router.patch("/:id", treatmentController.UpdateTreatment);
 
