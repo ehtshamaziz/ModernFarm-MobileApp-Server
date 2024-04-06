@@ -164,7 +164,7 @@ const LoginWorker = async (req, res, next) => {
 
     const user = await Worker.findOneAndUpdate(
     {email: email }, // query to find the user by email
-    { $set: { token: token } }, // update operation to set the token
+    { $set: { workerToken: token } }, // update operation to set the token
     { new: true, runValidators: true } );
     // console.log(user)
     // const userId=user._id;

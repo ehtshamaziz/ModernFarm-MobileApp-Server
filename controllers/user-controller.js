@@ -219,7 +219,7 @@ const LoginUser = async ( req, res, next) => {
   //  await sendMessage(user._id);
     const users=await User.findOneAndUpdate(
     {email: email }, // query to find the user by email
-    { $set: { token: token } }, // update operation to set the token
+    { $set: { userToken: token } }, // update operation to set the token
     { new: true, runValidators: true } );
     
     await users.save();

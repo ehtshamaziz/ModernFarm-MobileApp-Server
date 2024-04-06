@@ -337,7 +337,7 @@ async function getTokensFromDatastore(userId) {
   try {
     // Assuming your DeviceToken fmodel has a `userId` field
     const worker = await Worker.findById(userId).exec();
-    const tokens = worker.token;
+    const tokens = worker.workerToken;
     console.log(tokens)
     return tokens;
   } catch (error) {
@@ -369,7 +369,7 @@ async function sendOwnerMessage(tasks){
         console.log("Owner found for task:", owner);
 
         // for (const user of users) {
-            const tokens = owner.token // Assuming getTokensFromDatastore returns tokens array
+            const tokens = owner.userToken // Assuming getTokensFromDatastore returns tokens array
      
 
             console.log("Tokens for worker", owner._id, tokens);
@@ -411,7 +411,7 @@ async function sendOwnerMessage(tasks){
         console.log("Workers found for task:", owner);
 
         // for (const worker of workers) {
-            const tokens =owner.token // Assuming getTokensFromDatastore returns tokens array
+            const tokens =owner.userToken // Assuming getTokensFromDatastore returns tokens array
 
             console.log("Tokens for worker", owner._id, tokens);
 
@@ -449,7 +449,7 @@ async function sendOwnerMessage(tasks){
         console.log("Workers found for task:", owner);
 
         // for (const worker of workers) {
-            const tokens = owner.token// Assuming getTokensFromDatastore returns tokens array
+            const tokens = owner.userToken// Assuming getTokensFromDatastore returns tokens array
 
             console.log("Tokens for worker", owner._id, tokens);
 
@@ -489,7 +489,7 @@ async function sendOwnerMessage(tasks){
 
 
         // for (const worker of workers) {
-            const tokens = owner.token // Assuming getTokensFromDatastore returns tokens array
+            const tokens = owner.userToken // Assuming getTokensFromDatastore returns tokens array
 
             console.log("Tokens for worker", owner._id, tokens);
 
@@ -531,7 +531,7 @@ async function sendOwnerMessage(tasks){
             });
 
 
-            const tokens = owner.token // Assuming getTokensFromDatastore returns tokens array
+            const tokens = owner.userToken // Assuming getTokensFromDatastore returns tokens array
 
             console.log("Tokens for worker", owner._id, tokens);
 
@@ -570,7 +570,7 @@ async function sendOwnerMessage(tasks){
             });
 
 
-            const tokens = owner.token// Assuming getTokensFromDatastore returns tokens array
+            const tokens = owner.userToken// Assuming getTokensFromDatastore returns tokens array
 
             console.log("Tokens for worker", owner._id, tokens);
 
@@ -903,7 +903,7 @@ let worker;
     }
   console.log("owners")
   console.log(owner);
-  const tokens =  owner.token;
+  const tokens =  owner.userToken;
   console.log(tokens)
 
   if (tokens) {

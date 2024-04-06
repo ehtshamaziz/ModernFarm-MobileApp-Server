@@ -68,7 +68,7 @@ const workersSchema = new mongoose.Schema({
     nutrition:{type:Boolean, default:false},
 
   },
-      token: { type: String},
+      workerToken: { type: String},
 
 });
 
