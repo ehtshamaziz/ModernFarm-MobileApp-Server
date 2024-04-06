@@ -151,6 +151,8 @@ const LoginWorker = async (req, res, next) => {
   const { email, password,token } = req.body;
   console.log(token);
   
+  
+  console.log(email)
   try {
     const worker = await Worker.findOne(
       {
