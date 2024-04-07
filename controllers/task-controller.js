@@ -358,6 +358,7 @@ async function sendOwnerMessage(tasks){
         console.log(task.farm);
 
         if(task.taskType==='hatching'){
+          console.log("hattttttttttt")
         //    const users = await User.find({
         //     farm: task.farm,
           
@@ -403,7 +404,8 @@ async function sendOwnerMessage(tasks){
         }
         }
          else if (task.taskType==='fertility'){
-   
+             console.log("fertttttttt")
+
          const populatedTask = await Tasks.findById(task._id).populate({
               path:"eggId",
               select:"eggNumber parentCouple clutch",
