@@ -351,7 +351,7 @@ async function sendOwnerMessage(tasks){
 
   for (const task of tasks) {
   console.log("ownerrssssss")
-          const owner = await User.findById(tasks.user)
+          const owner = await User.findById(task.user)
 
         console.log(task.farm);
 
