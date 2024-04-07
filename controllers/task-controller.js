@@ -294,7 +294,7 @@ const SendNotification=async (req,res,next)=>{
     // currentDate.setHours(0, 0, 0, 0);
      
      const tasks = await Tasks.find({ user: req.params.id, action:false,taskDate: { $lte: currentDate }})
-      console.log(tasks);
+      // console.log(tasks);
       if(tasks.length>=0){
       await sendOwnerMessage(tasks);
 
@@ -350,6 +350,7 @@ async function getTokensFromDatastore(userId) {
 async function sendOwnerMessage(tasks){
 
   for (const task of tasks) {
+  console.log("ownerrssssss")
           const owner = await User.findById(tasks.user)
 
         console.log(task.farm);
@@ -409,7 +410,7 @@ async function sendOwnerMessage(tasks){
                 {path:"parentCouple",select:"coupleId"}
               ]
             });
-        console.log("Workers found for task:", owner);
+        console.log("Owner found for task:", owner);
 
         // for (const worker of workers) {
             const tokens =owner.userToken // Assuming getTokensFromDatastore returns tokens array
@@ -447,7 +448,7 @@ async function sendOwnerMessage(tasks){
           { path:"coupleId",select:"coupleId"}
           ]);
 
-        console.log("Workers found for task:", owner);
+        console.log("Owner found for task:", owner);
 
         // for (const worker of workers) {
             const tokens = owner.userToken// Assuming getTokensFromDatastore returns tokens array
