@@ -348,6 +348,8 @@ async function getTokensFromDatastore(userId) {
 }
 
 async function sendOwnerMessage(tasks){
+  console.log(tasks)
+  console.log("taskssssss")
 
   for (const task of tasks) {
   console.log("ownerrssssss")
