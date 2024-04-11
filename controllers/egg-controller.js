@@ -137,8 +137,8 @@ const AddEggs = async (req, res, next) => {
 
 
 
-     const task=new Task({eggId: egg._id,user:clutches.couple.user,farm:clutches.couple.farm,taskType:'fertility',taskDate:fertilityDate});
-    const task2=new Task({eggId: egg._id,user:clutches.couple.user,farm:clutches.couple.farm,taskType:'hatching', taskDate:hatchingDate});
+     const task=new Task({eggId: egg._id,user:clutches.couple.user,farm:clutches.couple.farm,taskType:'fertilityTask',taskDate:fertilityDate});
+    const task2=new Task({eggId: egg._id,user:clutches.couple.user,farm:clutches.couple.farm,taskType:'hatchingTask', taskDate:hatchingDate});
      await task.save();
      await task2.save();
 

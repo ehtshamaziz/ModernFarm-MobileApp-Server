@@ -66,7 +66,7 @@ const CreateTreatment = async (req, res, next) => {
         for(let i=0; i<treatment.durationOfTreatment;i++){
           treatmentStartDate.setDate(treatmentStartDate.getDate() + I);
           for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
-              const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatmentStartDate});
+              const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'medicalCareTask',taskDate:treatmentStartDate});
               await task.save();
               // treatment.treatmentStartDate = treatmentStartDate;
               // await treatment.save();
@@ -87,7 +87,7 @@ const CreateTreatment = async (req, res, next) => {
         for(let i=0; i<treatment.durationOfTreatment;i++){
           treatmentStartDate.setDate(treatmentStartDate.getDate() + i);
           for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
-              const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'treatment',taskDate:treatmentStartDate});
+              const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'medicalCareTask',taskDate:treatmentStartDate});
               await task.save();
               // treatment.treatmentStartDate = treatmentStartDate;
               // await treatment.save();

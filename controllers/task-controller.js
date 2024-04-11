@@ -18,7 +18,7 @@ const GetTasks = async (req, res, next) => {
     const tasks = await Tasks.find({_id: {$in : idsArray} });
 
        const populatedTasks = await Promise.all(tasks.map(async (task) => {
-        if (task.taskType==='treatment') {
+        if (task.taskType==='medicalCareTask') {
              let populateOptions = [{ path: 'treatmentId' }];
 
     // Check if `birdId` exists and add it to the population options
@@ -32,7 +32,7 @@ const GetTasks = async (req, res, next) => {
                               }
 
           return Tasks.populate(task, populateOptions);       
-   } else if (task.taskType==='nutrition') {
+   } else if (task.taskType==='nutritionTask') {
          let populateOptions = [{ path: 'nutritionId' }];
 
     // Check if `birdId` exists and add it to the population options
@@ -47,10 +47,10 @@ const GetTasks = async (req, res, next) => {
 
         return Tasks.populate(task, populateOptions);    
       }
-         else if (task.taskType==='hatching' || task.taskType==='fertility') {
+         else if (task.taskType==='hatchingTask' || task.taskType==='fertilityTask') {
             return Tasks.populate(task, { path: 'eggId' });
         }
-         else if (task.taskType==='birdRecord' || task.taskType==='earlyFeeding') {
+         else if (task.taskType==='birdRecordTask' || task.taskType==='earlyFeedingTask') {
             return Tasks.populate(task, { path: 'eggBirdId' });
         }
        
@@ -357,7 +357,7 @@ async function sendOwnerMessage(tasks){
 
         console.log(task.farm);
 
-        if(task.taskType==='hatching'){
+        if(task.taskType==='hatchingTask'){
           console.log("hattttttttttt")
         //    const users = await User.find({
         //     farm: task.farm,
@@ -403,7 +403,7 @@ async function sendOwnerMessage(tasks){
             // }
         }
         }
-         else if (task.taskType==='fertility'){
+         else if (task.taskType==='fertilityTask'){
              console.log("fertttttttt")
 
          const populatedTask = await Tasks.findById(task._id).populate({
@@ -445,7 +445,7 @@ async function sendOwnerMessage(tasks){
             // }
         }
         }
-        else if (task.taskType==='treatment'){
+        else if (task.taskType==='medicalCareTask'){
            
       const populatedTask = await Tasks.findById(task._id).populate([
           { path:"birdId",select:"birdId"},
@@ -484,7 +484,7 @@ async function sendOwnerMessage(tasks){
             // }
         }
         }
-        else if (task.taskType==='nutrition'){
+        else if (task.taskType==='nutritionTask'){
      
 
 
@@ -525,7 +525,7 @@ async function sendOwnerMessage(tasks){
             }
         // }
         }
-        else if (task.taskType==='externalFeeding'){
+        else if (task.taskType==='externalFeedingTask'){
            
                const populatedTask = await Tasks.findById(task._id).populate({
               path:"eggBirdId",
@@ -564,7 +564,7 @@ async function sendOwnerMessage(tasks){
                 });
         }
         }
-         else if (task.taskType==='birdRecord'){
+         else if (task.taskType==='birdRecordTask'){
       
          const populatedTask = await Tasks.findById(task._id).populate({
               path:"eggBirdId",
@@ -615,7 +615,7 @@ async function sendOwnerMessage(tasks){
       for (const task of tasks) {
         console.log(task.farm);
 
-        if(task.taskType==='hatching'){
+        if(task.taskType==='hatchingTask'){
            const workers = await Worker.find({
             farm: task.farm,
            'notificationRights.hatching': true,
@@ -661,7 +661,7 @@ async function sendOwnerMessage(tasks){
             }
         }
         }
-         else if (task.taskType==='fertility'){
+         else if (task.taskType==='fertilityTask'){
            const workers = await Worker.find({
             farm: task.farm,
            'notificationRights.fertility': true,
@@ -706,7 +706,7 @@ async function sendOwnerMessage(tasks){
             }
         }
         }
-        else if (task.taskType==='treatment'){
+        else if (task.taskType==='medicalCareTask'){
            const workers = await Worker.find({
             farm: task.farm,
            'notificationRights.medicine': true,
@@ -749,7 +749,7 @@ async function sendOwnerMessage(tasks){
             }
         }
         }
-        else if (task.taskType==='nutrition'){
+        else if (task.taskType==='nutritionTask'){
            const workers = await Worker.find({
             farm: task.farm,
            'notificationRights.nutrition': true,
@@ -795,7 +795,7 @@ async function sendOwnerMessage(tasks){
             }
         }
         }
-        else if (task.taskType==='externalFeeding'){
+        else if (task.taskType==='externalFeedingTask'){
            const workers = await Worker.find({
             farm: task.farm,
            'notificationRights.externalFeeding': true,
@@ -841,7 +841,7 @@ async function sendOwnerMessage(tasks){
             }
         }
         }
-         else if (task.taskType==='birdRecord'){
+         else if (task.taskType==='birdRecordTask'){
            const workers = await Worker.find({
             farm: task.farm,
            'notificationRights.ringNumber': true,
