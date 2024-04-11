@@ -903,7 +903,7 @@ async function sendOwnerMessage(tasks){
     
 
     const owner = await User.findById(task.user)
-let worker;
+    let worker;
     if(task.workerId){
        worker=await Worker.findById(task.workerId)
     }
@@ -911,16 +911,24 @@ let worker;
   console.log(owner);
   const tokens =  owner.userToken;
   console.log(tokens)
-
-  if (tokens) {
-      console.log("Sending message to",owner.firstName);
-       const message = {
+  
+        if(task.taskType==='hatchingTask'){
+     
+       const populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggId",
+              select:"eggNumber parentCouple clutch",
+              populate:[
+                {path:"clutch",select:"clutchNumber"},
+                {path:"parentCouple",select:"coupleId"}
+              ]
+            });
+              const message = {
     token:tokens,  // Device token
     data: {
       hello: 'world!',
       taskId: `${task._id}`,
       type: `${task.taskType}`,
-      description:`${task.taskType} task has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
+      description:`Hatching task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
       taskType:"owner",
 
 
@@ -935,7 +943,176 @@ let worker;
       })
       .catch((error) => {
         console.log('Error sending multicast message for task', task._id, ':', error);
-      }); // Log the response from sending the message
+      });
+          }
+   else if (task.taskType==='fertilityTask'){
+          
+         const populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggId",
+              select:"eggNumber parentCouple clutch",
+              populate:[
+                {path:"clutch",select:"clutchNumber"},
+                {path:"parentCouple",select:"coupleId"}
+              ]
+            });
+              const message = {
+    token:tokens,  // Device token
+    data: {
+      hello: 'world!',
+      taskId: `${task._id}`,
+      type: `${task.taskType}`,
+      description:`Fertility task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
+      taskType:"owner",
+
+
+    },
+    notification: {  // If you want to send a notification as well
+      title: 'New Task Available',
+      body: `A new task of type ${task.taskType} is available.`
+    }
+  };
+      admin.messaging().send(message).then((response) => {
+        console.log(response.successCount + ' messages were sent successfully for task', task._id);
+      })
+      .catch((error) => {
+        console.log('Error sending multicast message for task', task._id, ':', error);
+      });
+          }
+  else if (task.taskType==='medicalCareTask'){
+       
+      const populatedTask = await Tasks.findById(task._id).populate([
+          { path:"birdId",select:"birdId"},
+          { path:"coupleId",select:"coupleId"}
+          ]);
+        const message = {
+    token:tokens,  // Device token
+    data: {
+      hello: 'world!',
+      taskId: `${task._id}`,
+      type: `${task.taskType}`,
+      description:`A treatment task is scheduled ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
+      taskType:"owner",
+
+
+    },
+    notification: {  // If you want to send a notification as well
+      title: 'New Task Available',
+      body: `A new task of type ${task.taskType} is available.`
+    }
+  };
+      admin.messaging().send(message).then((response) => {
+        console.log(response.successCount + ' messages were sent successfully for task', task._id);
+      })
+      .catch((error) => {
+        console.log('Error sending multicast message for task', task._id, ':', error);
+      });
+        
+        
+        }
+
+        // 
+     else if (task.taskType==='nutritionTask'){
+    
+
+
+          const populatedTask = await Tasks.findById(task._id).populate([
+          { path:"birdId",select:"birdId"},
+          { path:"coupleId",select:"coupleId"}
+          ]);
+            const message = {
+    token:tokens,  // Device token
+    data: {
+      hello: 'world!',
+      taskId: `${task._id}`,
+      type: `${task.taskType}`,
+      description:`A nutrition task is scheduled ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? ' and for couple ' + populatedTask.coupleId.coupleId : ''} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
+      taskType:"owner",
+
+
+    },
+    notification: {  // If you want to send a notification as well
+      title: 'New Task Available',
+      body: `A new task of type ${task.taskType} is available.`
+    }
+  };
+      admin.messaging().send(message).then((response) => {
+        console.log(response.successCount + ' messages were sent successfully for task', task._id);
+      })
+      .catch((error) => {
+        console.log('Error sending multicast message for task', task._id, ':', error);
+      });
+
+
+        }
+  else if (task.taskType==='externalFeedingTask'){
+           
+               const populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggBirdId",
+              select:"birdId birdName eggId",
+              // populate:[
+              //   {path:"clutch",select:"clutchNumber"},
+              //   {path:"parentCouple",select:"coupleId"}
+              // ]
+            });
+              const message = {
+    token:tokens,  // Device token
+    data: {
+      hello: 'world!',
+      taskId: `${task._id}`,
+      type: `${task.taskType}`,
+      description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
+      taskType:"owner",
+
+
+    },
+    notification: {  // If you want to send a notification as well
+      title: 'New Task Available',
+      body: `A new task of type ${task.taskType} is available.`
+    }
+  };
+      admin.messaging().send(message).then((response) => {
+        console.log(response.successCount + ' messages were sent successfully for task', task._id);
+      })
+      .catch((error) => {
+        console.log('Error sending multicast message for task', task._id, ':', error);
+      });
+          }
+ else if (task.taskType==='birdRecordTask'){
+      
+         const populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggBirdId",
+              select:"birdId birdName eggId",
+              // populate:[
+              //   {path:"clutch",select:"clutchNumber"},
+              //   {path:"parentCouple",select:"coupleId"}
+              // ]
+            });
+              const message = {
+    token:tokens,  // Device token
+    data: {
+      hello: 'world!',
+      taskId: `${task._id}`,
+      type: `${task.taskType}`,
+      description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
+      taskType:"owner",
+
+
+    },
+    notification: {  // If you want to send a notification as well
+      title: 'New Task Available',
+      body: `A new task of type ${task.taskType} is available.`
+    }
+  };
+      admin.messaging().send(message).then((response) => {
+        console.log(response.successCount + ' messages were sent successfully for task', task._id);
+      })
+      .catch((error) => {
+        console.log('Error sending multicast message for task', task._id, ':', error);
+      });
+          }
+  if (tokens) {
+      console.log("Sending message to",owner.firstName);
+      // Log the response from sending the message
     } else {
     console.log("No token found for owner:", owner.name);
   }
