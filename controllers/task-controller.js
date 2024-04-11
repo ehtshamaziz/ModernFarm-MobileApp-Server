@@ -283,16 +283,52 @@ for (let task of tasks) {
         });
         break;
       case 'medicalCareTask':
+       if (task.treatmentId) {
         populateOptions.push({
           path: 'treatmentId',
-          select: 'treatmentStartDate treatmentName'
+          select: 'treatmentStartDate treatmentName',
+          // Add more populate options here if needed
         });
+      }
+
+      if (task.birdId) {
+        populateOptions.push({
+          path: 'birdId',
+          // Specify select fields if needed, e.g., 'name age'
+        });
+      }
+
+      // Check if coupleId exists and push its populate option
+      if (task.coupleId) {
+        populateOptions.push({
+          path: 'coupleId',
+          // Specify select fields if needed
+        });
+      }
         break;
       case 'nutritionTask':
+    if (task.nutritionId) {
         populateOptions.push({
-          path: 'nutritionId'
-          // Add more select options as needed
+          path: 'nutritionId',
+          select: 'mealDescription',
+          // Add more populate options here if needed
         });
+      }
+
+      if (task.birdId) {
+        populateOptions.push({
+          path: 'birdId',
+          // Specify select fields if needed, e.g., 'name age'
+        });
+      }
+
+      // Check if coupleId exists and push its populate option
+      if (task.coupleId) {
+        populateOptions.push({
+          path: 'coupleId',
+          // Specify select fields if needed
+        });
+      }
         break;
       case 'earlyFeedingTask':
       case 'birdRecordTask':
