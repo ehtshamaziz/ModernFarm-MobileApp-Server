@@ -120,22 +120,7 @@ const GetUserTasks = async (req, res, next) => {
       select: "_id coupleId" 
     }
   ]
-    // populate:{
-    //   path: "eggID",
-    //   select: "clutch eggNumber eggsLaidDate",
-    // populate: {
-    //   path: "clutch",
-    //   select: "couple clutchNumber",
-    //   populate: {
-    //     path: "couple",
-    //     select: "coupleId specie",
-    //     populate: {
-    //       path: "specie",
-    //       select: "addRingAfter incubation addRingAfter startFeedingAfter"
-    //     }
-    //   }
-    // }
-    // }
+ 
   })
   .populate({
     path: "eggBirdId.farm",
@@ -270,6 +255,71 @@ for (let task of tasks) {
   }else{
       tasks = await Tasks.find({ user: req.params.id})
 
+  for (let task of tasks) {
+    const populateOptions = [];
+
+    switch (task.taskType) {
+      case 'hatchingTask':
+      case 'fertilityTask':
+        populateOptions.push({
+          path: 'eggBirdId',
+          select: 'birdId birdSpecie birdName eggID cageNumber farm birdId gender birthDate exactBirthDate status source price imageURL couple ringNumber',
+          populate: {
+            path: 'eggID',
+            select: 'clutch eggNumber eggsLaidDate',
+            populate: {
+              path: 'clutch',
+              select: 'couple clutchNumber',
+              populate: {
+                path: 'couple',
+                select: 'coupleId specie',
+                populate: {
+                  path: 'specie',
+                  select: 'addRingAfter incubation addRingAfter startFeedingAfter'
+                }
+              }
+            }
+          }
+        });
+        break;
+      case 'medicalCareTask':
+        populateOptions.push({
+          path: 'treatmentId',
+          select: 'treatmentStartDate treatmentName'
+        });
+        break;
+      case 'nutritionTask':
+        populateOptions.push({
+          path: 'nutritionId'
+          // Add more select options as needed
+        });
+        break;
+      case 'earlyFeedingTask':
+      case 'birdRecordTask':
+        populateOptions.push({
+          path: 'eggId',
+          select: 'clutch eggsLaidDate status eggNumber',
+          populate: {
+            path: 'clutch',
+            select: 'incubationStartDate couple clutchNumber',
+            populate: {
+              path: 'couple',
+              select: 'coupleId cageNumber specie',
+              populate: {
+                path: 'specie',
+                select: 'fertilityDays incubation addRingAfter startFeedingAfter'
+              }
+            }
+          }
+        });
+        break;
+      // Add more cases for different task types as needed
+    }
+
+    if (populateOptions.length > 0) {
+      await Tasks.populate(task, populateOptions);
+    }
+  }
 
   }
     
@@ -990,7 +1040,7 @@ async function sendOwnerMessage(tasks){
       hello: 'world!',
       taskId: `${task._id}`,
       type: `${task.taskType}`,
-      description:`A treatment task is scheduled ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
+      description:`A treatment task  ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
       taskType:"owner",
 
 
@@ -1025,7 +1075,7 @@ async function sendOwnerMessage(tasks){
       hello: 'world!',
       taskId: `${task._id}`,
       type: `${task.taskType}`,
-      description:`A nutrition task is scheduled ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? ' and for couple ' + populatedTask.coupleId.coupleId : ''} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
+      description:`A nutrition task  ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? ' and for couple ' + populatedTask.coupleId.coupleId : ''} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
       taskType:"owner",
 
 
