@@ -363,6 +363,9 @@ for (let task of tasks) {
     //   const hatchingDates = tasks.map(task => task.hatchingDate);
     //   return res.status(200).send(hatchingDates);
     // }
+
+    console.log(tasks)
+    console.log("kkk")
     return res.status(200).send(tasks);
   } catch (err) {
     next(err);
