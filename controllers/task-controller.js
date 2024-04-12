@@ -283,7 +283,7 @@ for (let task of tasks) {
             }
           }
         });
-        console.log(`Populated data for ${task.taskType} with ID ${task._id}:`, populatedTask);
+        console.log(`Populated data for ${task.taskType} with ID ${task._id}:`);
 
         break;
       case 'medicalCareTask':
