@@ -261,7 +261,6 @@ for (let task of tasks) {
     switch (task.taskType) {
       case 'birdRecordTask':
       case 'earlyFeedingTask':
-          console.log(`Processing ${task.taskType} with ID ${task._id}`);
 
         populateOptions.push({
           path: 'eggBirdId',
@@ -283,7 +282,6 @@ for (let task of tasks) {
             }
           }
         });
-        console.log(`Populated data for ${task.taskType} with ID ${task._id}:`);
 
         break;
       case 'medicalCareTask':
@@ -353,7 +351,6 @@ for (let task of tasks) {
           }
         });
         break;
-      // Add more cases for different task types as needed
     }
 
     if (populateOptions.length > 0) {
@@ -368,8 +365,7 @@ for (let task of tasks) {
     //   return res.status(200).send(hatchingDates);
     // }
 
-    console.log(tasks)
-    console.log("kkk")
+   
     return res.status(200).send(tasks);
   } catch (err) {
     next(err);
