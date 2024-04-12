@@ -259,8 +259,8 @@ for (let task of tasks) {
     const populateOptions = [];
 
     switch (task.taskType) {
-      case 'hatchingTask':
-      case 'fertilityTask':
+      case 'birdRecordTask':
+      case 'earlyFeedingTask':
           console.log(`Processing ${task.taskType} with ID ${task._id}`);
 
         populateOptions.push({
@@ -283,6 +283,8 @@ for (let task of tasks) {
             }
           }
         });
+        console.log(`Populated data for ${task.taskType} with ID ${task._id}:`, populatedTask);
+
         break;
       case 'medicalCareTask':
        if (task.treatmentId) {
@@ -332,8 +334,8 @@ for (let task of tasks) {
         });
       }
         break;
-      case 'earlyFeedingTask':
-      case 'birdRecordTask':
+      case 'hatchingTask':
+      case 'fertilityTask':
         populateOptions.push({
           path: 'eggId',
           select: 'clutch eggsLaidDate status eggNumber',
