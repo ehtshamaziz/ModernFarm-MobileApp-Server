@@ -255,14 +255,13 @@ for (let task of tasks) {
   }else{
       tasks = await Tasks.find({ user: req.params.id})
 
-  
   for (let task of tasks) {
-    let populateQuery = Tasks.findById(task._id); // Start a query to repopulate the task
+    const populateOptions = [];
 
     switch (task.taskType) {
       case 'hatchingTask':
       case 'fertilityTask':
-        populateQuery = populateQuery.populate({
+        populateOptions.push({
           path: 'eggBirdId',
           select: 'birdId birdSpecie birdName eggID cageNumber farm birdId gender birthDate exactBirthDate status source price imageURL couple ringNumber',
           populate: {
@@ -284,44 +283,56 @@ for (let task of tasks) {
         });
         break;
       case 'medicalCareTask':
-        if (task.treatmentId) {
-          populateQuery = populateQuery.populate({
-            path: 'treatmentId',
-            select: 'treatmentStartDate treatmentName'
-          });
-        }
-        if (task.birdId) {
-          populateQuery = populateQuery.populate({
-            path: 'birdId'
-          });
-        }
-        if (task.coupleId) {
-          populateQuery = populateQuery.populate({
-            path: 'coupleId'
-          });
-        }
+       if (task.treatmentId) {
+        populateOptions.push({
+          path: 'treatmentId',
+          select: 'treatmentStartDate treatmentName',
+          // Add more populate options here if needed
+        });
+      }
+
+      if (task.birdId) {
+        populateOptions.push({
+          path: 'birdId',
+          // Specify select fields if needed, e.g., 'name age'
+        });
+      }
+
+      // Check if coupleId exists and push its populate option
+      if (task.coupleId) {
+        populateOptions.push({
+          path: 'coupleId',
+          // Specify select fields if needed
+        });
+      }
         break;
       case 'nutritionTask':
-        if (task.nutritionId) {
-          populateQuery = populateQuery.populate({
-            path: 'nutritionId',
-            select: 'mealDescription'
-          });
-        }
-        if (task.birdId) {
-          populateQuery = populateQuery.populate({
-            path: 'birdId'
-          });
-        }
-        if (task.coupleId) {
-          populateQuery = populateQuery.populate({
-            path: 'coupleId'
-          });
-        }
+    if (task.nutritionId) {
+        populateOptions.push({
+          path: 'nutritionId',
+          select: 'mealDescription',
+          // Add more populate options here if needed
+        });
+      }
+
+      if (task.birdId) {
+        populateOptions.push({
+          path: 'birdId',
+          // Specify select fields if needed, e.g., 'name age'
+        });
+      }
+
+      // Check if coupleId exists and push its populate option
+      if (task.coupleId) {
+        populateOptions.push({
+          path: 'coupleId',
+          // Specify select fields if needed
+        });
+      }
         break;
       case 'earlyFeedingTask':
       case 'birdRecordTask':
-        populateQuery = populateQuery.populate({
+        populateOptions.push({
           path: 'eggId',
           select: 'clutch eggsLaidDate status eggNumber',
           populate: {
@@ -341,12 +352,12 @@ for (let task of tasks) {
       // Add more cases for different task types as needed
     }
 
-    // Execute the populated query for each task
-    if (populateQuery) {
-      task = await populateQuery.exec();
+    if (populateOptions.length > 0) {
+      await Tasks.populate(task, populateOptions);
     }
   }
-}
+
+  }
     
     // if (req.query.hatching === 'true') {
     //   const hatchingDates = tasks.map(task => task.hatchingDate);
