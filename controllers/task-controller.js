@@ -261,6 +261,8 @@ for (let task of tasks) {
     switch (task.taskType) {
       case 'hatchingTask':
       case 'fertilityTask':
+          console.log(`Processing ${task.taskType} with ID ${task._id}`);
+
         populateOptions.push({
           path: 'eggBirdId',
           select: 'birdId birdSpecie birdName eggID cageNumber farm birdId gender birthDate exactBirthDate status source price imageURL couple ringNumber',
