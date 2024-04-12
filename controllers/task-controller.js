@@ -261,7 +261,7 @@ for (let task of tasks) {
     switch (task.taskType) {
       case 'hatchingTask':
       case 'fertilityTask':
-       populateOptions = [{
+        populateOptions.push({
           path: 'eggBirdId',
           select: 'birdId birdSpecie birdName eggID cageNumber farm birdId gender birthDate exactBirthDate status source price imageURL couple ringNumber',
           populate: {
@@ -275,13 +275,12 @@ for (let task of tasks) {
                 select: 'coupleId specie',
                 populate: {
                   path: 'specie',
-                  select: 'addRingAfter incubation startFeedingAfter'
+                  select: 'addRingAfter incubation addRingAfter startFeedingAfter'
                 }
               }
             }
           }
-        }];
-        
+        });
         break;
       case 'medicalCareTask':
        if (task.treatmentId) {
@@ -333,7 +332,7 @@ for (let task of tasks) {
         break;
       case 'earlyFeedingTask':
       case 'birdRecordTask':
-         populateOptions = [{
+        populateOptions.push({
           path: 'eggId',
           select: 'clutch eggsLaidDate status eggNumber',
           populate: {
@@ -348,16 +347,15 @@ for (let task of tasks) {
               }
             }
           }
-        }];
+        });
         break;
       // Add more cases for different task types as needed
     }
 
-   if (populateOptions.length > 0) {
+    if (populateOptions.length > 0) {
       await Tasks.populate(task, populateOptions);
-    }   
+    }
   }
-
 
   }
     
