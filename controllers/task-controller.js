@@ -252,6 +252,9 @@ for (let task of tasks) {
     }
   });
 
+  } else if(req.query.allTask==='true'){
+     tasks = await Tasks.find({ user: req.params.id})
+
   }else{
       tasks = await Tasks.find({ user: req.params.id})
 
