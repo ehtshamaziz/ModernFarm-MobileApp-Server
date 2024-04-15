@@ -475,7 +475,7 @@ async function sendOwnerMessage(tasks){
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
-                        date:task.taskDate, 
+                        date:task.taskDate.toLocaleDateString(), 
                         type:`${task.taskType}`,
                         workerName:`${owner.firstName}`,
                        description: `Hatching task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
@@ -518,7 +518,7 @@ async function sendOwnerMessage(tasks){
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
-                        date:task.taskDate,
+                        date:task.taskDate.toLocaleDateString(),
                         type:`${task.taskType}`,
                         workerName:`${owner.firstName}`,
                        description: `Fertility task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
@@ -557,7 +557,7 @@ async function sendOwnerMessage(tasks){
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
-                        date:task.taskDate,
+                        date:task.taskDate.toLocaleDateString(),
                         type:`${task.taskType}`,
                         workerName:`${owner.firstName}`,
                         description: `A treatment task is scheduled ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} on ${task.taskDate.toLocaleDateString()}.`,
@@ -599,7 +599,7 @@ async function sendOwnerMessage(tasks){
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
-                        date:task.taskDate, 
+                        date:task.taskDate.toLocaleDateString(), 
                         type:`${task.taskType}`,
                         workerName:`${owner.firstName}`,
                         description: `A nutrition task is scheduled ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? '  for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate.toLocaleDateString()}.`,
@@ -641,7 +641,7 @@ async function sendOwnerMessage(tasks){
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
-                        date:task.taskDate, 
+                        date:task.taskDate.toLocaleDateString(), 
                         type:`${task.taskType}`,
                         workerName:`${owner.firstName}`,
                         description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
@@ -681,7 +681,7 @@ async function sendOwnerMessage(tasks){
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
-                        date:task.taskDate, 
+                        date:task.taskDate.toLocaleDateString(), 
                         type:`${task.taskType}`,
                         workerName:`${owner.firstName}`,
                         description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
@@ -739,7 +739,7 @@ async function sendOwnerMessage(tasks){
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
-                        date:task.taskDate,
+                        date:task.taskDate.toLocaleDateString(),
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
                        description: `Hatching task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
@@ -785,7 +785,7 @@ async function sendOwnerMessage(tasks){
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
-                        date:task.taskDate, 
+                        date:task.taskDate.toLocaleDateString(), 
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
                        description: `Fertility task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
@@ -829,7 +829,7 @@ async function sendOwnerMessage(tasks){
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
                         type:`${task.taskType}`,
-                        date:task.taskDate,
+                        date:task.taskDate.toLocaleDateString(),
                         workerName:`${worker.fullName}`,
                         description: `A treatment task is scheduled ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} on ${task.taskDate.toLocaleDateString()}.`,
                        
@@ -875,7 +875,7 @@ async function sendOwnerMessage(tasks){
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
-                        date:task.taskDate, 
+                        date:task.taskDate.toLocaleDateString(), 
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
                         description: `A nutrition task is scheduled ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? ' and for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate.toLocaleDateString()}.`,
@@ -923,7 +923,7 @@ async function sendOwnerMessage(tasks){
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
-                        date:task.taskDate,
+                        date:task.taskDate.toLocaleDateString(),
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
                         description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
@@ -970,7 +970,7 @@ async function sendOwnerMessage(tasks){
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
-                        date:task.taskDate,
+                        date:task.taskDate.toLocaleDateString(),
                         type:`${task.taskType}`,
                         workerName:`${worker.fullName}`,
                         description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
@@ -1028,7 +1028,7 @@ async function sendOwnerMessage(tasks){
     data: {
       hello: 'world!',
       taskId: `${task._id}`,
-      date:task.taskDate,
+      date:task.taskDate.toLocaleDateString(),
       type: `${task.taskType}`,
       description:`Hatching task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
       taskType:"owner",
@@ -1062,7 +1062,7 @@ async function sendOwnerMessage(tasks){
     data: {
       hello: 'world!',
       taskId: `${task._id}`,
-      date:task.taskDate,
+      date:task.taskDate.toLocaleDateString(),
       type: `${task.taskType}`,
       description:`Fertility task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
       taskType:"owner",
@@ -1092,7 +1092,7 @@ async function sendOwnerMessage(tasks){
     data: {
       hello: 'world!',
       taskId: `${task._id}`,
-      date:task.taskDate,
+      date:task.taskDate.toLocaleDateString(),
       type: `${task.taskType}`,
       description:`A treatment task  ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
       taskType:"owner",
@@ -1128,7 +1128,7 @@ async function sendOwnerMessage(tasks){
     data: {
       hello: 'world!',
       taskId: `${task._id}`,
-      date:task.taskDate,
+      date:task.taskDate.toLocaleDateString(),
       type: `${task.taskType}`,
       description:`A nutrition task  ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? ' and for couple ' + populatedTask.coupleId.coupleId : ''} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
       taskType:"owner",
@@ -1164,7 +1164,7 @@ async function sendOwnerMessage(tasks){
     data: {
       hello: 'world!',
       taskId: `${task._id}`,
-      date:task.taskDate,
+      date:task.taskDate.toLocaleDateString(),
       type: `${task.taskType}`,
       description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
       taskType:"owner",
@@ -1198,7 +1198,7 @@ async function sendOwnerMessage(tasks){
     data: {
       hello: 'world!',
       taskId: `${task._id}`,
-      date:task.taskDate,
+      date:task.taskDate.toLocaleDateString(),
       type: `${task.taskType}`,
       description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has been completed by ${task.workerId ?worker.fullName :owner.firstName}`,
       taskType:"owner",
