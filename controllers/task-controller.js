@@ -999,7 +999,7 @@ async function sendOwnerMessage(tasks){
     }
 }
 
-async function SendCronMessage(next){
+async function SendCronMessage(req, res,next){
   try{
     const currentDate=new Date();
     const users=await User.find();
@@ -1018,12 +1018,16 @@ async function SendCronMessage(next){
         }
       } 
     }
+        return res.status(200).send("Messages sent successfully!");
+   
+
 
   }catch(err){
     console.log(err)
+    return res.status(500).send("An error occurred while sending messages.");
+
   }
   finally {
-    return res.status(200).message("Messages send!");   
  // wtf.dump(); // This will log out open handles
   }
 }
