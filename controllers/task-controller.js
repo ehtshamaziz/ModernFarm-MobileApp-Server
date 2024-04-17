@@ -1002,19 +1002,19 @@ async function SendCronMessage(next){
   try{
     const currentDate=new Date();
     const users=await User.find();
-    users.forEach(user => {
-      const workers= Worker.find({user:user._id});
+    for(const user of users){
+      const workers= await Worker.find({user:user._id});
 
-      const task=Tasks.find({user:user._id, action:false,taskDate: { $lte: currentDate }});
-      task.forEach(task => {
-        sendNotificationMessage(user.userToken, task)
-        workers.foreach(worker=>{
-        if(worker.accessRights[task.taskType] && worker.workerToken){
-        sendNotificationMessage(worker.workerToken, task)
-        }})      
-      });
-    });
-
+      const tasks=await Tasks.find({user:user._id, action:false,taskDate: { $lte: currentDate }});
+      for (const task of tasks){
+        await sendNotificationMessage(user.userToken, task)
+        for (const worker of workers){
+         if(worker.accessRights[task.taskType] && worker.workerToken){
+           await sendNotificationMessage(worker.workerToken, task)
+        }
+        }
+      } 
+    }
 
   }catch(err){
     console.log(err)
