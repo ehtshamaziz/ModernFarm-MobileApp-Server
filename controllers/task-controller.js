@@ -3,6 +3,7 @@ const Egg=require("../models/egg")
 const User=require("../models/user");
 const Worker=require("../models/workers");
 
+const mongoose = require("mongoose");
 
 var admin = require('firebase-admin');
 
