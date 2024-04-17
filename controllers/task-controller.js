@@ -1002,7 +1002,6 @@ async function SendCronMessage(next){
   try{
     const currentDate=new Date();
     const users=await User.find();
-    users.save();
     users.forEach(user => {
       const workers= Worker.find({user:user._id});
 
