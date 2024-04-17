@@ -474,7 +474,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", owner._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -517,7 +517,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", owner._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -556,7 +556,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", owner._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -598,7 +598,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", owner._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -640,7 +640,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", owner._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -680,7 +680,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", owner._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -738,7 +738,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", worker._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
@@ -784,7 +784,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", worker._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -827,7 +827,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", worker._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
@@ -874,7 +874,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", worker._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -922,7 +922,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", worker._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
@@ -969,7 +969,7 @@ async function sendOwnerMessage(tasks){
             if (tokens && tokens.length > 0){
                 console.log("Sending message for task", task._id, "to worker", worker._id);
                  admin.messaging().send({
-                    token:tokens, // Array of device tokens
+                    token:tokens, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
@@ -1007,7 +1007,10 @@ async function SendCronMessage(next){
 
       const tasks=await Tasks.find({user:user._id, action:false,taskDate: { $lte: currentDate }});
       for (const task of tasks){
+        if(user.userToken){
         await sendNotificationMessage(user.userToken, task)
+
+        }
         for (const worker of workers){
          if(worker.accessRights[task.taskType] && worker.workerToken){
            await sendNotificationMessage(worker.workerToken, task)
@@ -1036,7 +1039,7 @@ async function sendNotificationMessage(token,task){
             });
 
             admin.messaging().send({
-                    token:token, // Array of device tokens
+                    token:token, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -1069,7 +1072,7 @@ async function sendNotificationMessage(token,task){
               ]
             });
             admin.messaging().send({
-                    token:token, // Array of device tokens
+                    token:token, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -1098,7 +1101,7 @@ async function sendNotificationMessage(token,task){
           ]);
 
       admin.messaging().send({
-                    token:token, // Array of device tokens
+                    token:token, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
@@ -1126,7 +1129,7 @@ async function sendNotificationMessage(token,task){
           { path:"coupleId",select:"coupleId"}
           ]);
           admin.messaging().send({
-                    token:token, // Array of device tokens
+                    token:token, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -1157,7 +1160,7 @@ async function sendNotificationMessage(token,task){
               // ]
             });
               admin.messaging().send({
-                    token:token, // Array of device tokens
+                    token:token, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`,
@@ -1187,7 +1190,7 @@ async function sendNotificationMessage(token,task){
               // ]
             });
             admin.messaging().send({
-                    token:token, // Array of device tokens
+                    token:token, 
                     data: {
                         hello: 'world!', // Customize your message payload as needed
                         taskId: `${task._id}`, 
