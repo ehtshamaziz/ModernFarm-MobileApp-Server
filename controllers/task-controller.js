@@ -1023,8 +1023,8 @@ async function SendCronMessage(next){
     console.log(err)
   }
   finally {
-    await mongoose.disconnect();
-    // wtf.dump(); // This will log out open handles
+    return res.status(200).message("Messages send!");   
+ // wtf.dump(); // This will log out open handles
   }
 }
 
