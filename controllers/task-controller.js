@@ -998,6 +998,221 @@ async function sendOwnerMessage(tasks){
     }
 }
 
+async function SendCronMessage(){
+  try{
+    const currentDate=new Date();
+    const users=await User.find();
+    users.save();
+    users.forEach(user => {
+      const workers= Worker.find({user:user._id});
+
+      const task=Tasks.find({user:user._id, action:false,taskDate: { $lte: currentDate }});
+      task.forEach(task => {
+        sendNotificationMessage(user.userToken, task)
+        workers.foreach(worker=>{
+        if(worker.accessRights[task.taskType] && worker.workerToken){
+        sendNotificationMessage(worker.workerToken, task)
+        }})      
+      });
+    });
+
+
+  }catch(err){
+    next(err)
+
+  }
+}
+
+async function sendNotificationMessage(token,task){
+  let populatedTask;
+  switch (task.taskType){
+
+    case "hatchingTask":
+       populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggId",
+              select:"eggNumber parentCouple clutch",
+              populate:[
+                {path:"clutch",select:"clutchNumber"},
+                {path:"parentCouple",select:"coupleId"}
+              ]
+            });
+
+            admin.messaging().send({
+                    token:token, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`,
+                        date:task.taskDate.toLocaleDateString(), 
+                        type:`${task.taskType}`,
+                        // workerName:`${owner.firstName}`,
+                       description: `Hatching task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
+                        url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+
+
+      break;
+      case "fertilityTask":
+
+        populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggId",
+              select:"eggNumber parentCouple clutch",
+              populate:[
+                {path:"clutch",select:"clutchNumber"},
+                {path:"parentCouple",select:"coupleId"}
+              ]
+            });
+            admin.messaging().send({
+                    token:token, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`,
+                        date:task.taskDate.toLocaleDateString(), 
+                        type:`${task.taskType}`,
+                        // workerName:`${worker.fullName}`,
+                       description: `Fertility task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
+                        url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+
+
+      break;
+      case "medicalCareTask":
+         populatedTask = await Tasks.findById(task._id).populate([
+          { path:"birdId",select:"birdId"},
+          { path:"coupleId",select:"coupleId"}
+          ]);
+
+      admin.messaging().send({
+                    token:token, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`, 
+                        type:`${task.taskType}`,
+                        date:task.taskDate.toLocaleDateString(),
+                        // workerName:`${worker.fullName}`,
+                        description: `A treatment task is scheduled ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} on ${task.taskDate.toLocaleDateString()}.`,
+                       
+                        url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+      break;
+      case "nutritionTask":
+        
+           populatedTask = await Tasks.findById(task._id).populate([
+          { path:"birdId",select:"birdId"},
+          { path:"coupleId",select:"coupleId"}
+          ]);
+          admin.messaging().send({
+                    token:token, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`,
+                        date:task.taskDate.toLocaleDateString(), 
+                        type:`${task.taskType}`,
+                        // workerName:`${worker.fullName}`,
+                        description: `A nutrition task is scheduled ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? ' and for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate.toLocaleDateString()}.`,
+                    
+                        url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+      break;
+      case "earlyFeedingTask":
+             populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggBirdId",
+              select:"birdId birdName eggId",
+              // populate:[
+              //   {path:"clutch",select:"clutchNumber"},
+              //   {path:"parentCouple",select:"coupleId"}
+              // ]
+            });
+              admin.messaging().send({
+                    token:token, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`,
+                        date:task.taskDate.toLocaleDateString(), 
+                        type:`${task.taskType}`,
+                        // workerName:`${owner.firstName}`,
+                        description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
+                        url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+      break;
+      case "birdRecordTask":
+         populatedTask = await Tasks.findById(task._id).populate({
+              path:"eggBirdId",
+              select:"birdId birdName eggId",
+              // populate:[
+              //   {path:"clutch",select:"clutchNumber"},
+              //   {path:"parentCouple",select:"coupleId"}
+              // ]
+            });
+            admin.messaging().send({
+                    token:token, // Array of device tokens
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`, 
+                        date:task.taskDate.toLocaleDateString(),
+                        type:`${task.taskType}`,
+                        // workerName:`${worker.fullName}`,
+                        description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
+                        url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+      break;
+  }
+
+
+}
 
 
    async function sendMessage(task) {
@@ -1468,6 +1683,7 @@ module.exports={
     CreateTasks,
     UpdateTasks,
     DeleteTasks,
-    SendAllTasks
+    SendAllTasks,
+    SendCronMessage,
 
 }

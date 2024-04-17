@@ -16,7 +16,8 @@ router.get("/user/:id", tasksController.GetUserTasks);
 // SEND ALL NOTIFICATIONS
 router.get('/send/user/:id',tasksController.SendNotification);
 
-// GET ALL TASKS
+// SEND CRON NOTIFICATIONS
+router.get("/cron/notification",tasksController.SendCronMessage);
 
 
 router.get('/all/',tasksController.SendAllTasks)
