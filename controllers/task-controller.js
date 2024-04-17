@@ -3,7 +3,6 @@ const Egg=require("../models/egg")
 const User=require("../models/user");
 const Worker=require("../models/workers");
 
-const mongoose = require("mongoose");
 
 var admin = require('firebase-admin');
 
@@ -376,31 +375,32 @@ for (let task of tasks) {
   }
 };
 
-const SendNotification=async (req,res,next)=>{
+// const SendNotification=async (req,res,next)=>{
     
-  // const tasks = new Tasks(req.body);
+//   // const tasks = new Tasks(req.body);
 
-  console.log("helppp")
+//   console.log("helppp")
 
-  try{
-    const currentDate = new Date();
-    // currentDate.setHours(0, 0, 0, 0);
+//   try{
+//     const currentDate = new Date();
+//     // currentDate.setHours(0, 0, 0, 0);
      
-     const tasks = await Tasks.find({ user: req.params.id, action:false,taskDate: { $lte: currentDate }})
-      // console.log(tasks);
-      if(tasks.length>=0){
-      await sendOwnerMessage(tasks);
+//      const tasks = await Tasks.find({ user: req.params.id, action:false,taskDate: { $lte: currentDate }})
+//       // console.log(tasks);
+//       if(tasks.length>=0){
+//       await sendOwnerMessage(tasks);
 
-      await sendAllMessage(tasks);
+//       await sendAllMessage(tasks);
 
-      }
+//       }
 
-  }catch(error){
-    console.log(error)
-  }
-}
+//   }catch(error){
+//     console.log(error)
+//   }
+// }
 
 // CREATE NEW TASKS
+
 const CreateTasks = async (req, res, next) => {
   const tasks = new Tasks(req.body);
   try {
@@ -417,6 +417,7 @@ const UpdateTasks = async (req, res, next) => {
     const tasks = await Tasks.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+
     await sendMessage(tasks);
     return res.status(200).json(tasks);
   } catch (err) {
@@ -440,564 +441,564 @@ async function getTokensFromDatastore(userId) {
   }
 }
 
-async function sendOwnerMessage(tasks){
-  console.log(tasks)
-  console.log("taskssssss")
+// async function sendOwnerMessage(tasks){
+//   console.log(tasks)
+//   console.log("taskssssss")
 
-  for (const task of tasks) {
-  console.log("ownerrssssss")
-          const owner = await User.findById(task.user)
+//   for (const task of tasks) {
+//   console.log("ownerrssssss")
+//           const owner = await User.findById(task.user)
 
-        console.log(task.farm);
+//         console.log(task.farm);
 
-        if(task.taskType==='hatchingTask'){
-          console.log("hattttttttttt")
-        //    const users = await User.find({
-        //     farm: task.farm,
+//         if(task.taskType==='hatchingTask'){
+//           console.log("hattttttttttt")
+//         //    const users = await User.find({
+//         //     farm: task.farm,
           
-        // });
-       const populatedTask = await Tasks.findById(task._id).populate({
-              path:"eggId",
-              select:"eggNumber parentCouple clutch",
-              populate:[
-                {path:"clutch",select:"clutchNumber"},
-                {path:"parentCouple",select:"coupleId"}
-              ]
-            });
-        console.log("Owner found for task:", owner);
+//         // });
+//        const populatedTask = await Tasks.findById(task._id).populate({
+//               path:"eggId",
+//               select:"eggNumber parentCouple clutch",
+//               populate:[
+//                 {path:"clutch",select:"clutchNumber"},
+//                 {path:"parentCouple",select:"coupleId"}
+//               ]
+//             });
+//         console.log("Owner found for task:", owner);
 
-        // for (const user of users) {
-            const tokens = owner.userToken // Assuming getTokensFromDatastore returns tokens array
+//         // for (const user of users) {
+//             const tokens = owner.userToken // Assuming getTokensFromDatastore returns tokens array
      
 
-            console.log("Tokens for worker", owner._id, tokens);
+//             console.log("Tokens for worker", owner._id, tokens);
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", owner._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`,
-                        date:task.taskDate.toLocaleDateString(), 
-                        type:`${task.taskType}`,
-                        workerName:`${owner.firstName}`,
-                       description: `Hatching task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
-                        url: "modernfarm://AllNotifications",
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", owner._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`,
+//                         date:task.taskDate.toLocaleDateString(), 
+//                         type:`${task.taskType}`,
+//                         workerName:`${owner.firstName}`,
+//                        description: `Hatching task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-            // }
-        }
-        }
-         else if (task.taskType==='fertilityTask'){
-             console.log("fertttttttt")
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//             // }
+//         }
+//         }
+//          else if (task.taskType==='fertilityTask'){
+//              console.log("fertttttttt")
 
-         const populatedTask = await Tasks.findById(task._id).populate({
-              path:"eggId",
-              select:"eggNumber parentCouple clutch",
-              populate:[
-                {path:"clutch",select:"clutchNumber"},
-                {path:"parentCouple",select:"coupleId"}
-              ]
-            });
-        console.log("Owner found for task:", owner);
+//          const populatedTask = await Tasks.findById(task._id).populate({
+//               path:"eggId",
+//               select:"eggNumber parentCouple clutch",
+//               populate:[
+//                 {path:"clutch",select:"clutchNumber"},
+//                 {path:"parentCouple",select:"coupleId"}
+//               ]
+//             });
+//         console.log("Owner found for task:", owner);
 
-        // for (const worker of workers) {
-            const tokens =owner.userToken // Assuming getTokensFromDatastore returns tokens array
+//         // for (const worker of workers) {
+//             const tokens =owner.userToken // Assuming getTokensFromDatastore returns tokens array
 
-            console.log("Tokens for worker", owner._id, tokens);
+//             console.log("Tokens for worker", owner._id, tokens);
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", owner._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`,
-                        date:task.taskDate.toLocaleDateString(),
-                        type:`${task.taskType}`,
-                        workerName:`${owner.firstName}`,
-                       description: `Fertility task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
-                        url: "modernfarm://AllNotifications",
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", owner._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`,
+//                         date:task.taskDate.toLocaleDateString(),
+//                         type:`${task.taskType}`,
+//                         workerName:`${owner.firstName}`,
+//                        description: `Fertility task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-            // }
-        }
-        }
-        else if (task.taskType==='medicalCareTask'){
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//             // }
+//         }
+//         }
+//         else if (task.taskType==='medicalCareTask'){
            
-      const populatedTask = await Tasks.findById(task._id).populate([
-          { path:"birdId",select:"birdId"},
-          { path:"coupleId",select:"coupleId"}
-          ]);
+//       const populatedTask = await Tasks.findById(task._id).populate([
+//           { path:"birdId",select:"birdId"},
+//           { path:"coupleId",select:"coupleId"}
+//           ]);
 
-        console.log("Owner found for task:", owner);
+//         console.log("Owner found for task:", owner);
 
-        // for (const worker of workers) {
-            const tokens = owner.userToken// Assuming getTokensFromDatastore returns tokens array
+//         // for (const worker of workers) {
+//             const tokens = owner.userToken// Assuming getTokensFromDatastore returns tokens array
 
-            console.log("Tokens for worker", owner._id, tokens);
+//             console.log("Tokens for worker", owner._id, tokens);
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", owner._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`,
-                        date:task.taskDate.toLocaleDateString(),
-                        type:`${task.taskType}`,
-                        workerName:`${owner.firstName}`,
-                        description: `A treatment task is scheduled ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} on ${task.taskDate.toLocaleDateString()}.`,
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", owner._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`,
+//                         date:task.taskDate.toLocaleDateString(),
+//                         type:`${task.taskType}`,
+//                         workerName:`${owner.firstName}`,
+//                         description: `A treatment task is scheduled ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} on ${task.taskDate.toLocaleDateString()}.`,
                        
-                        url: "modernfarm://AllNotifications",
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-            // }
-        }
-        }
-        else if (task.taskType==='nutritionTask'){
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//             // }
+//         }
+//         }
+//         else if (task.taskType==='nutritionTask'){
      
 
 
-          const populatedTask = await Tasks.findById(task._id).populate([
-          { path:"birdId",select:"birdId"},
-          { path:"coupleId",select:"coupleId"}
-          ]);
+//           const populatedTask = await Tasks.findById(task._id).populate([
+//           { path:"birdId",select:"birdId"},
+//           { path:"coupleId",select:"coupleId"}
+//           ]);
 
 
-        // for (const worker of workers) {
-            const tokens = owner.userToken // Assuming getTokensFromDatastore returns tokens array
+//         // for (const worker of workers) {
+//             const tokens = owner.userToken // Assuming getTokensFromDatastore returns tokens array
 
-            console.log("Tokens for worker", owner._id, tokens);
+//             console.log("Tokens for worker", owner._id, tokens);
 
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", owner._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`,
-                        date:task.taskDate.toLocaleDateString(), 
-                        type:`${task.taskType}`,
-                        workerName:`${owner.firstName}`,
-                        description: `A nutrition task is scheduled ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? '  for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate.toLocaleDateString()}.`,
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", owner._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`,
+//                         date:task.taskDate.toLocaleDateString(), 
+//                         type:`${task.taskType}`,
+//                         workerName:`${owner.firstName}`,
+//                         description: `A nutrition task is scheduled ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? '  for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate.toLocaleDateString()}.`,
                     
-                        url: "modernfarm://AllNotifications",
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-            }
-        // }
-        }
-        else if (task.taskType==='externalFeedingTask'){
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//             }
+//         // }
+//         }
+//         else if (task.taskType==='externalFeedingTask'){
            
-               const populatedTask = await Tasks.findById(task._id).populate({
-              path:"eggBirdId",
-              select:"birdId birdName eggId",
-              // populate:[
-              //   {path:"clutch",select:"clutchNumber"},
-              //   {path:"parentCouple",select:"coupleId"}
-              // ]
-            });
+//                const populatedTask = await Tasks.findById(task._id).populate({
+//               path:"eggBirdId",
+//               select:"birdId birdName eggId",
+//               // populate:[
+//               //   {path:"clutch",select:"clutchNumber"},
+//               //   {path:"parentCouple",select:"coupleId"}
+//               // ]
+//             });
 
 
-            const tokens = owner.userToken // Assuming getTokensFromDatastore returns tokens array
+//             const tokens = owner.userToken // Assuming getTokensFromDatastore returns tokens array
 
-            console.log("Tokens for worker", owner._id, tokens);
+//             console.log("Tokens for worker", owner._id, tokens);
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", owner._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`,
-                        date:task.taskDate.toLocaleDateString(), 
-                        type:`${task.taskType}`,
-                        workerName:`${owner.firstName}`,
-                        description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
-                        url: "modernfarm://AllNotifications",
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", owner._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`,
+//                         date:task.taskDate.toLocaleDateString(), 
+//                         type:`${task.taskType}`,
+//                         workerName:`${owner.firstName}`,
+//                         description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-        }
-        }
-         else if (task.taskType==='birdRecordTask'){
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//         }
+//         }
+//          else if (task.taskType==='birdRecordTask'){
       
-         const populatedTask = await Tasks.findById(task._id).populate({
-              path:"eggBirdId",
-              select:"birdId birdName eggId",
-              // populate:[
-              //   {path:"clutch",select:"clutchNumber"},
-              //   {path:"parentCouple",select:"coupleId"}
-              // ]
-            });
+//          const populatedTask = await Tasks.findById(task._id).populate({
+//               path:"eggBirdId",
+//               select:"birdId birdName eggId",
+//               // populate:[
+//               //   {path:"clutch",select:"clutchNumber"},
+//               //   {path:"parentCouple",select:"coupleId"}
+//               // ]
+//             });
 
 
-            const tokens = owner.userToken// Assuming getTokensFromDatastore returns tokens array
+//             const tokens = owner.userToken// Assuming getTokensFromDatastore returns tokens array
 
-            console.log("Tokens for worker", owner._id, tokens);
+//             console.log("Tokens for worker", owner._id, tokens);
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", owner._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`,
-                        date:task.taskDate.toLocaleDateString(), 
-                        type:`${task.taskType}`,
-                        workerName:`${owner.firstName}`,
-                        description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
-                        url: "modernfarm://AllNotifications",
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", owner._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`,
+//                         date:task.taskDate.toLocaleDateString(), 
+//                         type:`${task.taskType}`,
+//                         workerName:`${owner.firstName}`,
+//                         description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-            }
-        }
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//             }
+//         }
         
 
 
        
-    }
-}
+//     }
+// }
 
-   async function sendAllMessage(tasks) {
+//    async function sendAllMessage(tasks) {
 
-      for (const task of tasks) {
-        console.log(task.farm);
+//       for (const task of tasks) {
+//         console.log(task.farm);
 
-        if(task.taskType==='hatchingTask'){
-           const workers = await Worker.find({
-            farm: task.farm,
-           'notificationRights.hatching': true,
+//         if(task.taskType==='hatchingTask'){
+//            const workers = await Worker.find({
+//             farm: task.farm,
+//            'notificationRights.hatching': true,
           
-        });
-       const populatedTask = await Tasks.findById(task._id).populate({
-              path:"eggId",
-              select:"eggNumber parentCouple clutch",
-              populate:[
-                {path:"clutch",select:"clutchNumber"},
-                {path:"parentCouple",select:"coupleId"}
-              ]
-            });
-        console.log("Workers found for task:", workers);
+//         });
+//        const populatedTask = await Tasks.findById(task._id).populate({
+//               path:"eggId",
+//               select:"eggNumber parentCouple clutch",
+//               populate:[
+//                 {path:"clutch",select:"clutchNumber"},
+//                 {path:"parentCouple",select:"coupleId"}
+//               ]
+//             });
+//         console.log("Workers found for task:", workers);
 
-        for (const worker of workers) {
-            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+//         for (const worker of workers) {
+//             const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
      
 
-            console.log("Tokens for worker", worker._id, tokens);
+//             console.log("Tokens for worker", worker._id, tokens);
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", worker._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`, 
-                        date:task.taskDate.toLocaleDateString(),
-                        type:`${task.taskType}`,
-                        workerName:`${worker.fullName}`,
-                       description: `Hatching task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
-                        url: "modernfarm://AllNotifications",
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", worker._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`, 
+//                         date:task.taskDate.toLocaleDateString(),
+//                         type:`${task.taskType}`,
+//                         workerName:`${worker.fullName}`,
+//                        description: `Hatching task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-            }
-        }
-        }
-         else if (task.taskType==='fertilityTask'){
-           const workers = await Worker.find({
-            farm: task.farm,
-           'notificationRights.fertility': true,
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//             }
+//         }
+//         }
+//          else if (task.taskType==='fertilityTask'){
+//            const workers = await Worker.find({
+//             farm: task.farm,
+//            'notificationRights.fertility': true,
           
-        });
-         const populatedTask = await Tasks.findById(task._id).populate({
-              path:"eggId",
-              select:"eggNumber parentCouple clutch",
-              populate:[
-                {path:"clutch",select:"clutchNumber"},
-                {path:"parentCouple",select:"coupleId"}
-              ]
-            });
-        console.log("Workers found for task:", workers);
+//         });
+//          const populatedTask = await Tasks.findById(task._id).populate({
+//               path:"eggId",
+//               select:"eggNumber parentCouple clutch",
+//               populate:[
+//                 {path:"clutch",select:"clutchNumber"},
+//                 {path:"parentCouple",select:"coupleId"}
+//               ]
+//             });
+//         console.log("Workers found for task:", workers);
 
-        for (const worker of workers) {
-            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+//         for (const worker of workers) {
+//             const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
 
-            console.log("Tokens for worker", worker._id, tokens);
+//             console.log("Tokens for worker", worker._id, tokens);
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", worker._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`,
-                        date:task.taskDate.toLocaleDateString(), 
-                        type:`${task.taskType}`,
-                        workerName:`${worker.fullName}`,
-                       description: `Fertility task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
-                        url: "modernfarm://AllNotifications",
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", worker._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`,
+//                         date:task.taskDate.toLocaleDateString(), 
+//                         type:`${task.taskType}`,
+//                         workerName:`${worker.fullName}`,
+//                        description: `Fertility task for egg number ${populatedTask.eggId.eggNumber}, part of clutch number ${populatedTask.eggId.clutch.clutchNumber}, from parent couple ${populatedTask.eggId.parentCouple.coupleId}. This task is scheduled to be completed on ${task.taskDate.toLocaleDateString()}.`,
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-            }
-        }
-        }
-        else if (task.taskType==='medicalCareTask'){
-           const workers = await Worker.find({
-            farm: task.farm,
-           'notificationRights.medicine': true,
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//             }
+//         }
+//         }
+//         else if (task.taskType==='medicalCareTask'){
+//            const workers = await Worker.find({
+//             farm: task.farm,
+//            'notificationRights.medicine': true,
           
-        });
-      const populatedTask = await Tasks.findById(task._id).populate([
-          { path:"birdId",select:"birdId"},
-          { path:"coupleId",select:"coupleId"}
-          ]);
+//         });
+//       const populatedTask = await Tasks.findById(task._id).populate([
+//           { path:"birdId",select:"birdId"},
+//           { path:"coupleId",select:"coupleId"}
+//           ]);
 
-        console.log("Workers found for task:", workers);
+//         console.log("Workers found for task:", workers);
 
-        for (const worker of workers) {
-            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+//         for (const worker of workers) {
+//             const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
 
-            console.log("Tokens for worker", worker._id, tokens);
+//             console.log("Tokens for worker", worker._id, tokens);
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", worker._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`, 
-                        type:`${task.taskType}`,
-                        date:task.taskDate.toLocaleDateString(),
-                        workerName:`${worker.fullName}`,
-                        description: `A treatment task is scheduled ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} on ${task.taskDate.toLocaleDateString()}.`,
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", worker._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`, 
+//                         type:`${task.taskType}`,
+//                         date:task.taskDate.toLocaleDateString(),
+//                         workerName:`${worker.fullName}`,
+//                         description: `A treatment task is scheduled ${task.birdId ? `for bird ${populatedTask.birdId.birdId}` : ''}${task.coupleId ? ` for couple ${populatedTask.coupleId.coupleId}` : ''} on ${task.taskDate.toLocaleDateString()}.`,
                        
-                        url: "modernfarm://AllNotifications",
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-            }
-        }
-        }
-        else if (task.taskType==='nutritionTask'){
-           const workers = await Worker.find({
-            farm: task.farm,
-           'notificationRights.nutrition': true,
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//             }
+//         }
+//         }
+//         else if (task.taskType==='nutritionTask'){
+//            const workers = await Worker.find({
+//             farm: task.farm,
+//            'notificationRights.nutrition': true,
           
-        });
+//         });
 
-        console.log("Workers found for task:", workers);
+//         console.log("Workers found for task:", workers);
 
-          const populatedTask = await Tasks.findById(task._id).populate([
-          { path:"birdId",select:"birdId"},
-          { path:"coupleId",select:"coupleId"}
-          ]);
-
-
-        for (const worker of workers) {
-            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
-
-            console.log("Tokens for worker", worker._id, tokens);
+//           const populatedTask = await Tasks.findById(task._id).populate([
+//           { path:"birdId",select:"birdId"},
+//           { path:"coupleId",select:"coupleId"}
+//           ]);
 
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", worker._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`,
-                        date:task.taskDate.toLocaleDateString(), 
-                        type:`${task.taskType}`,
-                        workerName:`${worker.fullName}`,
-                        description: `A nutrition task is scheduled ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? ' and for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate.toLocaleDateString()}.`,
+//         for (const worker of workers) {
+//             const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+
+//             console.log("Tokens for worker", worker._id, tokens);
+
+
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", worker._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`,
+//                         date:task.taskDate.toLocaleDateString(), 
+//                         type:`${task.taskType}`,
+//                         workerName:`${worker.fullName}`,
+//                         description: `A nutrition task is scheduled ${task.birdId ? 'for bird ' + populatedTask.birdId.birdId : ''}${task.coupleId ? ' and for couple ' + populatedTask.coupleId.coupleId : ''} on ${task.taskDate.toLocaleDateString()}.`,
                     
-                        url: "modernfarm://AllNotifications",
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-            }
-        }
-        }
-        else if (task.taskType==='externalFeedingTask'){
-           const workers = await Worker.find({
-            farm: task.farm,
-           'notificationRights.externalFeeding': true,
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//             }
+//         }
+//         }
+//         else if (task.taskType==='externalFeedingTask'){
+//            const workers = await Worker.find({
+//             farm: task.farm,
+//            'notificationRights.externalFeeding': true,
           
-        });
-               const populatedTask = await Tasks.findById(task._id).populate({
-              path:"eggBirdId",
-              select:"birdId birdName eggId",
-              // populate:[
-              //   {path:"clutch",select:"clutchNumber"},
-              //   {path:"parentCouple",select:"coupleId"}
-              // ]
-            });
+//         });
+//                const populatedTask = await Tasks.findById(task._id).populate({
+//               path:"eggBirdId",
+//               select:"birdId birdName eggId",
+//               // populate:[
+//               //   {path:"clutch",select:"clutchNumber"},
+//               //   {path:"parentCouple",select:"coupleId"}
+//               // ]
+//             });
 
-        console.log("Workers found for task:", workers);
+//         console.log("Workers found for task:", workers);
 
-        for (const worker of workers) {
-            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+//         for (const worker of workers) {
+//             const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
 
-            console.log("Tokens for worker", worker._id, tokens);
+//             console.log("Tokens for worker", worker._id, tokens);
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", worker._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`, 
-                        date:task.taskDate.toLocaleDateString(),
-                        type:`${task.taskType}`,
-                        workerName:`${worker.fullName}`,
-                        description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
-                        url: "modernfarm://AllNotifications",
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", worker._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`, 
+//                         date:task.taskDate.toLocaleDateString(),
+//                         type:`${task.taskType}`,
+//                         workerName:`${worker.fullName}`,
+//                         description:`Early Feeding task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-            }
-        }
-        }
-         else if (task.taskType==='birdRecordTask'){
-           const workers = await Worker.find({
-            farm: task.farm,
-           'notificationRights.ringNumber': true,
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//             }
+//         }
+//         }
+//          else if (task.taskType==='birdRecordTask'){
+//            const workers = await Worker.find({
+//             farm: task.farm,
+//            'notificationRights.ringNumber': true,
           
-        });
-         const populatedTask = await Tasks.findById(task._id).populate({
-              path:"eggBirdId",
-              select:"birdId birdName eggId",
-              // populate:[
-              //   {path:"clutch",select:"clutchNumber"},
-              //   {path:"parentCouple",select:"coupleId"}
-              // ]
-            });
+//         });
+//          const populatedTask = await Tasks.findById(task._id).populate({
+//               path:"eggBirdId",
+//               select:"birdId birdName eggId",
+//               // populate:[
+//               //   {path:"clutch",select:"clutchNumber"},
+//               //   {path:"parentCouple",select:"coupleId"}
+//               // ]
+//             });
 
-        console.log("Workers found for task:", workers);
+//         console.log("Workers found for task:", workers);
 
-        for (const worker of workers) {
-            const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
+//         for (const worker of workers) {
+//             const tokens = await getTokensFromDatastore(worker._id); // Assuming getTokensFromDatastore returns tokens array
 
-            console.log("Tokens for worker", worker._id, tokens);
+//             console.log("Tokens for worker", worker._id, tokens);
 
-            if (tokens && tokens.length > 0){
-                console.log("Sending message for task", task._id, "to worker", worker._id);
-                 admin.messaging().send({
-                    token:tokens, 
-                    data: {
-                        hello: 'world!', // Customize your message payload as needed
-                        taskId: `${task._id}`, 
-                        date:task.taskDate.toLocaleDateString(),
-                        type:`${task.taskType}`,
-                        workerName:`${worker.fullName}`,
-                        description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
-                        url: "modernfarm://AllNotifications",
+//             if (tokens && tokens.length > 0){
+//                 console.log("Sending message for task", task._id, "to worker", worker._id);
+//                  admin.messaging().send({
+//                     token:tokens, 
+//                     data: {
+//                         hello: 'world!', // Customize your message payload as needed
+//                         taskId: `${task._id}`, 
+//                         date:task.taskDate.toLocaleDateString(),
+//                         type:`${task.taskType}`,
+//                         workerName:`${worker.fullName}`,
+//                         description:`Bird Record task of ${populatedTask.eggBirdId.birdId} has to be done on ${task.taskDate.toLocaleDateString()}`,
+//                         url: "modernfarm://AllNotifications",
 
-                        // Example of including task-specific data
-                    },
-                })
-                .then((response) => {
-                    console.log(' messages were sent successfully for task', task._id);
-                })
-                .catch((error) => {
-                    console.log('Error sending multicast message for task', task._id, ':', error);
-                });
-            }
-        }
-        }
+//                         // Example of including task-specific data
+//                     },
+//                 })
+//                 .then((response) => {
+//                     console.log(' messages were sent successfully for task', task._id);
+//                 })
+//                 .catch((error) => {
+//                     console.log('Error sending multicast message for task', task._id, ':', error);
+//                 });
+//             }
+//         }
+//         }
         
 
 
        
-    }
-}
+//     }
+// }
 
 async function SendCronMessage(req, res,next){
   try{
@@ -1027,9 +1028,7 @@ async function SendCronMessage(req, res,next){
     return res.status(500).send("An error occurred while sending messages.");
 
   }
-  finally {
- // wtf.dump(); // This will log out open handles
-  }
+
 }
 
 async function sendNotificationMessage(token,task){
@@ -1226,8 +1225,7 @@ async function sendNotificationMessage(token,task){
 
    async function sendMessage(task) {
 
-    console.log(task)
-    console.log("abcc")
+ 
     
 
     const owner = await User.findById(task.user)
@@ -1235,10 +1233,8 @@ async function sendNotificationMessage(token,task){
     if(task.workerId){
        worker=await Worker.findById(task.workerId)
     }
-  console.log("owners")
-  console.log(owner);
-  const tokens =  owner.userToken;
-  console.log(tokens)
+
+     const tokens =  owner.userToken;
   
         if(task.taskType==='hatchingTask'){
      
@@ -1688,7 +1684,6 @@ module.exports={
     GetTasks,
     GetTasksByID,
     GetUserTasks,
-    SendNotification,
     CreateTasks,
     UpdateTasks,
     DeleteTasks,
