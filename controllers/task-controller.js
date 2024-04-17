@@ -998,7 +998,7 @@ async function sendOwnerMessage(tasks){
     }
 }
 
-async function SendCronMessage(){
+async function SendCronMessage(next){
   try{
     const currentDate=new Date();
     const users=await User.find();

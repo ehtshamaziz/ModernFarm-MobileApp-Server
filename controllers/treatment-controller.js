@@ -64,7 +64,7 @@ const CreateTreatment = async (req, res, next) => {
         let treatmentStartDate = new Date(treatment.treatmentStartDate);
 
         for(let i=0; i<treatment.durationOfTreatment;i++){
-          treatmentStartDate.setDate(treatmentStartDate.getDate() + I);
+          treatmentStartDate.setDate(treatmentStartDate.getDate() + i);
           for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
               const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'medicalCareTask',taskDate:treatmentStartDate});
               await task.save();
