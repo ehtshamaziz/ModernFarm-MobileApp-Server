@@ -2,7 +2,7 @@ const Tasks=require('../models/tasks')
 const Egg=require("../models/egg")
 const User=require("../models/user");
 const Worker=require("../models/workers");
-const sendCronNotification=require( "../utils/sendNotification")
+const {sendCronNotification}=require( "../utils/sendNotification")
 
 
 var admin = require('firebase-admin');

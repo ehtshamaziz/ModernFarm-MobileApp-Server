@@ -1,7 +1,7 @@
 const Nutrition = require("../models/nutrition");
 const Task =require("../models/tasks");
 const User=require("../models/user");
-const sendCronNotification=require('./sendNotification');
+const {sendCronNotification}=require('../utils/sendNotification');
 
 
 
