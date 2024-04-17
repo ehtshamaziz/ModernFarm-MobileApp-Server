@@ -66,6 +66,9 @@ const CreateNutritions = async (req, res, next) => {
 
     const task=new Task({taskDate:nutrition.nutritionDate,nutritionId: nutrition._id,birdId:element,user:nutrition.user,farm:nutrition.farm,taskType:'nutritionTask'});
     await task.save();
+     if(task.taskDate <=new Date()){
+       notificationEndpoint(req.body.user,task);
+    }
 
     })
       )
@@ -79,8 +82,12 @@ const CreateNutritions = async (req, res, next) => {
 
 async function notificationEndpoint(user,task){
   workers=await Worker.find({user:user._id});
+  const user=await User.findById(user._id);
+  sendCronNotification(user.userToken,task)
+
 
   for(const worker of workers){
+
     if(worker.accessRights[task.taskType] && worker.workerToken){
       sendCronNotification(worker.workerToken,task)
     }
