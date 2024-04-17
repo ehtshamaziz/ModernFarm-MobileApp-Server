@@ -1009,7 +1009,6 @@ async function SendCronMessage(next){
       for (const task of tasks){
         if(user.userToken){
         await sendNotificationMessage(user.userToken, task)
-
         }
         for (const worker of workers){
          if(worker.accessRights[task.taskType] && worker.workerToken){
@@ -1021,6 +1020,10 @@ async function SendCronMessage(next){
 
   }catch(err){
     console.log(err)
+  }
+  finally {
+    await mongoose.disconnect();
+    // wtf.dump(); // This will log out open handles
   }
 }
 
