@@ -2,6 +2,7 @@ const Tasks=require('../models/tasks')
 const Egg=require("../models/egg")
 const User=require("../models/user");
 const Worker=require("../models/workers");
+const sendCronNotification=require( "../utils/sendNotification")
 
 
 var admin = require('firebase-admin');
@@ -428,18 +429,18 @@ const UpdateTasks = async (req, res, next) => {
 
 
 
-async function getTokensFromDatastore(userId) {
-  try {
-    // Assuming your DeviceToken fmodel has a `userId` field
-    const worker = await Worker.findById(userId).exec();
-    const tokens = worker.workerToken;
-    console.log(tokens)
-    return tokens;
-  } catch (error) {
-    console.error('Failed to fetch tokens from datastore:', error);
-    throw error; // Rethrow the error to handle it in the calling context
-  }
-}
+// async function getTokensFromDatastore(userId) {
+//   try {
+//     // Assuming your DeviceToken fmodel has a `userId` field
+//     const worker = await Worker.findById(userId).exec();
+//     const tokens = worker.workerToken;
+//     console.log(tokens)
+//     return tokens;
+//   } catch (error) {
+//     console.error('Failed to fetch tokens from datastore:', error);
+//     throw error; // Rethrow the error to handle it in the calling context
+//   }
+// }
 
 // async function sendOwnerMessage(tasks){
 //   console.log(tasks)
@@ -1010,11 +1011,11 @@ async function SendCronMessage(req, res,next){
       const tasks=await Tasks.find({user:user._id, action:false,taskDate: { $lte: currentDate }});
       for (const task of tasks){
         if(user.userToken){
-        await sendNotificationMessage(user.userToken, task)
+        await sendCronNotification(user.userToken, task)
         }
         for (const worker of workers){
          if(worker.accessRights[task.taskType] && worker.workerToken){
-           await sendNotificationMessage(worker.workerToken, task)
+           await sendCronNotification(worker.workerToken, task)
         }
         }
       } 
@@ -1224,9 +1225,6 @@ async function sendNotificationMessage(token,task){
 
 
    async function sendMessage(task) {
-
- 
-    
 
     const owner = await User.findById(task.user)
     let worker;

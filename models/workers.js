@@ -59,15 +59,7 @@ const workersSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  notificationRights:{
-    fertility:{type:Boolean, default:false},
-    hatching:{type:Boolean, default:false},
-    externalFeeding:{type:Boolean, default:false},
-    ringNumber:{type:Boolean, default:false},
-    medicine:{type:Boolean, default:false},
-    nutrition:{type:Boolean, default:false},
-
-  },
+ 
       workerToken: { type: String},
 
 });

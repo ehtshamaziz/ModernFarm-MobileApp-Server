@@ -1,11 +1,12 @@
 const Nutrition = require("../models/nutrition");
 const Task =require("../models/tasks");
 const User=require("../models/user");
-
+const sendCronNotification=require('./sendNotification');
 
 
 
 var admin = require('firebase-admin');
+const workers = require("../models/workers");
 
 // GET ALL NUTRITION
 const GetNutritions = async (req, res, next) => {
@@ -53,6 +54,9 @@ const CreateNutritions = async (req, res, next) => {
 
     const task=new Task({taskDate:nutrition.nutritionDate,nutritionId: nutrition._id,coupleId:element,user:nutrition.user,farm:nutrition.farm,taskType:'nutritionTask'});
     await task.save();
+    if(task.taskDate <=new Date()){
+       notificationEndpoint(req.body.user,task);
+    }
 
     }))
   }
@@ -73,6 +77,16 @@ const CreateNutritions = async (req, res, next) => {
 };
 
 
+async function notificationEndpoint(user,task){
+  workers=await Worker.find({user:user._id});
+
+  for(const worker of workers){
+    if(worker.accessRights[task.taskType] && worker.workerToken){
+      sendCronNotification(worker.workerToken,task)
+    }
+  }
+
+}
 
 // UPDATE NUTRITION
 const UpdateNutritions = async (req, res, next) => {

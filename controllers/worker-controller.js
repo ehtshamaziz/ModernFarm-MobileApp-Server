@@ -117,20 +117,20 @@ const UpdateWorkers = async (req, res, next) => {
 // Assuming you receive an array of IDs and the updates in your request body
 // req.body = { ids: ['id1', 'id2'], notificationRights: { ... } }
 
-const UpdateMultipleWorkers = async (req, res, next) => {
-  try {
-    const { ids, notificationRights } = req.body;
+// const UpdateMultipleWorkers = async (req, res, next) => {
+//   try {
+//     const { ids, notificationRights } = req.body;
 
-    const result = await Worker.updateMany(
-      { _id: { $in: ids } },
-      { $set: { notificationRights: notificationRights } }
-    );
+//     const result = await Worker.updateMany(
+//       { _id: { $in: ids } },
+//       { $set: { notificationRights: notificationRights } }
+//     );
 
-    return res.status(200).json(result);
-  } catch (err) {
-    next(err);
-  }
-};
+//     return res.status(200).json(result);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 
 
@@ -200,7 +200,6 @@ module.exports={
     GetUserWorkers,
     CreateWorkers,
     UpdateWorkers,
-    UpdateMultipleWorkers,
     DeleteWorkers
 
 

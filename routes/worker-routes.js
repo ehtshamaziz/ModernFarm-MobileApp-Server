@@ -25,7 +25,7 @@ router.post("/verify", workersController.VerifyWorker, createJWT);
 router.patch("/:id", workersController.UpdateWorkers);
 
 // UPDATE MULTIPLE WORKERS
-router.patch("/", workersController.UpdateMultipleWorkers);
+// router.patch("/", workersController.UpdateMultipleWorkers);
 
 // DELETE FARM BY ID
 router.delete("/:id", workersController.DeleteWorkers);
