@@ -85,13 +85,13 @@ async function notificationEndpoint(user,task){
   const workers=await Worker.find({user:user._id});
   const users=await User.findOne({user:user._id});
 
-  sendCronNotification(users.userToken,task)
+  await sendCronNotification(users.userToken,task)
 
 
   for(const worker of workers){
 
     if(worker.accessRights[task.taskType] && worker.workerToken){
-      sendCronNotification(worker.workerToken,task)
+      await sendCronNotification(worker.workerToken,task)
     }
   }
 
