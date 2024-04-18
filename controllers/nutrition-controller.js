@@ -83,7 +83,8 @@ const CreateNutritions = async (req, res, next) => {
 
 async function notificationEndpoint(user,task){
   const workers=await Worker.find({user:user._id});
-  const users=await User.findById(user._id);
+  const users=await User.findOne({user:user._id});
+
   sendCronNotification(users.userToken,task)
 
 
