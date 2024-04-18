@@ -56,7 +56,7 @@ const CreateNutritions = async (req, res, next) => {
     const task=new Task({taskDate:nutrition.nutritionDate,nutritionId: nutrition._id,coupleId:element,user:nutrition.user,farm:nutrition.farm,taskType:'nutritionTask'});
     await task.save();
     if(task.taskDate <=new Date()){
-       notificationEndpoint(req.body.user,task);
+       await notificationEndpoint(req.body.user,task);
     }
 
     }))
@@ -68,7 +68,7 @@ const CreateNutritions = async (req, res, next) => {
     const task=new Task({taskDate:nutrition.nutritionDate,nutritionId: nutrition._id,birdId:element,user:nutrition.user,farm:nutrition.farm,taskType:'nutritionTask'});
     await task.save();
      if(task.taskDate <=new Date()){
-       notificationEndpoint(req.body.user,task);
+       await notificationEndpoint(req.body.user,task);
     }
 
     })
