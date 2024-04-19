@@ -16,6 +16,7 @@ const treatmentSchema = new mongoose.Schema({
   durationOfTreatment:{type:String},
   treatmentRecurrancePeriod:{type:String},
   appliedTo: {type: String,required:true},
+  timezoneOffset :{type:Number}
 
 });
 

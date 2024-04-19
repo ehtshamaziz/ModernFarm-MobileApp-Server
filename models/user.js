@@ -55,7 +55,8 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-    userToken: { type: String },
+  userToken: { type: String },
+  timezoneOffset :{type:Number}
 
 });
 

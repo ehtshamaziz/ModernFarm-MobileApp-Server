@@ -60,7 +60,8 @@ const workersSchema = new mongoose.Schema({
     default: Date.now,
   },
  
-      workerToken: { type: String},
+  workerToken: { type: String},
+  timezoneOffset :{type:Number}
 
 });
 

@@ -70,8 +70,10 @@ const CreateTreatment = async (req, res, next) => {
               const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'medicalCareTask',taskDate:treatmentStartDate});
               await task.save();
               const startOfToday = new Date();
-              startOfToday.setHours(0, 0, 0, 0); 
+              startOfToday.setMinutes(startOfToday.getMinutes() - treatment.timezoneOffset);
+              startOfToday.setHours(0, 0, 0, 0);
               const startOfTaskDate = new Date(task.taskDate);
+              startOfTaskDate.setMinutes(startOfTaskDate.getMinutes() - treatment.timezoneOffset);
               startOfTaskDate.setHours(0, 0, 0, 0);
     
               if(startOfTaskDate <=startOfToday){
@@ -99,10 +101,12 @@ const CreateTreatment = async (req, res, next) => {
           for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
               const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'medicalCareTask',taskDate:treatmentStartDate});
               await task.save();
-              const startOfToday = new Date();
-              startOfToday.setHours(0, 0, 0, 0); 
-              const startOfTaskDate = new Date(task.taskDate);
-              startOfTaskDate.setHours(0, 0, 0, 0);
+           const startOfToday = new Date();
+           startOfToday.setMinutes(startOfToday.getMinutes() - treatment.timezoneOffset);
+           startOfToday.setHours(0, 0, 0, 0);
+           const startOfTaskDate = new Date(task.taskDate);
+           startOfTaskDate.setMinutes(startOfTaskDate.getMinutes() - treatment.timezoneOffset);
+           startOfTaskDate.setHours(0, 0, 0, 0);
     
               if(startOfTaskDate <=startOfToday){
                   await notificationEndpoint(req.body.user,task);
