@@ -83,6 +83,10 @@ const CreateNutritions = async (req, res, next) => {
     const startOfTaskDate = new Date(task.taskDate);
     startOfTaskDate.setMinutes(startOfTaskDate.getMinutes() - nutrition.timezoneOffset);
     startOfTaskDate.setHours(0, 0, 0, 0);
+    console.log(startOfToday)
+    console.log(startOfTaskDate)
+    
+
     
     if(startOfTaskDate <=startOfToday){
        await notificationEndpoint(req.body.user,task);
