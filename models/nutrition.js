@@ -11,7 +11,7 @@ mealDescription:{type:String},
 quantity:{type:String},
 nutritionDate:{ type: Date, default: Date.now},
 appliedTo: {type: String,required:true},
-timezoneOffset :{Number}
+timezoneOffset :{type:Number}
 
 })
 
