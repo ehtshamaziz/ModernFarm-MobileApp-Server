@@ -61,6 +61,7 @@ const CreateNutritions = async (req, res, next) => {
     startOfTaskDate.setHours(0, 0, 0, 0);
           console.log(startOfToday)
       console.log(startOfTaskDate)
+      console.log(new Date())
 
     if(startOfTaskDate <=startOfToday){
       console.log("cccc")
