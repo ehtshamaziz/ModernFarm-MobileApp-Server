@@ -55,7 +55,15 @@ const CreateNutritions = async (req, res, next) => {
 
     const task=new Task({taskDate:nutrition.nutritionDate,nutritionId: nutrition._id,coupleId:element,user:nutrition.user,farm:nutrition.farm,taskType:'nutritionTask'});
     await task.save();
-    if(task.taskDate <=new Date()){
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0); 
+    const startOfTaskDate = new Date(task.taskDate);
+    startOfTaskDate.setHours(0, 0, 0, 0);
+          console.log(startOfToday)
+      console.log(startOfTaskDate)
+
+    if(startOfTaskDate <=startOfToday){
+      console.log("cccc")
        await notificationEndpoint(req.body.user,task);
     }
 
@@ -68,7 +76,7 @@ const CreateNutritions = async (req, res, next) => {
     const task=new Task({taskDate:nutrition.nutritionDate,nutritionId: nutrition._id,birdId:element,user:nutrition.user,farm:nutrition.farm,taskType:'nutritionTask'});
     await task.save();
     const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0); // Set time to midnight
+    startOfToday.setHours(0, 0, 0, 0); 
     const startOfTaskDate = new Date(task.taskDate);
     startOfTaskDate.setHours(0, 0, 0, 0);
     

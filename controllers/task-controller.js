@@ -1004,6 +1004,8 @@ const UpdateTasks = async (req, res, next) => {
 async function SendCronMessage(req, res,next){
   try{
     const currentDate=new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
     const users=await User.find();
     for(const user of users){
       const workers= await Worker.find({user:user._id});

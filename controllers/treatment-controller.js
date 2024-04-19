@@ -1,6 +1,7 @@
 const Treatment = require("../models/treatment");
 const Task=require("../models/tasks");
 const User=require("../models/user");
+const {sendCronNotification}=require('../utils/sendNotification');
 
 var admin = require('firebase-admin');
 
@@ -68,6 +69,15 @@ const CreateTreatment = async (req, res, next) => {
           for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
               const task=new Task({treatmentId: treatment._id,coupleId:element,user:treatment.user,farm:treatment.farm,taskType:'medicalCareTask',taskDate:treatmentStartDate});
               await task.save();
+              const startOfToday = new Date();
+              startOfToday.setHours(0, 0, 0, 0); 
+              const startOfTaskDate = new Date(task.taskDate);
+              startOfTaskDate.setHours(0, 0, 0, 0);
+    
+              if(startOfTaskDate <=startOfToday){
+                 await notificationEndpoint(req.body.user,task);
+              }
+
               // treatment.treatmentStartDate = treatmentStartDate;
               // await treatment.save();
           }
@@ -89,6 +99,15 @@ const CreateTreatment = async (req, res, next) => {
           for(let j=1; j<=treatment.treatmentRecurrancePeriod;j++){
               const task=new Task({treatmentId: treatment._id,birdId:element,user:treatment.user,farm:treatment.farm,taskType:'medicalCareTask',taskDate:treatmentStartDate});
               await task.save();
+              const startOfToday = new Date();
+              startOfToday.setHours(0, 0, 0, 0); 
+              const startOfTaskDate = new Date(task.taskDate);
+              startOfTaskDate.setHours(0, 0, 0, 0);
+    
+              if(startOfTaskDate <=startOfToday){
+                  await notificationEndpoint(req.body.user,task);
+              }
+
               // treatment.treatmentStartDate = treatmentStartDate;
               // await treatment.save();
           }
@@ -110,6 +129,21 @@ const CreateTreatment = async (req, res, next) => {
 
 
 
+async function notificationEndpoint(user,task){
+  const workers=await Worker.find({user:user._id});
+  const users=await User.findOne({user:user._id});
+
+  await sendCronNotification(users.userToken,task)
+
+
+  for(const worker of workers){
+
+    if(worker.accessRights[task.taskType] && worker.workerToken){
+      await sendCronNotification(worker.workerToken,task)
+    }
+  }
+
+}
 // UPDATE TREATMENT
 const UpdateTreatment = async (req, res, next) => {
   try {
