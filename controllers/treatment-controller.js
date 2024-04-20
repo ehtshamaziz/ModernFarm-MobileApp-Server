@@ -135,8 +135,8 @@ const CreateTreatment = async (req, res, next) => {
 
 
 async function notificationEndpoint(user,task){
-  const workers=await Worker.find({user:user._id});
-  const users=await User.findOne({_id:user._id});
+  const workers=await Worker.find({user:user});
+  const users=await User.findOne({_id:user});
 
   await sendCronNotification(users.userToken,task)
 
