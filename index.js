@@ -22,6 +22,9 @@ const treatmentRoutes=require('./routes/treatment-routes.js')
 const taskRoutes=require("./routes/tasks-routes.js");
 const nutritionRoutes=require("./routes/nutrition-routes.js");
 const workerRoutes=require("./routes/worker-routes.js");
+const incomeRoutes=require("./routes/income-routes.js");
+const expenseRoutes=require("./routes/expense-routes.js");
+
 const app = express();
 
 // CONFIGURE CLOUDINARY
@@ -59,6 +62,9 @@ app.use("/treatment",treatmentRoutes);
 app.use("/task",taskRoutes)
 app.use("/nutrition",nutritionRoutes);
 app.use("/worker",workerRoutes);
+app.use("/income",incomeRoutes);
+app.use("/expense",expenseRoutes);
+
 const axios = require('axios');
 
     var admin = require('firebase-admin');
