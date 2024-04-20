@@ -107,6 +107,7 @@ async function notificationEndpoint(user,task){
    try {
   const workers=await Worker.find({user:user._id});
   const users=await User.findOne({_id:user._id});
+  console.log(users)
 
   await sendCronNotification(users.userToken,task)
 
