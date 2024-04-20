@@ -103,8 +103,9 @@ const CreateNutritions = async (req, res, next) => {
 
 
 async function notificationEndpoint(user,task){
+   try {
   const workers=await Worker.find({user:user._id});
-  const users=await User.findOne({user:user._id});
+  const users=await User.findById(user._id);
 
   await sendCronNotification(users.userToken,task)
 
@@ -114,6 +115,11 @@ async function notificationEndpoint(user,task){
     if(worker.accessRights[task.taskType] && worker.workerToken){
       await sendCronNotification(worker.workerToken,task)
     }
+  }
+  } catch (error) {
+    // Handle errors appropriately, e.g., logging or throwing
+    console.error("Error in notificationEndpoint:", error);
+    throw error;
   }
 
 }
