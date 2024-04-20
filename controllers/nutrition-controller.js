@@ -45,6 +45,7 @@ const GetUserNutritions = async (req, res, next) => {
 
 // CREATE NEW NUTRITION
 const CreateNutritions = async (req, res, next) => {
+  console.log("mmm")
   const nutrition = new Nutrition(req.body);
   try {
     await nutrition.save();
@@ -105,7 +106,7 @@ const CreateNutritions = async (req, res, next) => {
 async function notificationEndpoint(user,task){
    try {
   const workers=await Worker.find({user:user._id});
-  const users=await User.findById(user._id);
+  const users=await User.findOne({_id:user._id});
 
   await sendCronNotification(users.userToken,task)
 
