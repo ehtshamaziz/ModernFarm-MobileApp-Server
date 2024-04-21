@@ -22,8 +22,8 @@ const treatmentRoutes=require('./routes/treatment-routes.js')
 const taskRoutes=require("./routes/tasks-routes.js");
 const nutritionRoutes=require("./routes/nutrition-routes.js");
 const workerRoutes=require("./routes/worker-routes.js");
-const incomeRoutes=require("./routes/income-routes.js");
-const expenseRoutes=require("./routes/expense-routes.js");
+const financeRoutes=require("./routes/finance-routes.js");
+
 
 const app = express();
 
@@ -62,8 +62,7 @@ app.use("/treatment",treatmentRoutes);
 app.use("/task",taskRoutes)
 app.use("/nutrition",nutritionRoutes);
 app.use("/worker",workerRoutes);
-app.use("/income",incomeRoutes);
-app.use("/expense",expenseRoutes);
+app.use("/finance",financeRoutes);
 
 const axios = require('axios');
 

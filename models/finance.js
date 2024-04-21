@@ -1,12 +1,13 @@
 const mongoose =require("mongoose");
 
-var expenseSchema=new mongoose.Schema({
+var financeSchema=new mongoose.Schema({
     farm: { type: mongoose.Schema.Types.ObjectId, ref: "Farm", required: true },
     category:{type:String},
+    type:{type:String},
     amount:{type:Number},
     date:{ type: Date},
     description:{type:String},
 
 })
-const Expense = mongoose.model("Expense", expenseSchema);
-module.exports = Expense;
+const Finance = mongoose.model("Finance", financeSchema);
+module.exports = Finance;
