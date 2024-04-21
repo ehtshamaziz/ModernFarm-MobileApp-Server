@@ -12,7 +12,7 @@ const Finance = require("../models/finance");
 const GetFinances = async (req, res, next) => {
   console.log("Get all finances");
   try {
-    const finance = await Finance.find().populate("farm","farmType,farmName");
+    const finance = await Finance.find().populate("farm","farmType farmName");
     return res.status(200).send(finance);
   } catch (err) {
     next(err);
