@@ -25,7 +25,11 @@ const GetBirds = async (req, res, next) => {
   .populate({
     path: 'birdSpecie',
     select: 'name'
-  });
+  })
+  .populate({
+    path:'user',
+    select:"_id firstName familyName"
+  })
 
     return res.status(200).send(bird);
   } catch (err) {
