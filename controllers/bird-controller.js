@@ -15,6 +15,10 @@ const GetBirds = async (req, res, next) => {
   try {
     const bird = await Bird.find()
   .populate({
+    path:'user',
+    select:"_id firstName familyName"
+  })
+  .populate({
     path: 'farm',
     select: 'farmName farmType'
   })
@@ -26,10 +30,7 @@ const GetBirds = async (req, res, next) => {
     path: 'birdSpecie',
     select: 'name'
   })
-  .populate({
-    path:'user',
-    select:"_id firstName familyName"
-  })
+
 
     return res.status(200).send(bird);
   } catch (err) {
