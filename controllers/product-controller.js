@@ -1,4 +1,6 @@
 const Product = require("../models/product");
+const Finance = require("../models/finance");
+
 // const cloudinary = require("cloudinary").v2;
 // cloudinary.config({
 //   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -46,11 +48,39 @@ const CreateProduct = async (req, res, next) => {
   console.log(req.body);
   try {
     await product.save();
+    createExpense(req.body)
     return res.status(200).json(product);
   } catch (err) {
     next(err);
   }
 };
+
+   
+const createExpense=async(data) => {
+  let categoryType;
+  if(data.category==="medicine"){
+    categoryType="healthCareCost"
+  }
+  else if(data.category==="nutrition"){
+    categoryType="feedCost"
+
+  }
+  else if(data.category==="farmTools"){
+    categoryType="cagesAndEquipmentCost "
+
+  }
+  const expense = new Finance({
+    farm: data.farm,
+    financeCategory: categoryType,
+    financeType: "expense",
+    amount:data.price,
+    date: new Date(),
+    description: data.description
+
+  })
+  await expense.save();
+
+} ;
 // https://res.cloudinary.com/dqnz3rzt5/image/upload/v1705765421/ModernFarm/zsyp6lmzqllowy7bbuwp.webp
 
 // UPDATE PRODUCT
