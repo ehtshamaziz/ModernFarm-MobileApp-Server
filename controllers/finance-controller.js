@@ -33,7 +33,7 @@ const GetFinanceByID = async (req, res, next) => {
 const GetUserFinances = async (req, res, next) => {
   console.log("Get all user finances");
   try {
-    const finances = await Finance.find({ user: req.params.id });
+    const finances = await Finance.find({ user: req.params.id }).populate("farm","farmType farmName");
     return res.status(200).send(finances);
   } catch (err) {
     next(err);
