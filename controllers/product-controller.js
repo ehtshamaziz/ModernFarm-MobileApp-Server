@@ -12,7 +12,7 @@ const Product = require("../models/product");
 const GetProducts = async (req, res, next) => {
   console.log("Get all products");
   try {
-    const product = await Product.find();
+    const product = await Product.find().populate("farm","farmName farmType");
     return res.status(200).send(product);
   } catch (err) {
     next(err);
@@ -22,7 +22,7 @@ const GetProducts = async (req, res, next) => {
 // GET SINGLE PRODUCT
 const GetProductByID = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate("farm","farmName farmType");
     return res.status(200).send(product);
   } catch (err) {
     next(err);
@@ -33,7 +33,7 @@ const GetProductByID = async (req, res, next) => {
 const GetUserProducts = async (req, res, next) => {
   console.log("Get all user products");
   try {
-    const products = await Product.find({ user: req.params.id });
+    const products = await Product.find({ user: req.params.id }).populate("farm","farmName farmType");
     return res.status(200).send(products);
   } catch (err) {
     next(err);
