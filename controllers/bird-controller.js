@@ -2,6 +2,8 @@ const Bird = require("../models/birds");
 const Couple=require("../models/couple");
 const Egg=require("../models/egg");
 const Task=require("../models/tasks");
+const Finance = require("../models/finance");
+
 const User= require("../models/user");
 
 
@@ -68,8 +70,10 @@ const GetUserBirds = async (req, res, next) => {
 const AddBirds = async (req, res, next) => {
   try {
     const  data = req.body;
-    console.log(data)
-    console.log("ssssssssssssssssssssssssfffffffffffffffffffff")
+
+    if(data.source==="outsideFarm"){
+        createExpense(data)
+    }
   
     const lastBird = await Bird.findOne({}, {}, { sort: { birdId: -1 } });
     let birdId = "BIRD-001";
@@ -162,6 +166,19 @@ const AddBirds = async (req, res, next) => {
 
 
 
+const createExpense=async(data) => {
+  
+  const expense = new Finance({
+    farm: data.farm,
+    financeCategory: "costOfBird",
+    financeType: "expense",
+    amount:data.price,
+    date: new Date(),
+
+  })
+  await expense.save();
+
+} ;
 
    
 // UPDATE BIRD
