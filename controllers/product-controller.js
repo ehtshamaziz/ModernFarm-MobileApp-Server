@@ -71,6 +71,7 @@ const createExpense=async(data) => {
   }
   const expense = new Finance({
     farm: data.farm,
+    user: data.user,
     financeCategory: categoryType,
     financeType: "expense",
     amount:data.price,

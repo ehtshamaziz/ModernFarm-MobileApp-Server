@@ -71,10 +71,7 @@ const AddBirds = async (req, res, next) => {
   try {
     const  data = req.body;
 
-    if(data.source==="outsideFarm"){
-        createExpense(data)
-    }
-  
+    
     const lastBird = await Bird.findOne({}, {}, { sort: { birdId: -1 } });
     let birdId = "BIRD-001";
 
@@ -84,6 +81,11 @@ const AddBirds = async (req, res, next) => {
       const paddedId = String(newId).padStart(3, '0'); 
       birdId = `BIRD-${paddedId}`;
     }
+
+    if(data.source==="outsideFarm"){
+        createExpense(data,birdId)
+    }
+  
     const bird = new Bird({...data, birdId });
     await bird.save();
 
@@ -162,14 +164,16 @@ const AddBirds = async (req, res, next) => {
 };
 
 
-const createExpense=async(data) => {
+const createExpense=async(data,birdId) => {
   
   const expense = new Finance({
     farm: data.farm,
+    user: data.user,
     financeCategory: "costOfBird",
     financeType: "expense",
     amount:data.price,
     date: new Date(),
+    description:birdId
 
   })
   await expense.save();
