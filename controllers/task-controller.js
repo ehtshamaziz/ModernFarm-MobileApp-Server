@@ -1012,6 +1012,11 @@ async function SendCronMessage(req, res,next){
       const currentDate = new Date();
       currentDate.setMinutes(currentDate.getMinutes() - user.timezoneOffset);
       currentDate.setHours(0, 0, 0, 0);
+      console.log(currentDate);  // Log to see if currentDate becomes Invalid
+      if (isNaN(currentDate.valueOf())) {
+       console.error('Invalid currentDate for user:', user._id);
+      continue;  // Skip to the next user if the currentDate is invalid
+       }
       const tasks=await Tasks.find({user:user._id, action:false,taskDate: { $lte: currentDate }});
       for (const task of tasks){
         if(user.userToken){
