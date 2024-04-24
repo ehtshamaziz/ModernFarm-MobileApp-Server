@@ -66,7 +66,7 @@ const createExpense=async(data) => {
 
   }
   else if(data.category==="farmTools"){
-    categoryType="cagesAndEquipmentCost "
+    categoryType="cagesAndEquipmentCost"
 
   }
   const expense = new Finance({

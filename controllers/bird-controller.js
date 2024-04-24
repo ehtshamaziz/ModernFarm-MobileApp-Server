@@ -162,10 +162,6 @@ const AddBirds = async (req, res, next) => {
 };
 
 
-
-
-
-
 const createExpense=async(data) => {
   
   const expense = new Finance({
