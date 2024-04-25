@@ -2,24 +2,24 @@ const express = require("express");
 const financeController = require("../controllers/finance-controller");
 const router = express.Router();
 
-// FARM ROUTES
+// FINANCE ROUTES
 
-// GET ALL FARMS
+// GET ALL FINANCES
 router.get("/", financeController.GetFinances);
 
-// GET FARM BY ID
+// GET FINANCE BY ID
 router.get("/single/:id", financeController.GetFinanceByID);
 
-// GET ALL FARMS FOR A SPECIFIC USER
+// GET ALL FINANCES FOR A SPECIFIC USER
 router.get("/user/:id", financeController.GetUserFinances);
 
-// CREATE NEW FARM
+// CREATE NEW FINANCE
 router.post("/", financeController.CreateFinance);
 
-// UPDATE FARM BY ID
+// UPDATE FINANCE BY ID
 router.patch("/:id", financeController.UpdateFinance);
 
-// DELETE FARM BY ID
+// DELETE FINANCE BY ID
 router.delete("/:id", financeController.DeleteFinance);
 
 module.exports = router;

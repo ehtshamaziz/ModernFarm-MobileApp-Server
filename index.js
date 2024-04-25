@@ -23,6 +23,7 @@ const taskRoutes=require("./routes/tasks-routes.js");
 const nutritionRoutes=require("./routes/nutrition-routes.js");
 const workerRoutes=require("./routes/worker-routes.js");
 const financeRoutes=require("./routes/finance-routes.js");
+const farmNotesRoutes=require("./routes/farm-note-routes.js");
 
 
 const app = express();
@@ -63,6 +64,8 @@ app.use("/task",taskRoutes)
 app.use("/nutrition",nutritionRoutes);
 app.use("/worker",workerRoutes);
 app.use("/finance",financeRoutes);
+app.use("/farm-note",farmNotesRoutes);
+
 
 const axios = require('axios');
 
