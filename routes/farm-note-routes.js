@@ -5,7 +5,7 @@ const router = express.Router();
 // FarmNote ROUTES
 
 // GET ALL DISEASE
-router.get("/", farmNoteController.GetDisease);
+router.get("/", farmNoteController.GetFarmNote);
 
 // GET DISEASE BY ID
 router.get("/single/:id", farmNoteController.GetFarmNoteByID);
