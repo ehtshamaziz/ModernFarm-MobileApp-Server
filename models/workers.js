@@ -65,4 +65,4 @@ const workersSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model("Workers", workersSchema);
+module.exports = mongoose.model("Worker", workersSchema);
