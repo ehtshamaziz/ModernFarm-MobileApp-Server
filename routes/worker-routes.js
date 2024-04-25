@@ -3,31 +3,31 @@ const workersController = require("../controllers/worker-controller");
 const router = express.Router();
 const { createJWT, verifyJWT } = require("../middleware/jwt");
 
-// FARM ROUTES
+// WORKER ROUTES
 
 // GET ALL FARMS
 router.get("/", workersController.GetWorkers);
 
-// GET FARM BY ID
+// GET WORKER BY ID
 router.get("/single/:id", workersController.GetWorkersByID);
 
 // GET ALL FARMS FOR A SPECIFIC USER
 router.get("/user/:id", workersController.GetUserWorkers);
 
-// CREATE NEW FARM
+// CREATE NEW WORKER
 router.post("/", workersController.CreateWorkers);
 
 
 router.post("/verify", workersController.VerifyWorker, createJWT);
 
 
-// UPDATE FARM BY ID
+// UPDATE WORKER BY ID
 router.patch("/:id", workersController.UpdateWorkers);
 
 // UPDATE MULTIPLE WORKERS
 // router.patch("/", workersController.UpdateMultipleWorkers);
 
-// DELETE FARM BY ID
+// DELETE WORKER BY ID
 router.delete("/:id", workersController.DeleteWorkers);
 
 router.post("/login", workersController.LoginWorker, createJWT);

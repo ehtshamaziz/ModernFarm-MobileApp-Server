@@ -5,7 +5,7 @@ const FarmNote=require('../models/farm-note')
 const GetFarmNote = async (req, res, next) => {
   console.log("Get all farmNote");
   try {
-    const farmNote = await FarmNote.find();
+    const farmNote = await FarmNote.find().populate("farm", "farmName farmType _id");
     return res.status(200).send(farmNote);
   } catch (err) {
     next(err);
@@ -26,7 +26,7 @@ const GetFarmNoteByID = async (req, res, next) => {
 const GetUserFarmNote = async (req, res, next) => {
   console.log("Get all user farmNote");
   try {
-    const farmNote = await FarmNote.find({ user: req.params.id });
+    const farmNote = await FarmNote.find({ user: req.params.id }).populate("farm", "farmName farmType _id");
     return res.status(200).send(farmNote);
   } catch (err) {
     next(err);
