@@ -7,6 +7,7 @@ const farmNoteSchema = new mongoose.Schema({
   worker:{ type: mongoose.Schema.Types.ObjectId, ref: "Worker", },
   selfAssignedTo:{ type: mongoose.Schema.Types.ObjectId, ref: "User" },
   name: { type: String, required: true },
+  notesAssignedTo:{ type: String},
   description: { type: String, required: true },
   taskDate: { type: Date },
   action: {type:Boolean, default:false},
