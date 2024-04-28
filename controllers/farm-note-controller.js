@@ -26,7 +26,7 @@ const GetFarmNoteByID = async (req, res, next) => {
 const GetUserFarmNote = async (req, res, next) => {
   console.log("Get all user farmNote");
   try {
-    const farmNote = await FarmNote.find({ user: req.params.id }).populate("farm", "farmName farmType _id").populate("worker","fullName _id");
+    const farmNote = await FarmNote.find({ user: req.params.id }).populate("farm", "farmName farmType _id").populate("worker","fullName _id").populate("selfAssignedTo","firstName");
     return res.status(200).send(farmNote);
   } catch (err) {
     next(err);
