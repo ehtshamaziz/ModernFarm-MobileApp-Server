@@ -6,7 +6,6 @@ var marketSchema=new mongoose.Schema({
     specie:{ type: mongoose.Schema.Types.ObjectId, ref: "Specie"},
     bird:{ type: mongoose.Schema.Types.ObjectId, ref: "Bird"},
     couple:{ type: mongoose.Schema.Types.ObjectId, ref: "Couple"},
-    seller: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 
     marketCategory:{type:String},
     animalType:{type:String},
