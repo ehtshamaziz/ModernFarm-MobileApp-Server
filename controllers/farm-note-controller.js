@@ -129,7 +129,7 @@ const UpdateFarmNote = async (req, res, next) => {
       new: true,
     }).populate('worker',"fullName _id");
     const task=await Task.findOneAndUpdate (
-  { notesId: farmNote._id },  // This is the filter object to find the document
+  { noteId: farmNote._id },  // This is the filter object to find the document
   { $set: { taskDate: req.body.taskDate,taskType:"farmNote",action:req.body.action} },  // This is the update object
   { new: true }  // Options object (note: `new: true` does not apply to `updateOne`)
   )
@@ -145,7 +145,7 @@ const UpdateFarmNote = async (req, res, next) => {
 const DeleteFarmNote = async (req, res, next) => {
   try {
     const farmNote = await FarmNote.findByIdAndDelete(req.params.id);
-    await Task.deleteOne({notesId:req.params.id});
+    await Task.deleteOne({noteId:req.params.id});
 
     return res.status(200).json(farmNote);
   } catch (err) {
