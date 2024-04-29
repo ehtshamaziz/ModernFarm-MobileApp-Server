@@ -49,7 +49,7 @@ const CreateFarmNote = async (req, res, next) => {
      workerData=req.body.worker
     }
     const task=new Task({noteId:farmNote._id,user:data.user,taskDate:data.taskDate,action:false,taskType:"farmNote",worker:workerData })
- if(req.body.worker){
+   if(req.body.worker){
      const workerId=req.body.worker
      sendMessage(task,workerId)
     }
@@ -60,8 +60,10 @@ const CreateFarmNote = async (req, res, next) => {
   }
 };
 const sendMessage=async(task,workerId)=>{
+  console.log(workerId,"IDSSS")
     const worker = await Worker.findById(workerId)
     const tokens=worker.workerToken;
+    console.log(tokens,"helppp")
 
     const message = {
     token:tokens,  // Device token
