@@ -35,6 +35,7 @@ const GetUserMarket = async (req, res, next) => {
 
 // CREATE NEW MARKET
 const CreateMarket = async (req, res, next) => {
+  console.log(req.body,"market Data")
   const market = new Market(req.body);
   try {
     await market.save();

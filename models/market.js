@@ -9,7 +9,7 @@ var marketSchema=new mongoose.Schema({
     seller: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 
     marketCategory:{type:String},
-    animalType:{type:String},
+    animalTypeSelection:{type:String},
     description:{type:String},
     imageURL:{type:String,required: true },
 
