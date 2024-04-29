@@ -72,7 +72,7 @@ const sendMessage=async(task,workerId)=>{
       taskId: `${task._id}`,
       date:task.taskDate.toLocaleDateString(),
       type: `${task.taskType}`,
-      description:`FarmNote has been created`,
+      description:`FarmNote has been created By Owner!`,
       taskType:"owner",
 
 
@@ -91,8 +91,10 @@ const sendMessage=async(task,workerId)=>{
 }
 
 const completedMessage=async(task,workerName)=>{
+  console.log(task.user)
   const owner = await User.findById(task.user)
-
+  console.log(owner)
+  
   const tokens = owner.userToken;
     const message = {
     token:tokens,  // Device token
