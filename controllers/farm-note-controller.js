@@ -91,6 +91,7 @@ const sendMessage=async(task,workerId)=>{
 }
 
 const completedMessage=async(task,workerName)=>{
+  console.log(task,"task")
   console.log(task.user)
   const owner = await User.findById(task.user)
   console.log(owner)
@@ -131,7 +132,8 @@ const UpdateFarmNote = async (req, res, next) => {
   { notesId: farmNote._id },  // This is the filter object to find the document
   { $set: { taskDate: req.body.taskDate,taskType:"farmNote",action:req.body.action} },  // This is the update object
   { new: true }  // Options object (note: `new: true` does not apply to `updateOne`)
-  ).populate("user","firstName")
+  )
+  await task.populate('user', 'firstName _id').execPopulate();
   completedMessage(task,farmNote?.worker?.fullName);
     return res.status(200).json(farmNote);
   } catch (err) {
