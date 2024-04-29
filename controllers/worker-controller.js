@@ -74,10 +74,9 @@ const VerifyWorker = async (req, res, next) => {
       const user = await Worker.findOne({email:email});
     console.log(user)
     user.otpVerified=true;
-    user.userToken=token;
-    
+    user.workerToken=token;
+
     await user.save()
-    console.log("userssss")
       if (!user.otpVerification || !user.otpVerification.otp) {
         throw new Error("No OTP Details. Please try again.");
       } else {
