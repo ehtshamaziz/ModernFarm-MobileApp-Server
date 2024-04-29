@@ -1,17 +1,26 @@
 const mongoose=require("mongoose");
 
 var marketSchema=new mongoose.Schema({
-    type:{type:String, required:true},
+    farm: { type: mongoose.Schema.Types.ObjectId, ref: "Farm"},
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    specie:{ type: mongoose.Schema.Types.ObjectId, ref: "Specie"},
+    bird:{ type: mongoose.Schema.Types.ObjectId, ref: "Bird"},
+    couple:{ type: mongoose.Schema.Types.ObjectId, ref: "Couple"},
+    seller: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+
+    marketCategory:{type:String},
+    animalType:{type:String},
+    description:{type:String},
     imageURL:{type:String,required: true },
 
+
     birdRace:{type:String},
-    birdAge: { type: Number, required: true },
+    birdAge: { type: Number},
 
     size:{type:String},
     madeType:{type:String},
     condition:{type:String},
 
-    description:{type:String},
     sellerName:{type:String},
     gender:{type:String},
     phoneNumber:{type:Number},
