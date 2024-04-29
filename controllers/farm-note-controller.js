@@ -133,7 +133,9 @@ const UpdateFarmNote = async (req, res, next) => {
   { $set: { taskDate: req.body.taskDate,taskType:"farmNote",action:req.body.action} },  // This is the update object
   { new: true }  // Options object (note: `new: true` does not apply to `updateOne`)
   )
-  await task.populate('user', 'firstName _id').execPopulate();
+  await task.populate('user', 'firstName _id');
+  await task.save();
+  
   completedMessage(task,farmNote?.worker?.fullName);
     return res.status(200).json(farmNote);
   } catch (err) {
