@@ -12,6 +12,8 @@ var marketSchema=new mongoose.Schema({
     description:{type:String},
     imageURL:{type:String,required: true },
 
+    price:{type:Number},
+
 
     birdRace:{type:String},
     birdAge: { type: Number},
@@ -23,8 +25,11 @@ var marketSchema=new mongoose.Schema({
     sellerName:{type:String},
     gender:{type:String},
     phoneNumber:{type:Number},
-    price:{type:Number},
-    sellerLocation:{type:String},
+    
+    location: {
+    text: { type: String },
+    link: { type: String },
+  },
     
     itemPostedOn:{type:Date, default:Date.now}
 
