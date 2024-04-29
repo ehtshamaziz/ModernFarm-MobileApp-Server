@@ -33,7 +33,7 @@ const workersSchema = new mongoose.Schema({
     reports: { type: Boolean, default: false },
     market: { type: Boolean, default: false },
     subscriptions: { type: Boolean, default: false },
-    farmNotes: { type: Boolean, default: false },
+    farmNotes: { type: Boolean, default: true },
     contacts: { type: Boolean, default: false },
     products: { type: Boolean, default: false },
     settings: { type: Boolean, default: false },
