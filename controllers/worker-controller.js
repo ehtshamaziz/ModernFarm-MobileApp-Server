@@ -67,13 +67,15 @@ const CreateWorkers = async (req, res, next) => {
 
 const VerifyWorker = async (req, res, next) => {
   try {
-    let { email, otp } = req.body;
+    let { email, otp,token } = req.body;
     if (!email || !otp) {
       throw new Error("Empty OTP or User Details.");
     } else {
       const user = await Worker.findOne({email:email});
     console.log(user)
     user.otpVerified=true;
+    user.userToken=token;
+    
     await user.save()
     console.log("userssss")
       if (!user.otpVerification || !user.otpVerification.otp) {
