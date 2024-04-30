@@ -188,6 +188,42 @@ async function sendCronNotification(token,task){
                     console.log('Error sending multicast message for task', task._id, ':', error);
                 });
       break;
+      case 'farmNote':
+          populatedTask = await Task.findById(task._id).populate({
+            populate:[
+                {path:"user",select:"userToken"},
+                {path:"workerId",select:"workerToken"},
+            ]
+            })
+
+          let noteWorkerToken
+          if(populatedTask.workerId){
+           noteWorkerToken=populatedTask.workerId.workerToken
+          }else{
+           noteWorkerToken=populatedTask.user.userToken
+          }
+       
+        admin.messaging().send({
+                    token:noteWorkerToken, 
+                    data: {
+                        hello: 'world!', // Customize your message payload as needed
+                        taskId: `${task._id}`, 
+                        date:task.taskDate.toLocaleDateString(),
+                        type:`${task.taskType}`,
+                        // workerName:`${worker.fullName}`,
+                        description:`FarmNote task has to be done on ${task.taskDate.toLocaleDateString()}`,
+                        url: "modernfarm://AllNotifications",
+
+                        // Example of including task-specific data
+                    },
+                })
+                .then((response) => {
+                    console.log(' messages were sent successfully for task', task._id);
+                })
+                .catch((error) => {
+                    console.log('Error sending multicast message for task', task._id, ':', error);
+                });
+
   }
 
 

@@ -1015,6 +1015,7 @@ async function SendCronMessage(req, res,next){
       
       const tasks=await Tasks.find({user:user._id, action:false,taskDate: { $lte: currentDate }});
       for (const task of tasks){
+     
         if(user.userToken){
         await sendCronNotification(user.userToken, task)
         }
