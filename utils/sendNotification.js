@@ -189,12 +189,12 @@ async function sendCronNotification(token,task){
                 });
       break;
       case 'farmNote':
-          populatedTask = await Task.findById(task._id).populate({
-            populate:[
+          populatedTask = await Task.findById(task._id).populate(
+            [
                 {path:"user",select:"userToken"},
                 {path:"workerId",select:"workerToken"},
             ]
-            })
+            )
 
           let noteWorkerToken
           if(populatedTask.workerId){
