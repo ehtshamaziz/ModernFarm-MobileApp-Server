@@ -41,12 +41,14 @@ const GetUserFarmNote = async (req, res, next) => {
 // CREATE NEW FARM-NOTE
 const CreateFarmNote = async (req, res, next) => {
   const data=req.body;
+  console.log(data,"whole data")
   const farmNote = new FarmNote(req.body);
   try {
     await farmNote.save();
     let workerData;
-    if(req.body.worker){
-     workerData=req.body.worker
+    if(data.worker){
+      console.log("worker exists")
+     workerData=data.worker
     }
     const task=new Task({noteId:farmNote._id,user:data.user,taskDate:data.taskDate,action:false,taskType:"farmNote",worker:workerData })
    if(req.body.worker){
@@ -130,7 +132,7 @@ const UpdateFarmNote = async (req, res, next) => {
     }).populate('worker',"fullName _id");
     const task=await Task.findOneAndUpdate (
   { noteId: farmNote._id },  // This is the filter object to find the document
-  { $set: { taskDate: req.body.taskDate,taskType:"farmNote",action:req.body.action} },  // This is the update object
+  { $set: { taskDate: req.body.taskDate,taskType:"farmNote",action:req.body.action,worker:req.body.worker} },  // This is the update object
   { new: true }  // Options object (note: `new: true` does not apply to `updateOne`)
   )
   await task.populate('user', 'firstName _id');

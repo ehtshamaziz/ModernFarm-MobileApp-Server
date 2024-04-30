@@ -16,7 +16,7 @@ var marketSchema=new mongoose.Schema({
 
 
     birdRace:{type:String},
-    birdAge: { type: Number},
+    age: { type: Number},
 
     size:{type:String},
     madeType:{type:String},
