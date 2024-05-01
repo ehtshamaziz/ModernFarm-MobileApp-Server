@@ -9,6 +9,8 @@ const GetMarket = async (req, res, next) => {
       {path:"bird",select:"birdId price exactBirthDate"},
       {path:"couple",select:"coupleId price formationDate"},
       {path:"specie",select:"name"},
+      {path:"farm",select:"farmName farmType"},
+
 
     ])
     return res.status(200).send(market);
