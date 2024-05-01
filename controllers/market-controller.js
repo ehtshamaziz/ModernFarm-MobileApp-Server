@@ -5,7 +5,12 @@ const Market=require('../models/market')
 const GetMarket = async (req, res, next) => {
   console.log("Get all market");
   try {
-    const market = await Market.find();
+    const market = await Market.find().populate([
+      {path:"bird",select:"birdId price exactBirthDate"},
+      {path:"couple",select:"coupleId price formationDate"},
+      {path:"specie",select:"name"},
+
+    ])
     return res.status(200).send(market);
   } catch (err) {
     next(err);
