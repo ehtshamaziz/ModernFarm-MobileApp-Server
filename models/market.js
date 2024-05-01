@@ -6,13 +6,18 @@ var marketSchema=new mongoose.Schema({
     specie:{ type: mongoose.Schema.Types.ObjectId, ref: "Specie"},
     bird:{ type: mongoose.Schema.Types.ObjectId, ref: "Bird"},
     couple:{ type: mongoose.Schema.Types.ObjectId, ref: "Couple"},
+    productsId:{ type: mongoose.Schema.Types.ObjectId, ref: "Product"},
+    productCategory:{type:String},
+    productType:{type:String},
 
     marketCategory:{type:String},
     animalType:{type:String},
     description:{type:String},
-    imageURL:{type:String,required: true },
+    imageURL:{type:[String],required: true },
+    gender:{type:String},
 
     price:{type:Number},
+    phoneNumber:{type:Number},
 
 
     birdRace:{type:String},
@@ -22,9 +27,6 @@ var marketSchema=new mongoose.Schema({
     madeType:{type:String},
     condition:{type:String},
 
-    sellerName:{type:String},
-    gender:{type:String},
-    phoneNumber:{type:Number},
     
     location: {
     text: { type: String },
