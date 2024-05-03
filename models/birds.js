@@ -26,6 +26,7 @@ var birdSchema = new mongoose.Schema({
   source: { type: String },
   price: { type: Number },
   dateAdded: { type: Date, default: Date.now },
+  inMarket:{type:Boolean,default:false},
 });
 
 const Bird = mongoose.model("Bird", birdSchema);

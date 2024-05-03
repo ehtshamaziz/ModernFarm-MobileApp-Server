@@ -26,6 +26,8 @@ const coupleSchema = new mongoose.Schema({
     },
   ],
   dateAdded: { type: Date, default: Date.now },
+  inMarket:{type:Boolean,default:false},
+
 });
 
 const Couple = mongoose.model("Couple", coupleSchema);

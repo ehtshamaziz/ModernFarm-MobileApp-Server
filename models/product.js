@@ -16,6 +16,9 @@ const productSchema = new mongoose.Schema({
   expirationDate: { type: Date },
   dosage: { type: String },
   price: { type: Number, required: true },
+  isSold: { type: Boolean, default: false },
+  inMarket:{type:Boolean,default:false},
+
 });
 
 const Product = mongoose.model("Product", productSchema);
