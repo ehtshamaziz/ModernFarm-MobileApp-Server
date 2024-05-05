@@ -33,7 +33,7 @@ var marketSchema=new mongoose.Schema({
     link: { type: String },
   },
     
-    itemPostedOn:{type:Date, default:Date.now}
+    itemPostedOn:{type:Date}
 
 });
 

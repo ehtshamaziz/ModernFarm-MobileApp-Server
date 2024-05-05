@@ -11,6 +11,8 @@ const GetMarket = async (req, res, next) => {
       {path:"specie",select:"name"},
       {path:"farm",select:"farmName farmType"},
       {path:"user",select:"_id firstName"},
+      {path:"productsId",select:"_id name category"},
+
 
 
 
