@@ -15,6 +15,8 @@ const specieRoutes=require("./routes/specie-routes")
 const birdRoutes=require("./routes/bird-routes");
 const coupleRoutes=require("./routes/couple-routes");
 const { UploadImageMulter, UploadImage } = require("./middleware/image");
+const { UploadMultiImagesMulter, UploadMultiImages } = require("./middleware/multi-images");
+
 const clutchRoutes=require('./routes/clutch-routes');
 const eggRoutes=require('./routes/egg-routes.js');
 const diseaseRoutes=require('./routes/disease-route.js');
@@ -116,6 +118,8 @@ app.get("/", (req, res) => {
 });
 
 app.post("/image/upload", UploadImageMulter, UploadImage);
+app.post("/multi-images/upload", UploadMultiImagesMulter, UploadMultiImages);
+
 
 // Error handling
 app.use((req, res, next) => {

@@ -6,17 +6,14 @@ const GetMarket = async (req, res, next) => {
   console.log("Get all market");
   try {
     const market = await Market.find().populate([
+      {path:"user",select:"_id firstName"},
       {path:"bird",select:"birdId price exactBirthDate gender"},
       {path:"couple",select:"coupleId price formationDate"},
       {path:"specie",select:"name"},
       {path:"farm",select:"farmName farmType"},
-      {path:"user",select:"_id firstName"},
       {path:"productsId",select:"_id name category"},
-
-
-
-
     ])
+
     return res.status(200).send(market);
   } catch (err) {
     next(err);
