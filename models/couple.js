@@ -27,6 +27,7 @@ const coupleSchema = new mongoose.Schema({
   ],
   dateAdded: { type: Date, default: Date.now },
   inMarket:{type:Boolean,default:false},
+  isSold:{type:Boolean}
 
 });
 
