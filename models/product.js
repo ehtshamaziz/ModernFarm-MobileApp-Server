@@ -18,6 +18,8 @@ const productSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   isSold: { type: Boolean, default: false },
   inMarket:{type:Boolean,default:false},
+  soldOn: {type:Date},
+
 
 });
 
