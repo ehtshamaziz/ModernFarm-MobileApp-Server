@@ -233,6 +233,7 @@ const UpdateCouple = async (req, res, next) => {
 
 
 
+      console.log(maleBirdToUpdate.initialCageNumber,"Cage Number Initial")
 
     const maleUpdate=await Bird.findByIdAndUpdate(maleBird, {
        cageNumber: maleBirdToUpdate.initialCageNumber,
