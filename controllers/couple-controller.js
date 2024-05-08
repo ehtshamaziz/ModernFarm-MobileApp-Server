@@ -45,6 +45,14 @@ const GetCouplesByID = async (req, res, next) => {
     const couple = await Couple.findById(req.params.id)
     .populate("farm","farmName farmType")
     .populate("specie","name")
+      .populate(
+        "femaleBird",
+        "_id birdName birdId gender price birdSpecie imageURL"
+      )
+      .populate(
+        "maleBird",
+        "_id birdName birdId gender price birdSpecie imageURL"
+      )
     return res.status(200).send(couple);
   } catch (err) {
     next(err);
@@ -223,9 +231,7 @@ const UpdateCouple = async (req, res, next) => {
       // await femaleBirdToUpdate.save();
 
 
-    console.log("tattttiiii");
 
-      console.log(maleBirdToUpdate.initialCageNumber);
 
     const maleUpdate=await Bird.findByIdAndUpdate(maleBird, {
        cageNumber: "111111111",
@@ -238,7 +244,6 @@ const UpdateCouple = async (req, res, next) => {
       cageNumber: femaleBirdToUpdate.initialCageNumber,
       status:"rest"
     },{ new: true });
-    console.log(femaleUpdate)
 
   } else if(status === 'mating'){
       await Bird.findByIdAndUpdate(maleBird, {
