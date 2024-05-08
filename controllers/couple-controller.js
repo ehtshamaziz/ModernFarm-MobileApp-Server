@@ -201,6 +201,7 @@ const AddCouple = async (req, res, next) => {
 // UPDATE COUPLE
 const UpdateCouple = async (req, res, next) => {
   try {
+    console.log("Helloo123")
      const {maleBird,femaleBird,cageNumber,status}=req.body;
 
     const couple = await Couple.findByIdAndUpdate(req.params.id, req.body, {
@@ -234,13 +235,14 @@ const UpdateCouple = async (req, res, next) => {
 
 
     const maleUpdate=await Bird.findByIdAndUpdate(maleBird, {
-       cageNumber: "111111111",
+       cageNumber: maleBirdToUpdate.initialCageNumber,
        status:"rest"
     },{ new: true });
 
     console.log(maleUpdate)
     
-    const femaleUpdate=  await Bird.findByIdAndUpdate(femaleBird, {
+    // const femaleUpdate= 
+     await Bird.findByIdAndUpdate(femaleBird, {
       cageNumber: femaleBirdToUpdate.initialCageNumber,
       status:"rest"
     },{ new: true });
