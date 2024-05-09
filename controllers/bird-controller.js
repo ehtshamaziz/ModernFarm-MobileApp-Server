@@ -235,7 +235,10 @@ const UpdateBird = async (req, res, next) => {
 // DELETE BIRD
 const DeleteBird = async (req, res, next) => {
   try {
-    const bird = await Bird.findByIdAndDelete(req.params.id);
+    // const bird = await Bird.findByIdAndDelete(req.params.id);
+    // const couple = await Couple.deleteMany({maleBird:bird._id || femaleBird : bird._id});
+    // const clutch = await Bird.deleteMany(req.params.id);
+
     await Task.deleteMany({
       eggBirdId: req.params.id
     });
