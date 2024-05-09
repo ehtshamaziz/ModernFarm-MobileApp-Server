@@ -1,4 +1,22 @@
 const Farm = require("../models/farm");
+const Bird = require("../models/birds");
+const Couple = require("../models/couple");
+const Clutch = require("../models/clutch");
+const Egg = require("../models/egg");
+
+
+const Product = require("../models/product");
+const Finance = require("../models/finance");
+const Worker = require("../models/workers");
+const Treatment = require("../models/treatment");
+const Nutrition = require("../models/nutrition");
+const FarmNote = require("../models/farm-note");
+const Task = require("../models/tasks");
+
+
+
+
+
 // const cloudinary = require("cloudinary").v2;
 // cloudinary.config({
 //   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -76,6 +94,21 @@ const UpdateFarm = async (req, res, next) => {
 const DeleteFarm = async (req, res, next) => {
   try {
     const farm = await Farm.findByIdAndDelete(req.params.id);
+    await Bird.deleteMany({farm:farm._id})
+    const couple=await Couple.deleteMany({farm:farm._id})
+    const clutch=await Clutch.deleteMany({couple:couple._id})
+    await Egg.deleteMany({clutch:clutch._id})
+
+    await Product.deleteMany({farm:farm._id})
+    await Finance.deleteMany({farm:farm._id})
+    await Task.deleteMany({farm:farm._id})
+    await Worker.deleteMany({farm:farm._id})
+    await Treatment.deleteMany({farm:farm._id})
+    await FarmNote.deleteMany({farm:farm._id})
+    await Nutrition.deleteMany({farm:farm._id})
+
+
+
     return res.status(200).json(farm);
   } catch (err) {
     next(err);
