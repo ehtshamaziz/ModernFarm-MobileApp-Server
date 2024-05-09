@@ -94,10 +94,27 @@ const UpdateFarm = async (req, res, next) => {
 const DeleteFarm = async (req, res, next) => {
   try {
     const farm = await Farm.findByIdAndDelete(req.params.id);
-    await Bird.deleteMany({farm:farm._id})
-    const couple=await Couple.deleteMany({farm:farm._id})
-    const clutch=await Clutch.deleteMany({couple:couple._id})
-    await Egg.deleteMany({clutch:clutch._id})
+    // await Bird.deleteMany({farm:farm._id})
+    // const couple=await Couple.findAnd({farm:farm._id})
+    // const clutch=await Clutch.deleteMany({couple:couple._id})
+    // await Egg.deleteMany({clutch:clutch._id})
+
+  const couples = await Couple.find({ farm: farm._id }).select('_id');
+  const coupleIds = couples.map(couple => couple._id);
+
+  const clutches = await Clutch.find({ couple: { $in: coupleIds } }).select('_id');
+  const clutchIds = clutches.map(clutch => clutch._id);
+
+
+
+  await Egg.deleteMany({ clutch: { $in: clutchIds } });
+
+// Next, delete Clutches that belong to the Couples
+  await Clutch.deleteMany({ couple: { $in: coupleIds } });
+
+  await Bird.deleteMany({ farm: farm._id });
+
+    await Couple.deleteMany({ farm: farm._id })
 
     await Product.deleteMany({farm:farm._id})
     await Finance.deleteMany({farm:farm._id})
