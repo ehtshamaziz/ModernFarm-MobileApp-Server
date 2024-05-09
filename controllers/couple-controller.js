@@ -283,12 +283,14 @@ const UpdateCouple = async (req, res, next) => {
     else if(status==='sold'){
       await Bird.findByIdAndUpdate(maleBird, {
         status:"sold",
-        is_archived:true
+        is_archived:true,
+        inMarket:false
 
       });
       await Bird.findByIdAndUpdate(femaleBird, {
         status:"sold",
-        is_archived:true
+        is_archived:true,
+        inMarket:false
       });
     }
 
