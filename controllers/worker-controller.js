@@ -11,7 +11,7 @@ const GetWorkers = async (req, res, next) => {
     const workers = await Worker.find()
     .populate({
       path:"farm",
-      select:"farmName user",
+      select:"farmName farmType user",
       populate:{
         path:"user",
         select:"firstName lastName"

@@ -75,6 +75,7 @@ const GetUserCouples = async (req, res, next) => {
       )
       .populate("farm", "farmType farmName _id")
       .populate("specie")
+      .populate("user", "familyName firstName email")
       .populate("descendants","status")
 
 
