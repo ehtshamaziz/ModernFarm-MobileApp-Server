@@ -15,6 +15,7 @@ const GetCouples = async (req, res, next) => {
         "maleBird",
         "_id birdName birdId gender price birdSpecie imageURL"
       )
+      .populate("user","email firstName familyName")
       .populate("specie")
       .populate("farm", "farmType farmName _id")
       let couplesWithClutches = (await Promise.all(
@@ -282,13 +283,13 @@ const UpdateCouple = async (req, res, next) => {
   }
     else if(status==='sold'){
       await Bird.findByIdAndUpdate(maleBird, {
-        status:"sold",
+        status:"rest",
         is_archived:true,
         inMarket:false
 
       });
       await Bird.findByIdAndUpdate(femaleBird, {
-        status:"sold",
+        status:"rest",
         is_archived:true,
         inMarket:false
       });

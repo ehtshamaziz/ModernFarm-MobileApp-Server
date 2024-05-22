@@ -14,7 +14,9 @@ const Finance = require("../models/finance");
 const GetProducts = async (req, res, next) => {
   console.log("Get all products");
   try {
-    const product = await Product.find().populate("farm","farmName farmType");
+    const product = await Product.find().populate("farm","farmName farmType")
+      .populate("user","email firstName familyName")
+    
     return res.status(200).send(product);
   } catch (err) {
     next(err);
