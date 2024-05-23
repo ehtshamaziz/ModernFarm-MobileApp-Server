@@ -27,6 +27,9 @@ const workerRoutes=require("./routes/worker-routes.js");
 const financeRoutes=require("./routes/finance-routes.js");
 const farmNotesRoutes=require("./routes/farm-note-routes.js");
 const marketRoutes=require("./routes/market-routes.js");
+const subscriptionRoutes=require("./routes/subscription-routes.js");
+
+
 
 
 
@@ -70,6 +73,8 @@ app.use("/worker",workerRoutes);
 app.use("/finance",financeRoutes);
 app.use("/farm-note",farmNotesRoutes);
 app.use("/market",marketRoutes);
+app.use("/subscription",subscriptionRoutes);
+
 
 
 
