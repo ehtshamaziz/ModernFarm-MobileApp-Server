@@ -5,7 +5,7 @@ const Subscription=require('../models/subscription')
 const GetSubscription = async (req, res, next) => {
   console.log("Get all subscription");
   try {
-    const subscription = await Subscription.find();
+    const subscription = await Subscription.find().populate("user","firstName familyName")
     return res.status(200).send(subscription);
   } catch (err) {
     next(err);
