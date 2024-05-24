@@ -10,13 +10,13 @@ const subscriptionSchema = new mongoose.Schema({
   planeTenure: { type: String, required: true },
   totalPrice: { type: Number, required: true },
   discountedPrice: { type: Number },
-  currency: { type: String, required: true },
-  country: { type: String, required: true },
-  user: {
+  currency: [{ type: String, required: true }],
+  country: [{ type: String, required: true }],
+  user: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
-  },
+  }],
 
   accessRights: {
     all: { type: Boolean, default: true },
