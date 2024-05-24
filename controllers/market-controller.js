@@ -34,7 +34,13 @@ const GetMarketByID = async (req, res, next) => {
 const GetUserMarket = async (req, res, next) => {
   console.log("Get all user market");
   try {
-    const market = await Market.find({ user: req.params.id });
+    const market = await Market.find({ user: req.params.id }).populate([
+      {path:"bird",select:"birdId price exactBirthDate gender"},
+      {path:"couple",select:"coupleId price formationDate"},
+      {path:"specie",select:"name"},
+      {path:"farm",select:"farmName farmType"},
+      {path:"productsId",select:"_id name category"},
+    ]);
     return res.status(200).send(market);
   } catch (err) {
     next(err);
