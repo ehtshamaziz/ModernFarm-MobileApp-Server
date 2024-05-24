@@ -356,6 +356,10 @@ for (let task of tasks) {
         });
         break;
     }
+     populateOptions.push({
+       path: 'farm',
+       select: 'farmType farmName',
+     })
 
     if (populateOptions.length > 0) {
       await Tasks.populate(task, populateOptions);
