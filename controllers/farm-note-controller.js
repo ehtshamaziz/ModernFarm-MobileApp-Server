@@ -50,7 +50,7 @@ const CreateFarmNote = async (req, res, next) => {
       console.log("worker exists")
      workerData=data.worker
     }
-    const task=new Task({noteId:farmNote._id,user:data.user,taskDate:data.taskDate,action:false,taskType:"farmNote",workerId:workerData })
+    const task=new Task({farm:farmNote.farm,noteId:farmNote._id,user:data.user,taskDate:data.taskDate,action:false,taskType:"farmNote",workerId:workerData })
    if(req.body.worker){
      const workerId=req.body.worker
      sendMessage(task,workerId)
