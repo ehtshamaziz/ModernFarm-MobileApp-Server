@@ -47,7 +47,6 @@ const CreateFarmNote = async (req, res, next) => {
     await farmNote.save();
     let workerData;
     if(data.worker){
-      console.log("worker exists")
      workerData=data.worker
     }
     const task=new Task({farm:farmNote.farm,noteId:farmNote._id,user:data.user,taskDate:data.taskDate,action:false,taskType:"farmNote",workerId:workerData })

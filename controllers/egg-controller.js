@@ -86,11 +86,12 @@ const GetCouplesEggs = async (req,res,next)=>{
 }
 
 
-function addDaysToDate(date, days) {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-}
+
+// function addDaysToDate(date, days) {
+//   const result = new Date(date);
+//   result.setDate(result.getDate() + days);
+//   return result;
+// }
 
 // CREATE NEW EGG
 const AddEggs = async (req, res, next) => {

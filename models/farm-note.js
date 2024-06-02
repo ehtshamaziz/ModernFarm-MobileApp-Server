@@ -11,6 +11,7 @@ const farmNoteSchema = new mongoose.Schema({
   description: { type: String, required: true },
   taskDate: { type: Date },
   action: {type:Boolean, default:false},
+  taskDone:{ type: Date },
   
 });
 

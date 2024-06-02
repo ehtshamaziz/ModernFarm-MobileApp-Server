@@ -1,6 +1,7 @@
 const Couple = require("../models/couple");
 const Clutch = require("../models/clutch");
 const Bird = require("../models/birds");
+const Egg = require("../models/egg");
 
 
 const GetCouples = async (req, res, next) => {
@@ -100,6 +101,66 @@ const GetUserCouples = async (req, res, next) => {
     next(err);
   }
 };
+
+// GET ALL COUPLE FOR A SPECIFIC USER
+const GetUserCalculateCouples = async (req, res, next) => {
+  console.log("Get all user couple");
+  try {
+    const couples = await Couple.find({ user: req.params.id })
+      .populate("femaleBird", "_id birdName birdId gender price birdSpecie imageURL")
+      .populate("maleBird", "_id birdName birdId gender price birdSpecie imageURL")
+      .populate("farm", "farmType farmName _id")
+      .populate("specie")
+      .populate("user", "familyName firstName email");
+      couples.save();
+
+
+    const couplesWithDetails = await Promise.all(couples.map(async (couple) => {
+      const descendants =  couple.descendants;
+      const eggs = await ParentCouplesEgg(couple._id);
+      const clutchesCount = await Clutch.countDocuments({ couple: couple._id });
+
+      const totalDescendants = descendants.length;
+      const sumDescendants = descendants.length;
+      const totalEggs = eggs.length;
+      const fertilityEggs = eggs.filter(egg => egg.status === 'hatched' || egg.status === 'fertilized');
+      const hatchingEggs = eggs.filter(egg => egg.status === 'hatched');
+
+      let avgDeathRate = totalDescendants > 0 ? Math.min(((sumDescendants / totalDescendants) * 100).toFixed(2), 100) : 0;
+      let avgFertility = totalEggs > 0 ? Math.min(((fertilityEggs.length / totalEggs) * 100).toFixed(2), 100) : 0;
+      let avgHatching = totalEggs > 0 ? Math.min(((hatchingEggs.length / totalEggs) * 100).toFixed(2), 100) : 0;
+
+      return {
+        ...couple.toObject(),
+        avgDeathRate,
+        avgFertility,
+        avgHatching,
+        clutches: clutchesCount
+      };
+    }));
+
+    if (req.query.filterClutches === 'true') {
+      couplesWithDetails = couplesWithDetails.filter(couple => couple.clutches > 0);
+    }
+
+    console.log(couplesWithDetails);
+    return res.status(200).json(couplesWithDetails);
+  } catch (err) {
+    console.error('Error in GetUserCalculateCouples:', err);
+    next(err);
+  }
+};
+async function ParentCouplesEgg(id) {
+ try {
+    const eggs = await Egg.find({parentCouple: id})  
+    
+    return (eggs);
+  } catch (err) {
+    console.log("Not Found ");
+    next(err);
+  }
+}
+
 
 // CREATE NEW COUPLE
 const AddCouple = async (req, res, next) => {
@@ -320,4 +381,5 @@ module.exports = {
   GetUserCouples,
   UpdateCouple,
   DeleteCouple,
+  GetUserCalculateCouples
 };
