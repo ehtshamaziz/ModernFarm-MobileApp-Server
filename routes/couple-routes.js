@@ -15,7 +15,7 @@ router.get("/user/:id", coupleController.GetUserCouples);
 
 
 // GET ALL RATE COUPLES FOR A SPECIFIC USER
-router.get("/user/calculation/:id", coupleController.GetUserCalculateCouples);
+router.get("/calculation/user/:id", coupleController.GetUserCalculateCouples);
 
 // CREATE NEW COUPLE
 router.post("/", coupleController.AddCouple);
