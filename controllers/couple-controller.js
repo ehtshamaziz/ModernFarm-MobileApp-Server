@@ -112,7 +112,7 @@ const GetUserCalculateCouples = async (req, res, next) => {
       .populate("farm", "farmType farmName _id")
       .populate("specie")
       .populate("user", "familyName firstName email");
-      couples.save();
+      await couples.save();
 
 
     const couplesWithDetails = await Promise.all(couples.map(async (couple) => {
