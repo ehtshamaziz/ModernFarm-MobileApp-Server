@@ -6,6 +6,8 @@ const cors = require("cors");
 const morgan = require("morgan");
 const cloudinary = require("cloudinary").v2;
 
+const stripe = require('stripe')('sk_test_51OHpu1BUs4cwQXC7MCSDG9P57C0fGE9E9bbi7KPrnhLPmz8BNa99yfh8Ff4cl8elHDv6QIxI0LrLq9EfvgcFd2to00JDLtsd2o');
+
 // Import routes
 const userRoutes = require("./routes/user-routes");
 const farmRoutes = require("./routes/farm-routes");
@@ -75,8 +77,6 @@ app.use("/farm-note",farmNotesRoutes);
 app.use("/market",marketRoutes);
 app.use("/subscription",subscriptionRoutes);
 
-
-const stripe = require('stripe')('sk_test_51OHpu1BUs4cwQXC7MCSDG9P57C0fGE9E9bbi7KPrnhLPmz8BNa99yfh8Ff4cl8elHDv6QIxI0LrLq9EfvgcFd2to00JDLtsd2o');
 
 app.post('/create-payment-intent',async (req,res)=>{
   try{
