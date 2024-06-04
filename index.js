@@ -76,6 +76,21 @@ app.use("/market",marketRoutes);
 app.use("/subscription",subscriptionRoutes);
 
 
+const stripe = require('stripe')('sk_test_51OHpu1BUs4cwQXC7MCSDG9P57C0fGE9E9bbi7KPrnhLPmz8BNa99yfh8Ff4cl8elHDv6QIxI0LrLq9EfvgcFd2to00JDLtsd2o');
+
+app.post('/create-payment-intent',async (req,res)=>{
+  try{
+const paymentIntent = await stripe.paymentIntents.create({
+  payment_method_types: ['card'],
+  amount: 1099,
+  currency: 'usd',
+});
+res.status(200).json(paymentIntent)
+  }catch(error){
+    res.status(505).send(JSON.stringify(error))
+
+  }
+})
 
 
 const axios = require('axios');
