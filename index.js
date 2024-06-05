@@ -5,8 +5,8 @@ const helmet = require("helmet");
 const cors = require("cors");
 const morgan = require("morgan");
 const cloudinary = require("cloudinary").v2;
-
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// STRIPE_SECRET_KEY=sk_test_51OHpu1BUs4cwQXC7MCSDG9P57C0fGE9E9bbi7KPrnhLPmz8BNa99yfh8Ff4cl8elHDv6QIxI0LrLq9EfvgcFd2to00JDLtsd2o
+// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Import routes
 const userRoutes = require("./routes/user-routes");
@@ -122,19 +122,19 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Success" });
 });
 
-app.post('/create-payment-intent',async (req,res)=>{
-  try{
-const paymentIntent = await stripe.paymentIntents.create({
-  payment_method_types: ['card'],
-  amount: 1099,
-  currency: 'usd',
-});
-res.status(200).json(paymentIntent)
-  }catch(error){
-    res.status(505).send(JSON.stringify(error))
+// app.post('/create-payment-intent',async (req,res)=>{
+//   try{
+// const paymentIntent = await stripe.paymentIntents.create({
+//   payment_method_types: ['card'],
+//   amount: 1099,
+//   currency: 'usd',
+// });
+// res.status(200).json(paymentIntent)
+//   }catch(error){
+//     res.status(505).send(JSON.stringify(error))
 
-  }
-})
+//   }
+// })
 
 
 app.post("/image/upload", UploadImageMulter, UploadImage);
