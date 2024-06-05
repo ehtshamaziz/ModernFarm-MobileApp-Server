@@ -63,4 +63,7 @@ router.post("/reset/resend", userController.ResendResetOTP);
 
 router.post("/new-password", userController.NewPassword);
 
+router.post("/update-password", userController.UpdatePassword);
+
+
 module.exports = router;

@@ -344,6 +344,26 @@ const NewPassword = async (req, res, next) => {
   }
 };
 
+
+// UPDATE USER PASSWORD
+const UpdatePassword = async (req, res, next) => {
+  const { currentPassword,password, userID } = req.body;
+  try {
+    const userData=await User.findById(userID)
+      const isMatch = await bcrypt.compare(currentPassword, userData.password);
+  if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect" });
+    }else{
+        const hashedPassword = await bcrypt.hash(password, 10);
+    await User.updateOne({  _id: userID }, { password: hashedPassword });
+    res.status(200).json({ message: "Password has been reset successfully" });
+    }
+  } catch (err) {
+    return res.status(400).json({ message: "Password not changed" });
+  }
+};
+
+
 module.exports = {
   GetUsers,
   GetUserByID,
@@ -363,4 +383,5 @@ module.exports = {
   VerifyResetOTP,
   ResendRegistrationOTP,
   ResendResetOTP,
+  UpdatePassword
 };
