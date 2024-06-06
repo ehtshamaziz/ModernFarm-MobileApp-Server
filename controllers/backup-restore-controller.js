@@ -13,9 +13,9 @@ const PostBackup = async (req, res, next) => {
 
     try {
         const user = await User.findById(userId);
-        const birds = await Bird.find({ userId });
-        const couples = await Couple.find({ userId });
-        const products = await Product.find({ userId });
+        const birds = await Bird.find({ user: userId });
+        const couples = await Couple.find({ user: userId });
+        const products = await Product.find({ user: userId });
 
         const backupData = new Backup({
             userId: user._id,
@@ -42,11 +42,11 @@ const PostRestore = async (req, res, next) => {
         }
 
         await User.findByIdAndUpdate(userId, backupData.userData, { new: true });
-        await Bird.deleteMany({ userId });
+        await Bird.deleteMany({ user: userId });
         await Bird.insertMany(backupData.birdsData);
-        await Couple.deleteMany({ userId });
+        await Couple.deleteMany({ user: userId });
         await Couple.insertMany(backupData.couplesData);
-        await Product.deleteMany({ userId });
+        await Product.deleteMany({user:  userId });
         await Product.insertMany(backupData.productsData);
 
         res.status(200).send({ message: 'Restore successful' });
