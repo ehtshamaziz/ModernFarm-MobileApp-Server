@@ -30,6 +30,10 @@ const financeRoutes=require("./routes/finance-routes.js");
 const farmNotesRoutes=require("./routes/farm-note-routes.js");
 const marketRoutes=require("./routes/market-routes.js");
 const subscriptionRoutes=require("./routes/subscription-routes.js");
+const questionRoutes=require("./routes/question-routes.js");
+const generalSettingRoutes=require("./routes/general-setting-routes.js");
+
+
 
 
 
@@ -76,6 +80,10 @@ app.use("/finance",financeRoutes);
 app.use("/farm-note",farmNotesRoutes);
 app.use("/market",marketRoutes);
 app.use("/subscription",subscriptionRoutes);
+app.use("/question",questionRoutes);
+app.use("/general-setting",generalSettingRoutes);
+
+
 
 
 const axios = require('axios');
