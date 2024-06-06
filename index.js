@@ -32,6 +32,8 @@ const marketRoutes=require("./routes/market-routes.js");
 const subscriptionRoutes=require("./routes/subscription-routes.js");
 const questionRoutes=require("./routes/question-routes.js");
 const generalSettingRoutes=require("./routes/general-setting-routes.js");
+const backupRoutes=require("./routes/backup-routes.js");
+
 
 
 
@@ -82,6 +84,8 @@ app.use("/market",marketRoutes);
 app.use("/subscription",subscriptionRoutes);
 app.use("/question",questionRoutes);
 app.use("/general-setting",generalSettingRoutes);
+app.use("/backup-restore",backupRoutes);
+
 
 
 
