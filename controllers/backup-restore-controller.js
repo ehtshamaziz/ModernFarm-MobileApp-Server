@@ -24,11 +24,11 @@ const oauth2Client = new google.auth.OAuth2(
   'https://api.modrnfarm.com'
 );
 
-oauth2Client.setCredentials({
-  refresh_token: 'YOUR_REFRESH_TOKEN'
-});
+// oauth2Client.setCredentials({
+//   refresh_token: 'YOUR_REFRESH_TOKEN'
+// });
 
-const drive = google.drive({ version: 'v3', auth: oauth2Client });
+// const drive = google.drive({ version: 'v3', auth: oauth2Client });
 
 // // Backup function
 // const PostBackup = async (req, res) => {
