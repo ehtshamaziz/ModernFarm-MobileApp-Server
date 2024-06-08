@@ -12,7 +12,7 @@ const Task=require('../models/tasks')
 const Market=require('../models/market')
 const Worker=require('../models/workers')
 const Farm=require('../models/farm')
-const { google } = require('googleapis');
+const {google} = require('googleapis');
 const fs = require('fs');
 
 
