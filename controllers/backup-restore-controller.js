@@ -19,8 +19,8 @@ const fs = require('fs');
 
 
 const oauth2Client = new google.auth.OAuth2(
-  GOOGLE_DRIVE_CLIENT_ID,
-  GOOGLE_DRIVE_SECRET,
+  process.env.GOOGLE_DRIVE_CLIENT_ID,
+  process.env.GOOGLE_DRIVE_SECRET,
   'https://api.modrnfarm.com'
 );
 
