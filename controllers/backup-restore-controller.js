@@ -3,13 +3,21 @@ const User=require('../models/user')
 const Bird=require('../models/birds')
 const Couple=require('../models/couple')
 const Product=require('../models/product')
-
+const Treatment=require('../models/treatment')
+const Disease=require('../models/disease')
+const FarmNote=require('../models/farm-note')
+const Finance=require('../models/finance')
+const Nutrition=require('../models/nutrition')
+const Task=require('../models/tasks')
+const Market=require('../models/market')
+const Worker=require('../models/worker')
+const Farm=require('../models/farm')
 
 
 // GET ALL BACKUP
 const PostBackup = async (req, res, next) => {
-  console.log("BACKUP!!");
-      const userId = req.body.userId;
+    console.log("BACKUP!!");
+    const userId = req.body.userId;
 
     try {
         const user = await User.findById(userId);
@@ -17,6 +25,15 @@ const PostBackup = async (req, res, next) => {
         const couples = await Couple.find({ user: userId });
         const products = await Product.find({ user: userId });
 
+        // Check if a backup already exists for the user
+        const existingBackup = await Backup.findOne({ userId });
+
+        if (existingBackup) {
+            // Delete the existing backup
+            await Backup.deleteOne({ userId });
+        }
+
+        // Create new backup
         const backupData = new Backup({
             userId: user._id,
             userData: user,
@@ -24,7 +41,7 @@ const PostBackup = async (req, res, next) => {
             couplesData: couples,
             productsData: products
         });
-        
+
         await backupData.save();
         res.status(200).send({ message: 'Backup successful' });
     } catch (error) {
@@ -32,7 +49,7 @@ const PostBackup = async (req, res, next) => {
     }
 };
 
-// GET SINGLE QUESTION
+// GET RESTORE
 const PostRestore = async (req, res, next) => {
  const userId = req.body.userId;
     try {
