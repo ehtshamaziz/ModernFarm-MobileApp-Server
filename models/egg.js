@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
 const eggSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+
   clutch: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Clutch",

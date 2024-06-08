@@ -6,6 +6,8 @@ const clutchSchema = new mongoose.Schema({
     ref: "Couple",
     required: true,
   },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+
   clutchNumber: { type: String, required: true },
   method: { type: String },
   incubationStartDate: { type: Date },

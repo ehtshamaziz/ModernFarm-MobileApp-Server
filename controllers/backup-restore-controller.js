@@ -12,17 +12,25 @@ const Task=require('../models/tasks')
 const Market=require('../models/market')
 const Worker=require('../models/workers')
 const Farm=require('../models/farm')
-const {google} = require('googleapis');
-const fs = require('fs');
+const Contact=require('../models/contact')
+const Clutch=require('../models/clutch')
+const Egg=require('../models/egg')
 
 
 
 
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_DRIVE_CLIENT_ID,
-  process.env.GOOGLE_DRIVE_SECRET,
-  'https://api.modrnfarm.com'
-);
+// --------------Google Drive--------------
+// const {google} = require('googleapis');
+// const fs = require('fs');
+
+
+
+
+// const oauth2Client = new google.auth.OAuth2(
+//   process.env.GOOGLE_DRIVE_CLIENT_ID,
+//   process.env.GOOGLE_DRIVE_SECRET,
+//   'https://api.modrnfarm.com'
+// );
 
 // oauth2Client.setCredentials({
 //   refresh_token: 'YOUR_REFRESH_TOKEN'
@@ -130,6 +138,22 @@ const PostBackup = async (req, res, next) => {
         const birds = await Bird.find({ user: userId });
         const couples = await Couple.find({ user: userId });
         const products = await Product.find({ user: userId });
+        const treatments = await Treatment.find({ user: userId });
+        const disease = await Disease.find({ user: userId });
+        const farmNote = await FarmNote.find({ user: userId });
+        const finance = await Finance.find({ user: userId });
+        const nutrition = await Nutrition.find({ user: userId });
+
+        const task = await Task.find({ user: userId });
+        const market = await Market.find({ user: userId });
+        const worker = await Worker.find({ user: userId });
+        const farm = await Farm.find({ user: userId });
+        const contact = await Contact.find({ user: userId });
+        const clutch = await Clutch.find({ user: userId });
+        const egg = await Egg.find({ user: userId });
+
+
+
 
         // Check if a backup already exists for the user
         const existingBackup = await Backup.findOne({ userId });
@@ -145,7 +169,21 @@ const PostBackup = async (req, res, next) => {
             userData: user,
             birdsData: birds,
             couplesData: couples,
-            productsData: products
+            productsData: products,
+            treatmentsData: treatments,
+            diseasesData:disease,
+            farmNotesData:farmNote,
+            financesData: finance,
+            nutritionsData:nutrition,
+            tasksData:task,
+            marketsData: market,
+            workersData:worker,
+            farmsData: farm,
+            contactsData:contact,
+            clutchesData:clutch,
+            eggsData:egg
+
+
         });
 
         await backupData.save();
@@ -171,6 +209,39 @@ const PostRestore = async (req, res, next) => {
         await Couple.insertMany(backupData.couplesData);
         await Product.deleteMany({user:  userId });
         await Product.insertMany(backupData.productsData);
+
+        await Treatment.deleteMany({user:  userId });
+        await Treatment.insertMany(backupData.treatmentsData);
+        await Disease.deleteMany({user:  userId });
+        await Disease.insertMany(backupData.diseasesData);
+        await FarmNote.deleteMany({user:  userId });
+        await FarmNote.insertMany(backupData.farmNotesData);
+        await Finance.deleteMany({user:  userId });
+        await Finance.insertMany(backupData.financesData);
+        await Nutrition.deleteMany({user:  userId });
+        await Nutrition.insertMany(backupData.nutritionsData);
+        await Task.deleteMany({user:  userId });
+        await Task.insertMany(backupData.tasksData);
+
+        await Market.deleteMany({user:  userId });
+        await Market.insertMany(backupData.marketsData);
+
+        await Worker.deleteMany({user:  userId });
+        await Worker.insertMany(backupData.workersData);
+        
+        await Farm.deleteMany({user:  userId });
+        await Farm.insertMany(backupData.farmsData);
+
+        await Contact.deleteMany({user:  userId });
+        await Contact.insertMany(backupData.contactsData);
+        
+        await Clutch.deleteMany({user:  userId });
+        await Clutch.insertMany(backupData.clutchesData);
+        
+        await Egg.deleteMany({user:  userId });
+        await Egg.insertMany(backupData.eggsData);
+
+        
 
         res.status(200).send({ message: 'Restore successful' });
     } catch (error) {
