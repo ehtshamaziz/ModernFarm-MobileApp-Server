@@ -1,4 +1,5 @@
-const Disease=require('../models/disease')
+const Disease=require('../models/disease');
+const Treatment = require('../models/treatment');
 
 
 // GET ALL DISEASE
@@ -60,6 +61,10 @@ const UpdateDisease = async (req, res, next) => {
 const DeleteDisease = async (req, res, next) => {
   try {
     const disease = await Disease.findByIdAndDelete(req.params.id);
+    if(!disease){
+      return res.status(404).json({message:"Disease not found"})
+    }
+    await Treatment.deleteMany({diseaseSelection:req.params.id})
     return res.status(200).json(disease);
   } catch (err) {
     next(err);

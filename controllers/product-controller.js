@@ -1,5 +1,8 @@
 const Product = require("../models/product");
 const Finance = require("../models/finance");
+const Market = require("../models/market");
+const Treatment = require("../models/treatment");
+
 
 // const cloudinary = require("cloudinary").v2;
 // cloudinary.config({
@@ -102,6 +105,9 @@ const UpdateProduct = async (req, res, next) => {
 const DeleteProduct = async (req, res, next) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
+    await Market.deleteMany({ productsId: req.params.id });
+    await Treatment.deleteMany({ medicineSelection: req.params.id });
+
     return res.status(200).json(product);
   } catch (err) {
     next(err);

@@ -2,6 +2,11 @@ const Couple = require("../models/couple");
 const Clutch = require("../models/clutch");
 const Bird = require("../models/birds");
 const Egg = require("../models/egg");
+const Task=require("../models/tasks");
+const Market = require("../models/market");
+const Treatment = require("../models/treatment");
+const Nutrition = require("../models/nutrition");
+
 
 
 const GetCouples = async (req, res, next) => {
@@ -368,6 +373,28 @@ const UpdateCouple = async (req, res, next) => {
 const DeleteCouple = async (req, res, next) => {
   try {
     const couple = await Couple.findByIdAndDelete(req.params.id);
+     if (!couple) {
+      return res.status(404).json({ message: "Couple not found" });
+    }
+
+    const clutch = await Clutch.findOne({ couple: req.params.id})
+    if (clutch) {
+    await Egg.deleteMany({ clutch: clutch._id });
+    }
+
+    await Clutch.deleteMany({ couple: req.params.id });
+ 
+    await Task.deleteMany({
+     coupleId: req.params.id 
+    });
+
+      await Market.deleteMany({
+      couple: req.params.id
+    });
+    
+    await Treatment.deleteMany({ couple: { $in: [req.params.id] } });
+    await Nutrition.deleteMany({ couple: { $in: [req.params.id] } });
+
     return res.status(200).json(couple);
   } catch (err) {
     next(err);

@@ -2,12 +2,18 @@ const Bird = require("../models/birds");
 const Couple=require("../models/couple");
 const Egg=require("../models/egg");
 const Task=require("../models/tasks");
+const Market = require("../models/market");
+const Nutrition = require("../models/nutrition");
+
+
 const Finance = require("../models/finance");
 
 const User= require("../models/user");
 
 
     var admin = require('firebase-admin');
+const Treatment = require("../models/treatment");
+const Clutch = require("../models/clutch");
 
 
 
@@ -236,14 +242,34 @@ const UpdateBird = async (req, res, next) => {
 // DELETE BIRD
 const DeleteBird = async (req, res, next) => {
   try {
-    // const bird = await Bird.findByIdAndDelete(req.params.id);
-    // const couple = await Couple.deleteMany({maleBird:bird._id || femaleBird : bird._id});
-    // const clutch = await Bird.deleteMany(req.params.id);
+    const bird = await Bird.findByIdAndDelete(req.params.id);
+    
+    if (!bird) {
+      return res.status(404).json({ message: "Bird not found" });
+    }
+
+    const couple = await Couple.findOne({$or:[{maleBird:req.params.id},{ femaleBird : req.params.id}]})
+  
+    if (couple) {
+       const clutch = await Clutch.findOne({ couple: couple._id})
+      await Egg.deleteMany({ clutch: clutch._id });
+
+      await Clutch.deleteMany({ couple: couple._id });
+      await Couple.deleteMany({
+        $or: [{ maleBird: req.params.id }, { femaleBird: req.params.id }]
+      });
+    }
 
     await Task.deleteMany({
-      eggBirdId: req.params.id
+     $or:[{eggBirdId: req.params.id },{birdId:req.params.id}]
     });
-    
+      await Market.deleteMany({
+      bird: req.params.id
+    });
+    await Treatment.deleteMany({ bird: { $in: [req.params.id] } });
+
+    await Nutrition.deleteMany({ bird: { $in: [req.params.id] } });
+
     return res.status(200).json(bird);
   } catch (err) {
     next(err);

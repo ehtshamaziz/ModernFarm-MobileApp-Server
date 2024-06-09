@@ -1,5 +1,8 @@
-const workers = require('../models/workers');
 const Worker=require('../models/workers')
+const FarmNote=require('../models/farm-note')
+const Task=require('../models/tasks')
+
+
 const { sendWorkerOTPVerification, sendResetOTP } = require("../utils/otp");
 const bcrypt = require("bcrypt");
 
@@ -139,6 +142,10 @@ const UpdateWorkers = async (req, res, next) => {
 const DeleteWorkers = async (req, res, next) => {
   try {
     const workers = await Worker.findByIdAndDelete(req.params.id);
+    await FarmNote.deleteMany({ worker: req.params.id });
+    await Task.deleteMany({ workerId: req.params.id });
+    
+    
     return res.status(200).json(workers);
   } catch (err) {
     next(err);
@@ -148,12 +155,9 @@ const DeleteWorkers = async (req, res, next) => {
 
 // LOGIN WORKER
 const LoginWorker = async (req, res, next) => {
-  console.log("Workerss")
   const { email, password,token } = req.body;
-  console.log(token);
   
   
-  console.log(email)
   try {
     const worker = await Worker.findOne(
       {
