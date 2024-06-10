@@ -1,4 +1,5 @@
 const Specie = require("../models/specie");
+const Bird =require("../models/birds")
 
 const PostSpecie = async (req, res, next) => {
   console.log("Post specie");
@@ -36,9 +37,15 @@ const GetSpecies = async (req, res, next) => {
 
 const DeleteSpecie =async (req,res, next)=>{
   try{
+    const bird= await Bird.find({specie:req.params.id})
+    if(bird){
+      return res.status(409).json(bird)
+      
+    }else{
+    
     const species= await Specie.deleteOne(req.params.id);
     return res.status(200).json(species)
-
+    }
   }catch(error){
     next(error)
   }
