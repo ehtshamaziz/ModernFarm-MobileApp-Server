@@ -16,7 +16,9 @@ const Contact=require('../models/contact')
 const Clutch=require('../models/clutch')
 const Egg=require('../models/egg')
 
-
+const fs = require('fs');
+const path = require('path');
+const cloudinary = require('cloudinary').v2;
 
 
 // --------------Google Drive--------------
@@ -163,30 +165,70 @@ const PostBackup = async (req, res, next) => {
             await Backup.deleteOne({ userId });
         }
 
-        // Create new backup
-        const backupData = new Backup({
+
+                // Create new backup data
+        const backupData = {
             userId: user._id,
             userData: user,
             birdsData: birds,
             couplesData: couples,
             productsData: products,
             treatmentsData: treatments,
-            diseasesData:disease,
-            farmNotesData:farmNote,
+            diseasesData: disease,
+            farmNotesData: farmNote,
             financesData: finance,
-            nutritionsData:nutrition,
-            tasksData:task,
+            nutritionsData: nutrition,
+            tasksData: task,
             marketsData: market,
-            workersData:worker,
+            workersData: worker,
             farmsData: farm,
-            contactsData:contact,
-            clutchesData:clutch,
-            eggsData:egg
+            contactsData: contact,
+            clutchesData: clutch,
+            eggsData: egg
+        };
 
 
+        // Create new backup
+        // const backupData = new Backup({
+        //     userId: user._id,
+        //     userData: user,
+        //     birdsData: birds,
+        //     couplesData: couples,
+        //     productsData: products,
+        //     treatmentsData: treatments,
+        //     diseasesData:disease,
+        //     farmNotesData:farmNote,
+        //     financesData: finance,
+        //     nutritionsData:nutrition,
+        //     tasksData:task,
+        //     marketsData: market,
+        //     workersData:worker,
+        //     farmsData: farm,
+        //     contactsData:contact,
+        //     clutchesData:clutch,
+        //     eggsData:egg
+
+
+        // });        
+        const backupFilePath = path.join(__dirname, `backup_${userId}.json`);
+        fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
+
+        // Upload file to Cloudinary
+        const result = await cloudinary.uploader.upload(backupFilePath, {
+            resource_type: 'raw', // Ensure the file is treated as a raw file
+            folder: 'backups', // Optional: organize your uploads
+            public_id: `backup_${userId}_${Date.now()}` // Include timestamp to ensure unique public_id
         });
 
-        await backupData.save();
+        // Save backup URL to the user's record
+        user.backupUrls.push(result.secure_url);
+        await user.save();
+
+        // Clean up local backup file
+        fs.unlinkSync(backupFilePath);
+
+
+        // await backupData.save();
         res.status(200).send({ message: 'Backup successful' });
     } catch (error) {
         res.status(500).send({ message: 'Error creating backup', error });

@@ -36,12 +36,6 @@ const generalSettingRoutes=require("./routes/general-setting-routes.js");
 const backupRoutes=require("./routes/backup-routes.js");
 
 
-
-
-
-
-
-
 const app = express();
 
 // CONFIGURE CLOUDINARY
@@ -93,7 +87,7 @@ app.use("/backup-restore",backupRoutes);
 
 const axios = require('axios');
 
-    var admin = require('firebase-admin');
+var admin = require('firebase-admin');
 
 //     const fs = require('fs');
 //     const path = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;

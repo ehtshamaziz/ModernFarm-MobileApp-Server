@@ -56,7 +56,13 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   userToken: { type: String },
-  timezoneOffset :{type:Number}
+  timezoneOffset :{type:Number},
+    backupUrls: [
+        {
+            type: String,
+            required: false
+        }
+    ]
 
 });
 
