@@ -130,7 +130,8 @@ const cloudinary = require('cloudinary').v2;
 
 // GET BACKUP URLS 
 const GetUserBackups = async (req, res, next) => {
-    const userId = req.params.userId;
+    console.log("HELPPP")
+    const userId = req.params.id;
 
     try {
         const user = await User.findById(userId);
