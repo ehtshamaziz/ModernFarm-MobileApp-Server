@@ -9,5 +9,8 @@ router.post("/backup", backupController.PostBackup);
 
 router.post("/restore", backupController.PostRestore);
 
+router.get("/all-backup", backupController.GetUserBackups);
+
+
 
 module.exports = router;

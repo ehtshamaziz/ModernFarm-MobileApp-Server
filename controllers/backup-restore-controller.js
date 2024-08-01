@@ -128,6 +128,21 @@ const cloudinary = require('cloudinary').v2;
 // };
 
 
+// GET BACKUP URLS 
+const GetUserBackups = async (req, res, next) => {
+    const userId = req.params.userId;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        res.status(200).send({ backups: user.backupUrls });
+    } catch (error) {
+        res.status(500).send({ message: 'Error fetching backups', error });
+    }
+};
 
 
 // GET ALL BACKUP
@@ -213,14 +228,12 @@ const PostBackup = async (req, res, next) => {
         const backupFilePath = path.join(__dirname, `backup_${userId}.json`);
         fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
 
-        // Upload file to Cloudinary
         const result = await cloudinary.uploader.upload(backupFilePath, {
-            resource_type: 'raw', // Ensure the file is treated as a raw file
-            folder: 'backups', // Optional: organize your uploads
-            public_id: `backup_${userId}_${Date.now()}` // Include timestamp to ensure unique public_id
+            resource_type: 'raw', 
+            folder: 'backups',
+            public_id: `backup_${userId}_${Date.now()}`
         });
 
-        // Save backup URL to the user's record
         user.backupUrls.push(result.secure_url);
         await user.save();
 
@@ -235,67 +248,121 @@ const PostBackup = async (req, res, next) => {
     }
 };
 
-// GET RESTORE
 const PostRestore = async (req, res, next) => {
- const userId = req.body.userId;
+    const userId = req.body.userId;
+    const backupUrl = req.body.backupUrl;
+
     try {
-        const backupData = await Backup.findOne({ userId });
-        if (!backupData) {
-            return res.status(404).send({ message: 'No backup found' });
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
         }
 
-        await User.findByIdAndUpdate(userId, backupData.userData, { new: true });
+        // Download the backup file from Cloudinary
+        const response = await axios.get(backupUrl);
+        const backupData = response.data;
+
+        // Restore data to the corresponding collections
+        await User.updateOne({ _id: userId }, backupData.userData);
         await Bird.deleteMany({ user: userId });
         await Bird.insertMany(backupData.birdsData);
         await Couple.deleteMany({ user: userId });
         await Couple.insertMany(backupData.couplesData);
-        await Product.deleteMany({user:  userId });
+        await Product.deleteMany({ user: userId });
         await Product.insertMany(backupData.productsData);
-
-        await Treatment.deleteMany({user:  userId });
+        await Treatment.deleteMany({ user: userId });
         await Treatment.insertMany(backupData.treatmentsData);
-        await Disease.deleteMany({user:  userId });
+        await Disease.deleteMany({ user: userId });
         await Disease.insertMany(backupData.diseasesData);
-        await FarmNote.deleteMany({user:  userId });
+        await FarmNote.deleteMany({ user: userId });
         await FarmNote.insertMany(backupData.farmNotesData);
-        await Finance.deleteMany({user:  userId });
+        await Finance.deleteMany({ user: userId });
         await Finance.insertMany(backupData.financesData);
-        await Nutrition.deleteMany({user:  userId });
+        await Nutrition.deleteMany({ user: userId });
         await Nutrition.insertMany(backupData.nutritionsData);
-        await Task.deleteMany({user:  userId });
+        await Task.deleteMany({ user: userId });
         await Task.insertMany(backupData.tasksData);
-
-        await Market.deleteMany({user:  userId });
+        await Market.deleteMany({ user: userId });
         await Market.insertMany(backupData.marketsData);
-
-        await Worker.deleteMany({user:  userId });
+        await Worker.deleteMany({ user: userId });
         await Worker.insertMany(backupData.workersData);
-        
-        await Farm.deleteMany({user:  userId });
+        await Farm.deleteMany({ user: userId });
         await Farm.insertMany(backupData.farmsData);
-
-        await Contact.deleteMany({user:  userId });
+        await Contact.deleteMany({ user: userId });
         await Contact.insertMany(backupData.contactsData);
-        
-        await Clutch.deleteMany({user:  userId });
+        await Clutch.deleteMany({ user: userId });
         await Clutch.insertMany(backupData.clutchesData);
-        
-        await Egg.deleteMany({user:  userId });
+        await Egg.deleteMany({ user: userId });
         await Egg.insertMany(backupData.eggsData);
 
-        
-
-        res.status(200).send({ message: 'Restore successful' });
+        res.status(200).send({ message: 'Backup restored successfully' });
     } catch (error) {
-        res.status(500).send({ message: 'Error restoring data', error });
+        res.status(500).send({ message: 'Error restoring backup', error });
     }
 };
+
+// // GET RESTORE
+// const PostRestore = async (req, res, next) => {
+//  const userId = req.body.userId;
+//     try {
+//         const backupData = await Backup.findOne({ userId });
+//         if (!backupData) {
+//             return res.status(404).send({ message: 'No backup found' });
+//         }
+
+//         await User.findByIdAndUpdate(userId, backupData.userData, { new: true });
+//         await Bird.deleteMany({ user: userId });
+//         await Bird.insertMany(backupData.birdsData);
+//         await Couple.deleteMany({ user: userId });
+//         await Couple.insertMany(backupData.couplesData);
+//         await Product.deleteMany({user:  userId });
+//         await Product.insertMany(backupData.productsData);
+
+//         await Treatment.deleteMany({user:  userId });
+//         await Treatment.insertMany(backupData.treatmentsData);
+//         await Disease.deleteMany({user:  userId });
+//         await Disease.insertMany(backupData.diseasesData);
+//         await FarmNote.deleteMany({user:  userId });
+//         await FarmNote.insertMany(backupData.farmNotesData);
+//         await Finance.deleteMany({user:  userId });
+//         await Finance.insertMany(backupData.financesData);
+//         await Nutrition.deleteMany({user:  userId });
+//         await Nutrition.insertMany(backupData.nutritionsData);
+//         await Task.deleteMany({user:  userId });
+//         await Task.insertMany(backupData.tasksData);
+
+//         await Market.deleteMany({user:  userId });
+//         await Market.insertMany(backupData.marketsData);
+
+//         await Worker.deleteMany({user:  userId });
+//         await Worker.insertMany(backupData.workersData);
+        
+//         await Farm.deleteMany({user:  userId });
+//         await Farm.insertMany(backupData.farmsData);
+
+//         await Contact.deleteMany({user:  userId });
+//         await Contact.insertMany(backupData.contactsData);
+        
+//         await Clutch.deleteMany({user:  userId });
+//         await Clutch.insertMany(backupData.clutchesData);
+        
+//         await Egg.deleteMany({user:  userId });
+//         await Egg.insertMany(backupData.eggsData);
+
+        
+
+//         res.status(200).send({ message: 'Restore successful' });
+//     } catch (error) {
+//         res.status(500).send({ message: 'Error restoring data', error });
+//     }
+// };
 
 
 
 module.exports={
     PostBackup,
     PostRestore,
+    GetUserBackups
    
 
 
