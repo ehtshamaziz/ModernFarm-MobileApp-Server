@@ -19,6 +19,7 @@ const Egg=require('../models/egg')
 const fs = require('fs');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
+const axios = require('axios'); // Import axios at the top
 
 
 // --------------Google Drive--------------
@@ -260,7 +261,7 @@ const PostRestore = async (req, res, next) => {
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
-
+        console.log("before Backup data downloaded:", backupData);
         // Download the backup file from Cloudinary
         const response = await axios.get(backupUrl);
         const backupData = response.data;
