@@ -254,7 +254,7 @@ const PostBackup = async (req, res, next) => {
         console.log("LOCAL BEFORE CHECKING",backupType)
              if (backupType === 'cloud') {
                const timestamp = Date.now(); // Generate timestamp once
-               const backupFileName = `${userId}.json`;
+               const backupFileName = `${userId}_${timestamp}.json`;
                const backupFilePath = path.join(__dirname, backupFileName);
         // const backupFilePath = path.join(__dirname, `backup_${userId}_${Date.now()}.json`);
                fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
@@ -357,7 +357,7 @@ const DeleteBackup = async (req, res, next) => {
     try {
          const urlParts = backupUrl.split('/');
         const fileNameWithExtension = urlParts[urlParts.length - 1]; // e.g., backup_65b6a4feda9bcf834d99ae28_1722564595759.json
-        const publicId = `${fileNameWithExtension.split('.')[0]}`; // e.g., backups/backup_65b6a4feda9bcf834d99ae28_1722564595759
+        const publicId = `${fileNameWithExtension}`; // e.g., backups/backup_65b6a4feda9bcf834d99ae28_1722564595759
         console.log("publicId:", publicId);
 
 
