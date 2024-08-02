@@ -317,7 +317,7 @@ const DeleteBackup = async (req, res, next) => {
   console.log("Selected Deleted")
            const userId = req.params.id;
 
-       const {  backupUrl } = req.body;  
+       const  backupUrl  = req.body;  
 
 
     try {
@@ -325,14 +325,16 @@ const DeleteBackup = async (req, res, next) => {
         const urlParts = backupUrl.split('/');
         const fileNameWithExtension = urlParts[urlParts.length - 1]; // e.g., backup_65b6a4feda9bcf834d99ae28_1722561439843.json
         const publicId = `backups/${fileNameWithExtension.split('.')[0]}`; // e.g., backups/backup_65b6a4feda9bcf834d99ae28_1722561439843
+        console.log(backupUrl,"URL")
         console.log("publicId:", publicId);
 
         // Delete the file from Cloudinary
-         cloudinary.uploader.destroy(publicId, { resource_type: 'raw'}).then(result => console.log(result,"RESULTTSSS"));
+        const result = await cloudinary.uploader.destroy(publicId, { resource_type: "raw",invalidate:true })
+        console.log("Cloudinary delete result:", result);
 
-        // if (result.result !== 'ok') {
-        //     return res.status(500).send({ message: 'Error deleting file from Cloudinary' });
-        // }
+        if (result.result !== 'ok') {
+            return res.status(500).send({ message: 'Error deleting file from Cloudinary' });
+        }
         // Remove the backup URL from the user's record
         const user = await User.findById(userId);
         if (!user) {
