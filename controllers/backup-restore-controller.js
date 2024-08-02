@@ -233,7 +233,7 @@ const PostBackup = async (req, res, next) => {
 
         const result = await cloudinary.uploader.upload(backupFilePath, {
             resource_type: 'raw', 
-            // folder: 'backups',
+            folder: 'backups',
             public_id: `backup_${userId}_${Date.now()}`
         });
 
@@ -324,11 +324,11 @@ const DeleteBackup = async (req, res, next) => {
         // Find the public ID from the backup URL
         const urlParts = backupUrl.split('/');
         const fileNameWithExtension = urlParts[urlParts.length - 1]; // e.g., backup_65b6a4feda9bcf834d99ae28_1722561439843.json
-        const publicId = `${fileNameWithExtension.split('.')[0]}`; // e.g., backups/backup_65b6a4feda9bcf834d99ae28_1722561439843
+        const publicId = `backups/${fileNameWithExtension.split('.')[0]}`; // e.g., backups/backup_65b6a4feda9bcf834d99ae28_1722561439843
         console.log("publicId:", publicId);
 
         // Delete the file from Cloudinary
-        const result = await cloudinary.uploader.destroy(publicId, { resource_type: 'raw',invalidate:true })
+        const result = await cloudinary.uploader.destroy('backup_65b6a4feda9bcf834d99ae28_1722563357328', { resource_type: 'raw' })
         console.log("Cloudinary delete result:", result);
 
         if (result.result !== 'ok') {
