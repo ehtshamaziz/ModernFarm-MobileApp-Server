@@ -317,7 +317,7 @@ const DeleteBackup = async (req, res, next) => {
   console.log("Selected Deleted")
            const userId = req.params.id;
 
-       const  backupUrl  = req.body;  
+       const {  backupUrl } = req.body;  
 
 
     try {
