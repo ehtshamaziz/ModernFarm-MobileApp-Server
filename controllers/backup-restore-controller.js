@@ -322,7 +322,8 @@ const DeleteBackup = async (req, res, next) => {
 
     try {
         // Find the public ID from the backup URL
-        const publicId = backupUrl.split('/').pop().split('.')[0];
+     const publicId = backupUrl.split('/').slice(-2).join('/').replace('.json', '');
+        console.log("publicId:", publicId);
         
         // Delete the file from Cloudinary
         const result = await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
