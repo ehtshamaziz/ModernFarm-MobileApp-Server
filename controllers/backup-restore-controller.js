@@ -315,7 +315,10 @@ const PostRestore = async (req, res, next) => {
 
 const DeleteBackup = async (req, res, next) => {
   console.log("Selected Deleted")
-       const { userId, backupUrl } = req.body;
+           const userId = req.params.id;
+
+       const {  backupUrl } = req.body;  
+
 
     try {
         // Find the public ID from the backup URL
