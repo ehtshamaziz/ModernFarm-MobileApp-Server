@@ -251,23 +251,17 @@ const PostBackup = async (req, res, next) => {
 };
 
 const PostRestore = async (req, res, next) => {
-    console.log("RESTORE")
     const userId = req.body.userId;
     const backupUrl = req.body.backupUrl;
-    console.log("User ID:", userId);
-    console.log("Backup URL:", backupUrl);
+
     try {
-         console.log("before find user");
         const user = await User.findById(userId);
-         console.log("after find user");
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
-        console.log("before Backup data downloaded:");
         // Download the backup file from Cloudinary
         const response = await axios.get(backupUrl);
         const backupData = response.data;
-        console.log("Backup data downloaded:", backupData);
 
         // Restore data to the corresponding collections
         await User.updateOne({ _id: userId }, backupData.userData);
