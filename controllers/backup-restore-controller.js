@@ -21,6 +21,7 @@ const path = require('path');
 const cloudinary = require('cloudinary').v2;
 const axios = require('axios'); // Import axios at the top
 
+const mongoose = require('mongoose');
 
 // --------------Google Drive--------------
 // const {google} = require('googleapis');
@@ -175,12 +176,12 @@ const PostBackup = async (req, res, next) => {
 
 
         // Check if a backup already exists for the user
-        const existingBackup = await Backup.findOne({ userId });
+        // const existingBackup = await Backup.findOne({ userId });
 
-        if (existingBackup) {
-            // Delete the existing backup
-            await Backup.deleteOne({ userId });
-        }
+        // if (existingBackup) {
+        //     // Delete the existing backup
+        //     await Backup.deleteOne({ userId });
+        // }
 
 
                 // Create new backup data
@@ -249,59 +250,94 @@ const PostBackup = async (req, res, next) => {
         res.status(500).send({ message: 'Error creating backup', error });
     }
 };
-
 const PostRestore = async (req, res, next) => {
     const userId = req.body.userId;
     const backupUrl = req.body.backupUrl;
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
     try {
-        const user = await User.findById(userId);
+      
+        const user = await User.findById(userId).session(session);
         if (!user) {
+            await session.abortTransaction();
+            session.endSession();
             return res.status(404).send({ message: 'User not found' });
         }
+
         // Download the backup file from Cloudinary
         const response = await axios.get(backupUrl);
         const backupData = response.data;
 
         // Restore data to the corresponding collections
-        await User.updateOne({ _id: userId }, backupData.userData);
-        await Bird.deleteMany({ user: userId });
-        await Bird.insertMany(backupData.birdsData);
-        await Couple.deleteMany({ user: userId });
-        await Couple.insertMany(backupData.couplesData);
-        await Product.deleteMany({ user: userId });
-        await Product.insertMany(backupData.productsData);
-        await Treatment.deleteMany({ user: userId });
-        await Treatment.insertMany(backupData.treatmentsData);
-        await Disease.deleteMany({ user: userId });
-        await Disease.insertMany(backupData.diseasesData);
-        await FarmNote.deleteMany({ user: userId });
-        await FarmNote.insertMany(backupData.farmNotesData);
-        await Finance.deleteMany({ user: userId });
-        await Finance.insertMany(backupData.financesData);
-        await Nutrition.deleteMany({ user: userId });
-        await Nutrition.insertMany(backupData.nutritionsData);
-        await Task.deleteMany({ user: userId });
-        await Task.insertMany(backupData.tasksData);
-        await Market.deleteMany({ user: userId });
-        await Market.insertMany(backupData.marketsData);
-        await Worker.deleteMany({ user: userId });
-        await Worker.insertMany(backupData.workersData);
-        await Farm.deleteMany({ user: userId });
-        await Farm.insertMany(backupData.farmsData);
-        await Contact.deleteMany({ user: userId });
-        await Contact.insertMany(backupData.contactsData);
-        await Clutch.deleteMany({ user: userId });
-        await Clutch.insertMany(backupData.clutchesData);
-        await Egg.deleteMany({ user: userId });
-        await Egg.insertMany(backupData.eggsData);
+        await User.updateOne({ _id: userId }, backupData.userData).session(session);
+        await Bird.deleteMany({ user: userId }).session(session);
+        await Bird.insertMany(backupData.birdsData, { session });
+        await Couple.deleteMany({ user: userId }).session(session);
+        await Couple.insertMany(backupData.couplesData, { session });
+        await Product.deleteMany({ user: userId }).session(session);
+        await Product.insertMany(backupData.productsData, { session });
+        await Treatment.deleteMany({ user: userId }).session(session);
+        await Treatment.insertMany(backupData.treatmentsData, { session });
+        await Disease.deleteMany({ user: userId }).session(session);
+        await Disease.insertMany(backupData.diseasesData, { session });
+        await FarmNote.deleteMany({ user: userId }).session(session);
+        await FarmNote.insertMany(backupData.farmNotesData, { session });
+        await Finance.deleteMany({ user: userId }).session(session);
+        await Finance.insertMany(backupData.financesData, { session });
+        await Nutrition.deleteMany({ user: userId }).session(session);
+        await Nutrition.insertMany(backupData.nutritionsData, { session });
+        await Task.deleteMany({ user: userId }).session(session);
+        await Task.insertMany(backupData.tasksData, { session });
+        await Market.deleteMany({ user: userId }).session(session);
+        await Market.insertMany(backupData.marketsData, { session });
+        await Worker.deleteMany({ user: userId }).session(session);
+        await Worker.insertMany(backupData.workersData, { session });
+        await Farm.deleteMany({ user: userId }).session(session);
+        await Farm.insertMany(backupData.farmsData, { session });
+        await Contact.deleteMany({ user: userId }).session(session);
+        await Contact.insertMany(backupData.contactsData, { session });
+        await Clutch.deleteMany({ user: userId }).session(session);
+        await Clutch.insertMany(backupData.clutchesData, { session });
+        await Egg.deleteMany({ user: userId }).session(session);
+        await Egg.insertMany(backupData.eggsData, { session });
+
+        await session.commitTransaction();
+        session.endSession();
 
         res.status(200).send({ message: 'Backup restored successfully' });
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         res.status(500).send({ message: 'Error restoring backup', error });
     }
 };
 
+const DeleteBackup = async (req, res, next) => {
+    const { userId, backupUrl } = req.body;
+
+    try {
+        // Find the public ID from the backup URL
+        const publicId = backupUrl.split('/').pop().split('.')[0];
+        
+        // Delete the file from Cloudinary
+        await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+
+        // Remove the backup URL from the user's record
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        user.backupUrls = user.backupUrls.filter(url => url !== backupUrl);
+        await user.save();
+
+        res.status(200).send({ message: 'Backup deleted successfully' });
+    } catch (error) {
+        console.error("Error deleting backup:", error);
+        res.status(500).send({ message: 'Error deleting backup', error: error.message });
+    }
+};
 // // GET RESTORE
 // const PostRestore = async (req, res, next) => {
 //  const userId = req.body.userId;
@@ -363,7 +399,8 @@ const PostRestore = async (req, res, next) => {
 module.exports={
     PostBackup,
     PostRestore,
-    GetUserBackups
+    GetUserBackups,
+    DeleteBackup
    
 
 
