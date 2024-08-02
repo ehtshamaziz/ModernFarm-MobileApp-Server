@@ -157,6 +157,7 @@ const GetUserBackups = async (req, res, next) => {
 const PostBackup = async (req, res, next) => {
     console.log("BACKUP!!");
     const userId = req.body.userId;
+    const backupType = req.body.backupType; // 'cloud' or 'local'
 
     try {
         const user = await User.findById(userId);
@@ -234,27 +235,49 @@ const PostBackup = async (req, res, next) => {
 
         // });        
 
-          const timestamp = Date.now(); // Generate timestamp once
-    const backupFileName = `${userId}.json`;
-    const backupFilePath = path.join(__dirname, backupFileName);
-        // const backupFilePath = path.join(__dirname, `backup_${userId}_${Date.now()}.json`);
-        fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
+   
+        // const result = await cloudinary.uploader.upload(backupFilePath, {
+        //     resource_type: 'raw', 
+        //     // folder: 'backups',
+        //     public_id: `${backupFileName.split('.')[0]}`
+        //         });
 
-        const result = await cloudinary.uploader.upload(backupFilePath, {
-            resource_type: 'raw', 
-            // folder: 'backups',
-            public_id: `${backupFileName.split('.')[0]}`
-                });
+        // user.backupUrls.push(result.secure_url);
+        // await user.save();
 
-        user.backupUrls.push(result.secure_url);
-        await user.save();
-
-        // Clean up local backup file
-        fs.unlinkSync(backupFilePath);
+        // // Clean up local backup file
+        // fs.unlinkSync(backupFilePath);
 
 
         // await backupData.save();
-        res.status(200).send({ message: 'Backup successful' });
+
+             if (backupType === 'cloud') {
+               const timestamp = Date.now(); // Generate timestamp once
+               const backupFileName = `${userId}.json`;
+               const backupFilePath = path.join(__dirname, backupFileName);
+        // const backupFilePath = path.join(__dirname, `backup_${userId}_${Date.now()}.json`);
+               fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
+
+            const result = await cloudinary.uploader.upload(backupFilePath, {
+                resource_type: 'raw',
+                public_id: `backup_${userId}_${timestamp}`
+            });
+
+            user.backupUrls.push(result.secure_url);
+            await user.save();
+
+            // Clean up local backup file
+            fs.unlinkSync(backupFilePath);
+
+            res.status(200).send({ message: 'Backup successful (cloud)' });
+        } else if (backupType === 'local') {
+            res.status(200).send({ message: 'Backup successful (local)', backupFilePath });
+        } else {
+            // If backupType is not specified or invalid, respond with an error
+            fs.unlinkSync(backupFilePath); // Clean up the file if it was created
+            res.status(400).send({ message: 'Invalid backup type' });
+        }
+        // res.status(200).send({ message: 'Backup successful' ``});
     } catch (error) {
         res.status(500).send({ message: 'Error creating backup', error });
     }
