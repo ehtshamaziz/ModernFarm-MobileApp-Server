@@ -228,14 +228,18 @@ const PostBackup = async (req, res, next) => {
 
 
         // });        
-        const backupFilePath = path.join(__dirname, `backup_${userId}_${Date.now()}.json`);
+
+          const timestamp = Date.now(); // Generate timestamp once
+    const backupFileName = `backup_${userId}_${timestamp}.json`;
+    const backupFilePath = path.join(__dirname, backupFileName);
+        // const backupFilePath = path.join(__dirname, `backup_${userId}_${Date.now()}.json`);
         fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
 
         const result = await cloudinary.uploader.upload(backupFilePath, {
             resource_type: 'raw', 
             folder: 'backups',
-            public_id: `backup_${userId}_${Date.now()}`
-        });
+            public_id: `backups/${backupFileName.split('.')[0]}`
+                });
 
         user.backupUrls.push(result.secure_url);
         await user.save();
@@ -321,12 +325,11 @@ const DeleteBackup = async (req, res, next) => {
 
 
     try {
-        // Find the public ID from the backup URL
-        const urlParts = backupUrl.split('/');
-        const fileNameWithExtension = urlParts[urlParts.length - 1]; // e.g., backup_65b6a4feda9bcf834d99ae28_1722561439843.json
-        const publicId = `backups/${fileNameWithExtension.split('.')[0]}`; // e.g., backups/backup_65b6a4feda9bcf834d99ae28_1722561439843
-        console.log(backupUrl,"URL")
+         const urlParts = backupUrl.split('/');
+        const fileNameWithExtension = urlParts[urlParts.length - 1]; // e.g., backup_65b6a4feda9bcf834d99ae28_1722564595759.json
+        const publicId = `backups/${fileNameWithExtension.split('.')[0]}`; // e.g., backups/backup_65b6a4feda9bcf834d99ae28_1722564595759
         console.log("publicId:", publicId);
+
 
         // Delete the file from Cloudinary
         const result = await cloudinary.uploader.destroy(publicId, { resource_type: "raw",invalidate:true })
