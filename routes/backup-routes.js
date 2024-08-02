@@ -12,6 +12,6 @@ router.post("/restore", backupController.PostRestore);
 router.get("/all-backup/:id", backupController.GetUserBackups);
 
 
-router.delete('/backup-restore/delete/:id', backupController.DeleteBackup);
+router.delete('/backup-restore/delete-backup/:id', backupController.DeleteBackup);
 
 module.exports = router;
