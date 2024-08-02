@@ -1,28 +1,6 @@
 const User = require("../models/user");
-
 const bcrypt = require("bcrypt");
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const { sendOTPVerification, sendResetOTP } = require("../utils/otp");
-const multer = require("multer");
-
-// SETUP CLOUDINARY STORAGE WITH MULTER
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "ModernFarm",
-    format: async (req, file) => "jpg",
-    public_id: (req, file) => file.originalname,
-  },
-});
-
-var admin = require('firebase-admin');
-
-
-
-const upload = multer({ storage: storage });
-
-const UploadFileMulter = upload.single("imageUri");
 
 //        ********** FUNCTIONS ***********
 
@@ -150,8 +128,11 @@ const VerifyOTP = async (req, res, next) => {
           } else {
             user.otpVerification = null;
             await user.save();
-            req.user = user;
-            next();
+
+            req.user = user.toObject();
+            delete req.user.password;
+
+            createJWT(req, res);
           }
         }
       }
@@ -182,20 +163,13 @@ const ResendRegistrationOTP = async (req, res, next) => {
 };
 
 // LOGIN USER
-const LoginUser = async ( req, res, next) => {
-  const { email, password,token } = req.body;
+const LoginUser = async (req, res, next) => {
+  const { email, password, token } = req.body;
 
   try {
-    
     const user = await User.findOne(
-    {email: email }, // query to find the user by email
-    // { new: true, runValidators: true } 
+      { email: email } // query to find the user by email
     );
-
-    // const userId=user._id;
-    // console.log(userId)
-    // const newToken = await Device.create({userId, token });
-    //   console.log(newToken)
 
     if (!user) {
       console.log("Invalid Credentials");
@@ -207,58 +181,24 @@ const LoginUser = async ( req, res, next) => {
       return res.status(401).json({ message: "Email not verified" });
     }
 
-    console.log("Entered Password: ", password);
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       console.log("Invalid Password");
       return res.status(401).json({ message: "Invalid Credentials" });
     }
- 
 
-// Send messages to our users
-  //  await sendMessage(user._id);
-    const users=await User.findOneAndUpdate(
-    {email: email }, // query to find the user by email
-    { $set: { userToken: token } }, // update operation to set the token
-    { new: true, runValidators: true } );
-    
-    await users.save();
+    user.userToken = token;
+    await user.save();
 
-    req.user = users;
-    next();
+    req.user = user.toObject();
+    delete req.user.password;
+
+    createJWT(req, res);
   } catch (err) {
     next(err);
   }
 };
 
-
-
-   
-async function getTokensFromDatastore(userId) {
-  try {
-    // Assuming your DeviceToken fmodel has a `userId` field
-    const tokensData = await User.find({ _id: userId }).exec();
-    const tokens = tokensData.map(tokenDoc => tokenDoc.token);
-    console.log(tokens)
-    return tokens;
-  } catch (error) {
-    console.error('Failed to fetch tokens from datastore:', error);
-    throw error; // Rethrow the error to handle it in the calling context
-  }
-}
-async function sendMessage(userId) {
-  // Fetch the tokens from an external datastore (e.g. database)
-  const tokens = await getTokensFromDatastore(userId);
-
-  // Send a message to devices with the registered tokens
-  const response =await admin.messaging().sendEachForMulticast({
-    tokens, // ['token_1', 'token_2', ...]
-    data: {  hello: 'world!' },
-  });
-  console.log("message")
-  
-  console.log(response)
-}
 // SEND PASSWORD RESET OTP TO USER
 const RequestPasswordReset = async (req, res) => {
   const { email } = req.body;
@@ -344,25 +284,23 @@ const NewPassword = async (req, res, next) => {
   }
 };
 
-
 // UPDATE USER PASSWORD
 const UpdatePassword = async (req, res, next) => {
-  const { currentPassword,password, userID } = req.body;
+  const { currentPassword, password, userID } = req.body;
   try {
-    const userData=await User.findById(userID)
-      const isMatch = await bcrypt.compare(currentPassword, userData.password);
-  if (!isMatch) {
+    const userData = await User.findById(userID);
+    const isMatch = await bcrypt.compare(currentPassword, userData.password);
+    if (!isMatch) {
       return res.status(400).json({ message: "Current password is incorrect" });
-    }else{
-        const hashedPassword = await bcrypt.hash(password, 10);
-    await User.updateOne({  _id: userID }, { password: hashedPassword });
-    res.status(200).json({ message: "Password has been reset successfully" });
+    } else {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await User.updateOne({ _id: userID }, { password: hashedPassword });
+      res.status(200).json({ message: "Password has been reset successfully" });
     }
   } catch (err) {
     return res.status(400).json({ message: "Password not changed" });
   }
 };
-
 
 module.exports = {
   GetUsers,
@@ -370,18 +308,13 @@ module.exports = {
   CreateUser,
   UpdateUser,
   DeleteUser,
-  // RegisterUser,
   LoginUser,
-  // VerifyResetOTP,
   NewPassword,
   RegisterUser,
-  // OtpEmail,
-  // GetTempData,
-  UploadFileMulter,
   VerifyOTP,
   RequestPasswordReset,
   VerifyResetOTP,
   ResendRegistrationOTP,
   ResendResetOTP,
-  UpdatePassword
+  UpdatePassword,
 };

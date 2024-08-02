@@ -1,6 +1,5 @@
 const Clutch = require("../models/clutch");
-const Egg=require("../models/egg");
-
+const Egg = require("../models/egg");
 
 const GetClutches = async (req, res, next) => {
   console.log("Get all clutch");
@@ -26,49 +25,50 @@ const GetClutchesByID = async (req, res, next) => {
 const GetCoupleClutches = async (req, res, next) => {
   console.log("Get all clutch for a couple");
   try {
-    const clutch = await Clutch.find({ couple: req.params.id })
-        .populate({
-        path: 'couple',
-        populate: {
-          path: 'specie',
-          model: 'Specie',
-        }
+    const clutch = await Clutch.find({ couple: req.params.id }).populate({
+      path: "couple",
+      populate: {
+        path: "specie",
+        model: "Specie",
+      },
+    });
+    const couplesWithClutches = await Promise.all(
+      clutch.map(async (clutch) => {
+        // Define all statuses you want to count
+        const statuses = [
+          "hatched",
+          "unknown",
+          "fertilized",
+          "unfertilized",
+          "excluded",
+          "notHatched",
+          "birdAddedFromEgg",
+          "transferredToAnotherPair",
+        ];
+
+        const counts = await Promise.all(
+          statuses.map((status) =>
+            Egg.countDocuments({
+              clutch: clutch._id,
+              status,
+            })
+          )
+        );
+
+        const totalCount = counts.reduce(
+          (accumulator, currentCount) => accumulator + currentCount,
+          0
+        );
+
+        const countsByStatus = statuses.reduce((acc, status, index) => {
+          acc[status] = counts[index];
+          return acc;
+        }, {});
+
+        return { ...clutch.toObject(), ...countsByStatus, totalCount };
       })
-  const couplesWithClutches = await Promise.all(
-  clutch.map(async (clutch) => {
-    // Define all statuses you want to count
-    const statuses = [
-      'hatched',
-      'unknown',
-      'fertilized',
-      'unfertilized',
-      'excluded',
-      'notHatched',
-      'birdAddedFromEgg',
-      'transferredToAnotherPair',
-    ];
-
-    const counts = await Promise.all(
-      statuses.map((status) =>
-        Egg.countDocuments({
-          clutch: clutch._id,
-          status,
-        })
-      )
     );
 
-    const totalCount = counts.reduce((accumulator, currentCount) => accumulator + currentCount, 0);
-
-    const countsByStatus = statuses.reduce((acc, status, index) => {
-      acc[status] = counts[index];
-      return acc;
-    }, {});
-
-    return { ...clutch.toObject(), ...countsByStatus, totalCount };
-  })
-
-    );
-       
     return res.status(200).send(couplesWithClutches);
   } catch (err) {
     next(err);

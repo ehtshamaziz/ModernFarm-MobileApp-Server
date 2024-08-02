@@ -1,5 +1,4 @@
-const Question=require('../models/question')
-
+const Question = require("../models/question");
 
 // GET ALL QUESTION
 const GetQuestion = async (req, res, next) => {
@@ -66,14 +65,11 @@ const DeleteQuestion = async (req, res, next) => {
   }
 };
 
-
-module.exports={
-    GetQuestion,
-    GetQuestionByID,
-    GetUserQuestion,
-    CreateQuestion,
-    UpdateQuestion,
-    DeleteQuestion
-
-
-}
+module.exports = {
+  GetQuestion,
+  GetQuestionByID,
+  GetUserQuestion,
+  CreateQuestion,
+  UpdateQuestion,
+  DeleteQuestion,
+};

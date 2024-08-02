@@ -1,13 +1,5 @@
 const Bird = require("../models/birds");
 const Contact = require("../models/contact");
-// const cloudinary = require("cloudinary").v2;
-// cloudinary.config({
-//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//   api_key: process.env.CLOUDINARY_API_KEY,
-//   api_secret: process.env.CLOUDINARY_API_SECRET,
-// });
-
-//        ********** FUNCTIONS ***********
 
 // GET ALL CONTACTS
 const GetContacts = async (req, res, next) => {
@@ -67,14 +59,13 @@ const UpdateContact = async (req, res, next) => {
 // DELETE CONTACT
 const DeleteContact = async (req, res, next) => {
   try {
-    const bird=await Bird.find({birdOwner:req.params.id})
-    if(bird){
-      return res.status(409).json(bird)
-    }else{
-    const contact = await Contact.findByIdAndDelete(req.params.id);
-    return res.status(200).json(contact);
+    const bird = await Bird.find({ birdOwner: req.params.id });
+    if (bird) {
+      return res.status(409).json(bird);
+    } else {
+      const contact = await Contact.findByIdAndDelete(req.params.id);
+      return res.status(200).json(contact);
     }
-
   } catch (err) {
     next(err);
   }

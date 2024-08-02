@@ -3,8 +3,6 @@ const Bird = require("../models/birds");
 const Couple = require("../models/couple");
 const Clutch = require("../models/clutch");
 const Egg = require("../models/egg");
-
-
 const Product = require("../models/product");
 const Finance = require("../models/finance");
 const Worker = require("../models/workers");
@@ -13,28 +11,14 @@ const Nutrition = require("../models/nutrition");
 const FarmNote = require("../models/farm-note");
 const Task = require("../models/tasks");
 
-
-
-
-
-// const cloudinary = require("cloudinary").v2;
-// cloudinary.config({
-//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//   api_key: process.env.CLOUDINARY_API_KEY,
-//   api_secret: process.env.CLOUDINARY_API_SECRET,
-// });
-
-//        ********** FUNCTIONS ***********
-
 // GET ALL FARMS
 const GetFarms = async (req, res, next) => {
   console.log("Get all farms");
   try {
-    const farm = await Farm.find()
-    .populate({
-      path:"user",
-      select:"email firstName familyName imageURL _id"
-    })
+    const farm = await Farm.find().populate({
+      path: "user",
+      select: "email firstName familyName imageURL _id",
+    });
     return res.status(200).send(farm);
   } catch (err) {
     next(err);
@@ -75,10 +59,6 @@ const CreateFarm = async (req, res, next) => {
 
 // UPDATE FARM
 const UpdateFarm = async (req, res, next) => {
-  console.log("bodyyyy")
-  console.log(req.body)
-  console.log(req.params.id)
-
   try {
     const farm = await Farm.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -94,37 +74,31 @@ const UpdateFarm = async (req, res, next) => {
 const DeleteFarm = async (req, res, next) => {
   try {
     const farm = await Farm.findByIdAndDelete(req.params.id);
-    // await Bird.deleteMany({farm:farm._id})
-    // const couple=await Couple.findAnd({farm:farm._id})
-    // const clutch=await Clutch.deleteMany({couple:couple._id})
-    // await Egg.deleteMany({clutch:clutch._id})
 
-  const couples = await Couple.find({ farm: farm._id }).select('_id');
-  const coupleIds = couples.map(couple => couple._id);
+    const couples = await Couple.find({ farm: farm._id }).select("_id");
+    const coupleIds = couples.map((couple) => couple._id);
 
-  const clutches = await Clutch.find({ couple: { $in: coupleIds } }).select('_id');
-  const clutchIds = clutches.map(clutch => clutch._id);
+    const clutches = await Clutch.find({ couple: { $in: coupleIds } }).select(
+      "_id"
+    );
+    const clutchIds = clutches.map((clutch) => clutch._id);
 
+    await Egg.deleteMany({ clutch: { $in: clutchIds } });
 
+    // Next, delete Clutches that belong to the Couples
+    await Clutch.deleteMany({ couple: { $in: coupleIds } });
 
-  await Egg.deleteMany({ clutch: { $in: clutchIds } });
+    await Bird.deleteMany({ farm: farm._id });
 
-// Next, delete Clutches that belong to the Couples
-  await Clutch.deleteMany({ couple: { $in: coupleIds } });
+    await Couple.deleteMany({ farm: farm._id });
 
-  await Bird.deleteMany({ farm: farm._id });
-
-    await Couple.deleteMany({ farm: farm._id })
-
-    await Product.deleteMany({farm:farm._id})
-    await Finance.deleteMany({farm:farm._id})
-    await Task.deleteMany({farm:farm._id})
-    await Worker.deleteMany({farm:farm._id})
-    await Treatment.deleteMany({farm:farm._id})
-    await FarmNote.deleteMany({farm:farm._id})
-    await Nutrition.deleteMany({farm:farm._id})
-
-
+    await Product.deleteMany({ farm: farm._id });
+    await Finance.deleteMany({ farm: farm._id });
+    await Task.deleteMany({ farm: farm._id });
+    await Worker.deleteMany({ farm: farm._id });
+    await Treatment.deleteMany({ farm: farm._id });
+    await FarmNote.deleteMany({ farm: farm._id });
+    await Nutrition.deleteMany({ farm: farm._id });
 
     return res.status(200).json(farm);
   } catch (err) {

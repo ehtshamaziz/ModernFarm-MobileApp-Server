@@ -1,7 +1,6 @@
 const express = require("express");
 const workersController = require("../controllers/worker-controller");
 const router = express.Router();
-const { createJWT, verifyJWT } = require("../middleware/jwt");
 
 // WORKER ROUTES
 
@@ -17,20 +16,15 @@ router.get("/user/:id", workersController.GetUserWorkers);
 // CREATE NEW WORKER
 router.post("/", workersController.CreateWorkers);
 
-
-router.post("/verify", workersController.VerifyWorker, createJWT);
-
+router.post("/verify", workersController.VerifyWorker);
 
 // UPDATE WORKER BY ID
 router.patch("/:id", workersController.UpdateWorkers);
 
-// UPDATE MULTIPLE WORKERS
-// router.patch("/", workersController.UpdateMultipleWorkers);
-
 // DELETE WORKER BY ID
 router.delete("/:id", workersController.DeleteWorkers);
 
-router.post("/login", workersController.LoginWorker, createJWT);
+router.post("/login", workersController.LoginWorker);
 
 
 module.exports = router;

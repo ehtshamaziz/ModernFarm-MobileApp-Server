@@ -1,5 +1,4 @@
-const GeneralSetting=require('../models/general-setting')
-
+const GeneralSetting = require("../models/general-setting");
 
 // GET ALL GENERAL-SETTING
 const GetGeneralSetting = async (req, res, next) => {
@@ -47,9 +46,13 @@ const CreateGeneralSetting = async (req, res, next) => {
 // UPDATE GENERAL-SETTING
 const UpdateGeneralSetting = async (req, res, next) => {
   try {
-    const generalSetting = await GeneralSetting.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const generalSetting = await GeneralSetting.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
     return res.status(200).json(generalSetting);
   } catch (err) {
     next(err);
@@ -57,23 +60,22 @@ const UpdateGeneralSetting = async (req, res, next) => {
 };
 
 // DELETE GENERAL-SETTING
-const DeleteGeneralSetting= async (req, res, next) => {
+const DeleteGeneralSetting = async (req, res, next) => {
   try {
-    const generalSetting = await GeneralSetting.findByIdAndDelete(req.params.id);
+    const generalSetting = await GeneralSetting.findByIdAndDelete(
+      req.params.id
+    );
     return res.status(200).json(generalSetting);
   } catch (err) {
     next(err);
   }
 };
 
-
-module.exports={
-    GetGeneralSetting,
-    GetGeneralSettingByID,
-    GetUserGeneralSetting,
-    CreateGeneralSetting,
-    UpdateGeneralSetting,
-    DeleteGeneralSetting
-
-
-}
+module.exports = {
+  GetGeneralSetting,
+  GetGeneralSettingByID,
+  GetUserGeneralSetting,
+  CreateGeneralSetting,
+  UpdateGeneralSetting,
+  DeleteGeneralSetting,
+};

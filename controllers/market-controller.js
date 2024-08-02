@@ -1,18 +1,17 @@
-const Market=require('../models/market')
-
+const Market = require("../models/market");
 
 // GET ALL MARKET
 const GetMarket = async (req, res, next) => {
   console.log("Get all market");
   try {
     const market = await Market.find().populate([
-      {path:"user",select:"_id firstName"},
-      {path:"bird",select:"birdId price exactBirthDate gender"},
-      {path:"couple",select:"coupleId price formationDate"},
-      {path:"specie",select:"name"},
-      {path:"farm",select:"farmName farmType"},
-      {path:"productsId",select:"_id name category"},
-    ])
+      { path: "user", select: "_id firstName" },
+      { path: "bird", select: "birdId price exactBirthDate gender" },
+      { path: "couple", select: "coupleId price formationDate" },
+      { path: "specie", select: "name" },
+      { path: "farm", select: "farmName farmType" },
+      { path: "productsId", select: "_id name category" },
+    ]);
 
     return res.status(200).send(market);
   } catch (err) {
@@ -35,11 +34,11 @@ const GetUserMarket = async (req, res, next) => {
   console.log("Get all user market");
   try {
     const market = await Market.find({ user: req.params.id }).populate([
-      {path:"bird",select:"birdId price exactBirthDate gender"},
-      {path:"couple",select:"coupleId price formationDate"},
-      {path:"specie",select:"name"},
-      {path:"farm",select:"farmName farmType"},
-      {path:"productsId",select:"_id name category"},
+      { path: "bird", select: "birdId price exactBirthDate gender" },
+      { path: "couple", select: "coupleId price formationDate" },
+      { path: "specie", select: "name" },
+      { path: "farm", select: "farmName farmType" },
+      { path: "productsId", select: "_id name category" },
     ]);
     return res.status(200).send(market);
   } catch (err) {
@@ -49,7 +48,7 @@ const GetUserMarket = async (req, res, next) => {
 
 // CREATE NEW MARKET
 const CreateMarket = async (req, res, next) => {
-  console.log(req.body,"market Data")
+  console.log(req.body, "market Data");
   const market = new Market(req.body);
   try {
     await market.save();
@@ -81,14 +80,11 @@ const DeleteMarket = async (req, res, next) => {
   }
 };
 
-
-module.exports={
-    GetMarket,
-    GetMarketByID,
-    GetUserMarket,
-    CreateMarket,
-    UpdateMarket,
-    DeleteMarket
-
-
-}
+module.exports = {
+  GetMarket,
+  GetMarketByID,
+  GetUserMarket,
+  CreateMarket,
+  UpdateMarket,
+  DeleteMarket,
+};

@@ -1,18 +1,10 @@
 const Finance = require("../models/finance");
-// const cloudinary = require("cloudinary").v2;
-// cloudinary.config({
-//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//   api_key: process.env.CLOUDINARY_API_KEY,
-//   api_secret: process.env.CLOUDINARY_API_SECRET,
-// });
-
-//        ********** FUNCTIONS ***********
 
 // GET ALL FINANCES
 const GetFinances = async (req, res, next) => {
   console.log("Get all finances");
   try {
-    const finance = await Finance.find().populate("farm","farmType farmName");
+    const finance = await Finance.find().populate("farm", "farmType farmName");
     return res.status(200).send(finance);
   } catch (err) {
     next(err);
@@ -33,7 +25,10 @@ const GetFinanceByID = async (req, res, next) => {
 const GetUserFinances = async (req, res, next) => {
   console.log("Get all user finances");
   try {
-    const finances = await Finance.find({ user: req.params.id }).populate("farm","farmType farmName");
+    const finances = await Finance.find({ user: req.params.id }).populate(
+      "farm",
+      "farmType farmName"
+    );
     return res.status(200).send(finances);
   } catch (err) {
     next(err);
@@ -51,7 +46,6 @@ const CreateFinance = async (req, res, next) => {
     next(err);
   }
 };
-// https://res.cloudinary.com/dqnz3rzt5/image/upload/v1705765421/ModernFarm/zsyp6lmzqllowy7bbuwp.webp
 
 // UPDATE FINANCE
 const UpdateFinance = async (req, res, next) => {
@@ -66,7 +60,7 @@ const UpdateFinance = async (req, res, next) => {
 };
 
 // DELETE FINANCE
-const DeleteFinance= async (req, res, next) => {
+const DeleteFinance = async (req, res, next) => {
   try {
     const finance = await Finance.findByIdAndDelete(req.params.id);
     return res.status(200).json(finance);

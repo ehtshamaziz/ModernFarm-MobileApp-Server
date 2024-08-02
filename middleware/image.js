@@ -1,26 +1,21 @@
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const multer = require("multer");
-
-// SETUP CLOUDINARY STORAGE WITH MULTER
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "ModernFarm",
-    format: async (req, file) => "jpg",
-    public_id: (req, file) => file.originalname,
-  },
-});
-
-const upload = multer({ storage: storage });
+const upload = require("../utils/fileUpload");
 
 const UploadImageMulter = upload.single("image");
+const UploadMultiImagesMulter = upload.array("images", 10);
 
 const UploadImage = async (req, res, next) => {
   try {
     const imageURL = req.file.path;
-    console.log("Image URL: ", imageURL);
     return res.status(200).send(imageURL);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const UploadMultiImages = async (req, res, next) => {
+  try {
+    const imageUrls = req.files.map((file) => file.path); // Access `req.files` instead of `req.file`
+    return res.status(200).send(imageUrls);
   } catch (err) {
     next(err);
   }
@@ -29,4 +24,6 @@ const UploadImage = async (req, res, next) => {
 module.exports = {
   UploadImageMulter,
   UploadImage,
+  UploadMultiImagesMulter,
+  UploadMultiImages,
 };
