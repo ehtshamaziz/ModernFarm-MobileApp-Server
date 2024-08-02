@@ -322,7 +322,9 @@ const DeleteBackup = async (req, res, next) => {
 
     try {
         // Find the public ID from the backup URL
-     const publicId = backupUrl.split('/').slice(-2).join('/').replace('.json', '');
+         const urlParts = backupUrl.split('/');
+        const fileNameWithExtension = urlParts[urlParts.length - 1]; // e.g., backup_65b6a4feda9bcf834d99ae28_1722561439843.json
+        const publicId = fileNameWithExtension.split('.')[0]; // e.g., backup_65b6a4feda9bcf834d99ae28_1722561439843
         console.log("publicId:", publicId);
         
         // Delete the file from Cloudinary
