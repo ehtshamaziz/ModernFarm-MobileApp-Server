@@ -22,6 +22,11 @@ const cloudinary = require('cloudinary').v2;
 const axios = require('axios'); // Import axios at the top
 
 const mongoose = require('mongoose');
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // --------------Google Drive--------------
 // const {google} = require('googleapis');
@@ -237,8 +242,8 @@ const PostBackup = async (req, res, next) => {
 
         const result = await cloudinary.uploader.upload(backupFilePath, {
             resource_type: 'raw', 
-            folder: 'backups',
-            public_id: `backups/${backupFileName.split('.')[0]}`
+            // folder: 'backups',
+            public_id: `${backupFileName.split('.')[0]}`
                 });
 
         user.backupUrls.push(result.secure_url);
@@ -327,12 +332,12 @@ const DeleteBackup = async (req, res, next) => {
     try {
          const urlParts = backupUrl.split('/');
         const fileNameWithExtension = urlParts[urlParts.length - 1]; // e.g., backup_65b6a4feda9bcf834d99ae28_1722564595759.json
-        const publicId = `backups/${fileNameWithExtension.split('.')[0]}`; // e.g., backups/backup_65b6a4feda9bcf834d99ae28_1722564595759
+        const publicId = `${fileNameWithExtension.split('.')[0]}`; // e.g., backups/backup_65b6a4feda9bcf834d99ae28_1722564595759
         console.log("publicId:", publicId);
 
 
         // Delete the file from Cloudinary
-        const result = await cloudinary.uploader.destroy(publicId, { resource_type: "raw",invalidate:true })
+        const result = await cloudinary.uploader.destroy(publicId, { resource_type: "raw" })
         console.log("Cloudinary delete result:", result);
 
         if (result.result !== 'ok') {
