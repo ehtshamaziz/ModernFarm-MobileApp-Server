@@ -328,8 +328,7 @@ const DeleteBackup = async (req, res, next) => {
         console.log("publicId:", publicId);
 
         // Delete the file from Cloudinary
-        const result = await cloudinary.uploader.destroy('backup_65b6a4feda9bcf834d99ae28_1722563357328', { resource_type: 'raw' })
-        console.log("Cloudinary delete result:", result);
+         cloudinary.uploader.destroy(publicId, { resource_type: 'raw',invalidate:true }).then(result => console.log(result,"RESULTTSSS"));
 
         if (result.result !== 'ok') {
             return res.status(500).send({ message: 'Error deleting file from Cloudinary' });
