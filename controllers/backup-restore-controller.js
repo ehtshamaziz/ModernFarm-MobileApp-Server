@@ -235,7 +235,7 @@ const PostBackup = async (req, res, next) => {
         // });        
 
           const timestamp = Date.now(); // Generate timestamp once
-    const backupFileName = `backup_${userId}.json`;
+    const backupFileName = `${userId}.json`;
     const backupFilePath = path.join(__dirname, backupFileName);
         // const backupFilePath = path.join(__dirname, `backup_${userId}_${Date.now()}.json`);
         fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
