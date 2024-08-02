@@ -251,6 +251,7 @@ const PostBackup = async (req, res, next) => {
 
         // await backupData.save();
 
+        console.log("LOCAL BEFORE CHECKING",backupType)
              if (backupType === 'cloud') {
                const timestamp = Date.now(); // Generate timestamp once
                const backupFileName = `${userId}.json`;
@@ -270,7 +271,8 @@ const PostBackup = async (req, res, next) => {
             fs.unlinkSync(backupFilePath);
 
             res.status(200).send({ message: 'Backup successful (cloud)' });
-        } else if (backupType === 'local') {
+        } else if (backupType === 'local') { 
+            console.log("before local response")
             res.status(200).send({ message: 'Backup successful (local)', backupFilePath });
         } else {
             // If backupType is not specified or invalid, respond with an error
