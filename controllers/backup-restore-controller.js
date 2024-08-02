@@ -273,7 +273,7 @@ const PostBackup = async (req, res, next) => {
             res.status(200).send({ message: 'Backup successful (cloud)' });
         } else if (backupType === 'local') { 
             console.log("before local response")
-            res.status(200).send({ message: 'Backup successful (local)', backupFilePath });
+            res.status(200).send({ message: 'Backup successful (local)', backupData });
         } else {
             // If backupType is not specified or invalid, respond with an error
             fs.unlinkSync(backupFilePath); // Clean up the file if it was created
