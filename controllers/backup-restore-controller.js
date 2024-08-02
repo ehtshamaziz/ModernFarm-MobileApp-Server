@@ -325,8 +325,12 @@ const DeleteBackup = async (req, res, next) => {
         const publicId = backupUrl.split('/').pop().split('.')[0];
         
         // Delete the file from Cloudinary
-        await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+        const result = await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+        console.log("Cloudinary delete result:", result);
 
+        if (result.result !== 'ok') {
+            return res.status(500).send({ message: 'Error deleting file from Cloudinary' });
+        }
         // Remove the backup URL from the user's record
         const user = await User.findById(userId);
         if (!user) {
