@@ -250,9 +250,11 @@ const PostBackup = async (req, res, next) => {
 };
 
 const PostRestore = async (req, res, next) => {
+    console.log("RESTORE")
     const userId = req.body.userId;
     const backupUrl = req.body.backupUrl;
-
+    console.log("User ID:", userId);
+    console.log("Backup URL:", backupUrl);
     try {
         const user = await User.findById(userId);
         if (!user) {
@@ -262,6 +264,7 @@ const PostRestore = async (req, res, next) => {
         // Download the backup file from Cloudinary
         const response = await axios.get(backupUrl);
         const backupData = response.data;
+        console.log("Backup data downloaded:", backupData);
 
         // Restore data to the corresponding collections
         await User.updateOne({ _id: userId }, backupData.userData);
