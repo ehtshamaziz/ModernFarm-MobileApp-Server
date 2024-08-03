@@ -93,10 +93,9 @@ const PostBackup = async (req, res, next) => {
       const timestamp = Date.now(); // Generate timestamp once
       const backupFileName = `${userId}_${timestamp}.json`;
       const backupFilePath = path.join(__dirname, backupFileName);
-      console.log(backupFilePath,"File Path")
-      console.log(backupData,"Backup Data")
+   
       fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
-      console.log(abc)
+      console.log("abc")
 
 
       const result = await cloudinary.uploader.upload(backupFilePath, {
