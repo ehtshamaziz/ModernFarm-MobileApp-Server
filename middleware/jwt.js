@@ -40,12 +40,12 @@ const verifyJWT = async (req, res, next) => {
       try {
         const user = await User.findById(req.user.userId).select("-password");
         if (user) {
-          if (!user.isActive) {
-            return res.status(403).json({
-              message:
-                "User account is Banned. Contact Support for further details.",
-            });
-          }
+          // if (!user.isActive) {
+          //   return res.status(403).json({
+          //     message:
+          //       "User account is Banned. Contact Support for further details.",
+          //   });
+          // }
           req.user = user;
           req.userType = "user";
           return next();
