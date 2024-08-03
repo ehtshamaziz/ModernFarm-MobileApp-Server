@@ -98,9 +98,11 @@ const PostBackup = async (req, res, next) => {
         resource_type: "raw",
         public_id: `backup_${userId}_${timestamp}`,
       });
+      console.log(result,"HAHHAHA")
 
       user.backupUrls.push(result.secure_url);
       await user.save();
+      console.log("After saving")
 
       // Clean up local backup file
       fs.unlinkSync(backupFilePath);
