@@ -97,7 +97,9 @@ const PostBackup = async (req, res, next) => {
       fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
       console.log("abc")
 
-
+ if (!fs.existsSync(backupFilePath)) {
+        throw new Error(`File not found: ${backupFilePath}`);
+      }
       const result = await cloudinary.uploader.upload(backupFilePath, {
         resource_type: "raw",
         public_id: `backup_${userId}_${timestamp}`,
