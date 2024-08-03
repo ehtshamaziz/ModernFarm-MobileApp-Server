@@ -28,12 +28,12 @@ const GetUserBackups = async (req, res, next) => {
   const userId = req.params.id;
 
   try {
-    const user = await Backup.findById({user:userId});
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
+    const backups = await Backup.findById({user:userId});
+   if (!backups || backups.length === 0) {
+      return res.status(404).send({ message: "No backups found" });
     }
 
-    res.status(200).send({ backups: user.backupUrls });
+    res.status(200).send({ backups });
   } catch (error) {
     res.status(500).send({ message: "Error fetching backups", error });
   }
