@@ -51,6 +51,8 @@ const userSchema = new mongoose.Schema({
     otp: { type: String },
     expiresAt: { type: Date },
   },
+    backups: [{ type: Schema.Types.ObjectId, ref: 'Backup' }],
+
   dateCreated: {
     type: Date,
     default: Date.now,

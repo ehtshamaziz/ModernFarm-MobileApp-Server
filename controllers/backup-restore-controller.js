@@ -28,7 +28,7 @@ const GetUserBackups = async (req, res, next) => {
   const userId = req.params.id;
 
   try {
-    const user = await User.findById(userId);
+    const user = await Backup.findById({user:userId});
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }
@@ -48,10 +48,17 @@ const PostBackup = async (req, res, next) => {
   try {
     const user = await User.findById(userId);
 
-    if (user.backupUrls.length >= 100) {
+    const backupCount = await Backup.countDocuments({ user: userId });
+    if (backupCount >= 10) {
       return res.status(406).send({ message: "Backup limit reached" });
     }
+
+    // if (user.backupUrls.length >= 100) {
+    //   return res.status(406).send({ message: "Backup limit reached" });
+    // }
     const birds = await Bird.find({ user: userId });
+    const backups = await Backup.find({ user: userId });
+
     const couples = await Couple.find({ user: userId });
     const products = await Product.find({ user: userId });
     const treatments = await Treatment.find({ user: userId });
@@ -71,6 +78,7 @@ const PostBackup = async (req, res, next) => {
     const backupData = {
       userId: user._id,
       userData: user,
+      backupData:backups,
       birdsData: birds,
       couplesData: couples,
       productsData: products,
@@ -88,25 +96,25 @@ const PostBackup = async (req, res, next) => {
       eggsData: egg,
     };
 
-    console.log("LOCAL BEFORE CHECKING", backupType);
     if (backupType === "cloud") {
       const timestamp = Date.now(); // Generate timestamp once
       const backupFileName = `${userId}_${timestamp}.json`;
       const backupFilePath = path.join(__dirname, backupFileName);
    
       fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
-      console.log("abc")
 
 
       const result = await cloudinary.uploader.upload(backupFilePath, {
         resource_type: "raw",
         public_id: `backup_${userId}_${timestamp}`,
       });
-      console.log(result,"HAHHAHA")
-
-      user.backupUrls.push(result.secure_url);
-      await user.save();
-      console.log("After saving")
+      const newBackup = new Backup({
+        user: user._id,
+        backupUrl: result.secure_url,
+      });
+      await newBackup.save();
+    //   user.backupUrls.push(result.secure_url);
+    //   await user.save();
 
       // Clean up local backup file
       fs.unlinkSync(backupFilePath);
@@ -162,6 +170,8 @@ const PostRestore = async (req, res, next) => {
     await User.updateOne({ _id: userId }, dataToRestore.userData).session(session);
     await Bird.deleteMany({ user: userId }).session(session);
     await Bird.insertMany(dataToRestore.birdsData, { session });
+    await Backup.deleteMany({ user: userId }).session(session);
+    await Backup.insertMany(dataToRestore.backupData, { session });
     await Couple.deleteMany({ user: userId }).session(session);
     await Couple.insertMany(dataToRestore.couplesData, { session });
     await Product.deleteMany({ user: userId }).session(session);
@@ -230,8 +240,9 @@ const DeleteBackup = async (req, res, next) => {
       return res.status(404).send({ message: "User not found" });
     }
 
-    user.backupUrls = user.backupUrls.filter((url) => url !== backupUrl);
-    await user.save();
+    // user.backupUrls = user.backupUrls.filter((url) => url !== backupUrl);
+    // await user.save();
+    await Backup.findOneAndDelete({ user: userId, backupUrl: backupUrl });
 
     res.status(200).send({ message: "Backup deleted successfully" });
   } catch (error) {
