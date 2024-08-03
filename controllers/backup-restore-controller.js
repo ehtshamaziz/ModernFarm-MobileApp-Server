@@ -47,7 +47,7 @@ const PostBackup = async (req, res, next) => {
   try {
     const user = await User.findById(userId);
 
-    if (user.backupUrls.length >= 10) {
+    if (user.backupUrls.length >= 100) {
       return res.status(406).send({ message: "Backup limit reached" });
     }
     const birds = await Bird.find({ user: userId });
