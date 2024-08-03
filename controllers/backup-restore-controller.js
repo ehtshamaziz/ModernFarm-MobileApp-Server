@@ -94,7 +94,9 @@ const PostBackup = async (req, res, next) => {
       const backupFilePath = path.join(__dirname, backupFileName);
       console.log(backupFilePath,"File Path")
       console.log(backupData,"Backup Data")
-      fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
+     const abc= fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
+console.log(abc)
+
 
       const result = await cloudinary.uploader.upload(backupFilePath, {
         resource_type: "raw",
