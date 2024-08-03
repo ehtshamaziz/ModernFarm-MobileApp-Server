@@ -121,6 +121,7 @@ const PostBackup = async (req, res, next) => {
 const PostRestore = async (req, res, next) => {
   const userId = req.body.userId;
   const backupUrl = req.body.backupUrl;
+  const backupData = req.body.backupData; // Added to handle local restore
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -132,42 +133,53 @@ const PostRestore = async (req, res, next) => {
       return res.status(404).send({ message: "User not found" });
     }
 
-    // Download the backup file from Cloudinary
-    const response = await axios.get(backupUrl);
-    const backupData = response.data;
+    let dataToRestore;
+
+    if (backupUrl) {
+      // Cloud Restore
+      const response = await axios.get(backupUrl);
+      dataToRestore = response.data;
+    } else if (backupData) {
+      // Local Restore
+      dataToRestore = backupData;
+    } else {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).send({ message: "No backup data provided" });
+    }
 
     // Restore data to the corresponding collections
-    await User.updateOne({ _id: userId }, backupData.userData).session(session);
+    await User.updateOne({ _id: userId }, dataToRestore.userData).session(session);
     await Bird.deleteMany({ user: userId }).session(session);
-    await Bird.insertMany(backupData.birdsData, { session });
+    await Bird.insertMany(dataToRestore.birdsData, { session });
     await Couple.deleteMany({ user: userId }).session(session);
-    await Couple.insertMany(backupData.couplesData, { session });
+    await Couple.insertMany(dataToRestore.couplesData, { session });
     await Product.deleteMany({ user: userId }).session(session);
-    await Product.insertMany(backupData.productsData, { session });
+    await Product.insertMany(dataToRestore.productsData, { session });
     await Treatment.deleteMany({ user: userId }).session(session);
-    await Treatment.insertMany(backupData.treatmentsData, { session });
+    await Treatment.insertMany(dataToRestore.treatmentsData, { session });
     await Disease.deleteMany({ user: userId }).session(session);
-    await Disease.insertMany(backupData.diseasesData, { session });
+    await Disease.insertMany(dataToRestore.diseasesData, { session });
     await FarmNote.deleteMany({ user: userId }).session(session);
-    await FarmNote.insertMany(backupData.farmNotesData, { session });
+    await FarmNote.insertMany(dataToRestore.farmNotesData, { session });
     await Finance.deleteMany({ user: userId }).session(session);
-    await Finance.insertMany(backupData.financesData, { session });
+    await Finance.insertMany(dataToRestore.financesData, { session });
     await Nutrition.deleteMany({ user: userId }).session(session);
-    await Nutrition.insertMany(backupData.nutritionsData, { session });
+    await Nutrition.insertMany(dataToRestore.nutritionsData, { session });
     await Task.deleteMany({ user: userId }).session(session);
-    await Task.insertMany(backupData.tasksData, { session });
+    await Task.insertMany(dataToRestore.tasksData, { session });
     await Market.deleteMany({ user: userId }).session(session);
-    await Market.insertMany(backupData.marketsData, { session });
+    await Market.insertMany(dataToRestore.marketsData, { session });
     await Worker.deleteMany({ user: userId }).session(session);
-    await Worker.insertMany(backupData.workersData, { session });
+    await Worker.insertMany(dataToRestore.workersData, { session });
     await Farm.deleteMany({ user: userId }).session(session);
-    await Farm.insertMany(backupData.farmsData, { session });
+    await Farm.insertMany(dataToRestore.farmsData, { session });
     await Contact.deleteMany({ user: userId }).session(session);
-    await Contact.insertMany(backupData.contactsData, { session });
+    await Contact.insertMany(dataToRestore.contactsData, { session });
     await Clutch.deleteMany({ user: userId }).session(session);
-    await Clutch.insertMany(backupData.clutchesData, { session });
+    await Clutch.insertMany(dataToRestore.clutchesData, { session });
     await Egg.deleteMany({ user: userId }).session(session);
-    await Egg.insertMany(backupData.eggsData, { session });
+    await Egg.insertMany(dataToRestore.eggsData, { session });
 
     await session.commitTransaction();
     session.endSession();

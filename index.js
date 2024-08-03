@@ -5,7 +5,6 @@ const cors = require("cors");
 const morgan = require("morgan");
 const connectDB = require("./config/database");
 const globalAuthMiddleware = require("./middleware/globalAuth");
-const cloudinary = require("./config/cloudinary.js");
 const { errorHandler, notFound } = require("./middleware/errorHandlers.js");
 const {
   UploadImageMulter,
