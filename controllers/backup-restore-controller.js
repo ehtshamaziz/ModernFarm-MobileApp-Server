@@ -38,7 +38,7 @@ const GetUserBackups = async (req, res, next) => {
   }
 };
 
-// GET ALL BACKUP
+// POST BACKUP
 const PostBackup = async (req, res, next) => {
   console.log("BACKUP!!");
   const userId = req.body.userId;
@@ -46,6 +46,10 @@ const PostBackup = async (req, res, next) => {
 
   try {
     const user = await User.findById(userId);
+
+    if (user.backupUrls.length >= 10) {
+      return res.status(406).send({ message: "Backup limit reached" });
+    }
     const birds = await Bird.find({ user: userId });
     const couples = await Couple.find({ user: userId });
     const products = await Product.find({ user: userId });
