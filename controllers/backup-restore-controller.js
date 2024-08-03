@@ -18,7 +18,8 @@ const Egg = require("../models/egg");
 
 const fs = require("fs");
 const path = require("path");
-const {cloudinary} = require("../config/cloudinary");
+// const cloudinary = require("cloudinary").v2;
+const cloudinary = require('../config/cloudinary');
 const axios = require("axios");
 const mongoose = require("mongoose");
 
@@ -95,11 +96,9 @@ const PostBackup = async (req, res, next) => {
       console.log(backupFilePath,"File Path")
       console.log(backupData,"Backup Data")
       fs.writeFileSync(backupFilePath, JSON.stringify(backupData, null, 2));
-      console.log("abc")
+      console.log(abc)
 
- if (!fs.existsSync(backupFilePath)) {
-        throw new Error(`File not found: ${backupFilePath}`);
-      }
+
       const result = await cloudinary.uploader.upload(backupFilePath, {
         resource_type: "raw",
         public_id: `backup_${userId}_${timestamp}`,
