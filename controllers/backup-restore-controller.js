@@ -28,7 +28,7 @@ const GetUserBackups = async (req, res, next) => {
   const userId = req.params.id;
 
   try {
-    const backups = await Backup.findById({user:userId});
+    const backups = await Backup.find({user:userId});
    if (!backups || backups.length === 0) {
       return res.status(404).send({ message: "No backups found" });
     }
