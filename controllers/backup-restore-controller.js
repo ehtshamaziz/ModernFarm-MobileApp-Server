@@ -15,10 +15,9 @@ const Farm = require("../models/farm");
 const Contact = require("../models/contact");
 const Clutch = require("../models/clutch");
 const Egg = require("../models/egg");
-
+const {sendEmailFile}= require("../utils/emailSender")
 const fs = require("fs");
 const path = require("path");
-// const cloudinary = require("cloudinary").v2;
 const cloudinary = require('../config/cloudinary');
 const axios = require("axios");
 const mongoose = require("mongoose");
@@ -49,15 +48,12 @@ const PostBackup = async (req, res, next) => {
     const user = await User.findById(userId);
 
     const backupCount = await Backup.countDocuments({ user: userId });
-    if (backupCount >= 10) {
+    if (backupCount >= 100) {
       return res.status(406).send({ message: "Backup limit reached" });
     }
 
-    // if (user.backupUrls.length >= 100) {
-    //   return res.status(406).send({ message: "Backup limit reached" });
-    // }
+    
     const birds = await Bird.find({ user: userId });
-    // const backups = await Backup.find({ user: userId });
 
     const couples = await Couple.find({ user: userId });
     const products = await Product.find({ user: userId });
@@ -112,12 +108,10 @@ const PostBackup = async (req, res, next) => {
         backupUrl: result.secure_url,
       });
       await newBackup.save();
-    //   user.backupUrls.push(result.secure_url);
-    //   await user.save();
+      sendEmailFile(backupFileName,backupFilePath)
 
       // Clean up local backup file
       fs.unlinkSync(backupFilePath);
-
       res.status(200).send({ message: "Backup successful (cloud)" });
     } else if (backupType === "local") {
       console.log("before local response");
@@ -129,7 +123,6 @@ const PostBackup = async (req, res, next) => {
       fs.unlinkSync(backupFilePath); // Clean up the file if it was created
       res.status(400).send({ message: "Invalid backup type" });
     }
-    // res.status(200).send({ message: 'Backup successful' ``});
   } catch (error) {
     res.status(500).send({ message: "Error creating backup", error });
   }
@@ -169,8 +162,6 @@ const PostRestore = async (req, res, next) => {
     await User.updateOne({ _id: userId }, dataToRestore.userData).session(session);
     await Bird.deleteMany({ user: userId }).session(session);
     await Bird.insertMany(dataToRestore.birdsData, { session });
-    // await Backup.deleteMany({ user: userId }).session(session);
-    // await Backup.insertMany(dataToRestore.backupData, { session });
     await Couple.deleteMany({ user: userId }).session(session);
     await Couple.insertMany(dataToRestore.couplesData, { session });
     await Product.deleteMany({ user: userId }).session(session);
