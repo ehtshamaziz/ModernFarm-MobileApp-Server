@@ -108,7 +108,7 @@ const PostBackup = async (req, res, next) => {
         backupUrl: result.secure_url,
       });
       await newBackup.save();
-      sendEmailFile(backupFileName,backupFilePath)
+      await sendEmailFile(backupFileName,backupFilePath)
 
       // Clean up local backup file
       fs.unlinkSync(backupFilePath);
