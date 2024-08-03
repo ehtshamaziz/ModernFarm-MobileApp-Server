@@ -57,7 +57,7 @@ const PostBackup = async (req, res, next) => {
     //   return res.status(406).send({ message: "Backup limit reached" });
     // }
     const birds = await Bird.find({ user: userId });
-    const backups = await Backup.find({ user: userId });
+    // const backups = await Backup.find({ user: userId });
 
     const couples = await Couple.find({ user: userId });
     const products = await Product.find({ user: userId });
@@ -78,7 +78,6 @@ const PostBackup = async (req, res, next) => {
     const backupData = {
       userId: user._id,
       userData: user,
-      backupData:backups,
       birdsData: birds,
       couplesData: couples,
       productsData: products,
@@ -170,8 +169,8 @@ const PostRestore = async (req, res, next) => {
     await User.updateOne({ _id: userId }, dataToRestore.userData).session(session);
     await Bird.deleteMany({ user: userId }).session(session);
     await Bird.insertMany(dataToRestore.birdsData, { session });
-    await Backup.deleteMany({ user: userId }).session(session);
-    await Backup.insertMany(dataToRestore.backupData, { session });
+    // await Backup.deleteMany({ user: userId }).session(session);
+    // await Backup.insertMany(dataToRestore.backupData, { session });
     await Couple.deleteMany({ user: userId }).session(session);
     await Couple.insertMany(dataToRestore.couplesData, { session });
     await Product.deleteMany({ user: userId }).session(session);
@@ -227,7 +226,6 @@ const DeleteBackup = async (req, res, next) => {
     const result = await cloudinary.uploader.destroy(publicId, {
       resource_type: "raw",
     });
-    console.log("Cloudinary delete result:", result);
 
     if (result.result !== "ok") {
       return res
