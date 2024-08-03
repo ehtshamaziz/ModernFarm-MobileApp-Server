@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const { sendOTPVerification, sendResetOTP } = require("../utils/otp");
-const createJWT =require("../middleware/jwt")
+const {createJWT} =require("../middleware/jwt")
 //        ********** FUNCTIONS ***********
 
 // GET ALL USERS
