@@ -15,6 +15,7 @@ const {
 
 // Import routes
 const userRoutes = require("./routes/user-routes");
+const adminRoutes = require("./routes/admin-routes");
 const farmRoutes = require("./routes/farm-routes");
 const productRoutes = require("./routes/product-routes");
 const contactRoutes = require("./routes/contact-routes");
@@ -57,6 +58,7 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/user", userRoutes);
+app.use("/admin", adminRoutes);
 app.use("/farm", farmRoutes);
 app.use("/product", productRoutes);
 app.use("/contact", contactRoutes);
