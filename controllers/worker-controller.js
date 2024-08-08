@@ -4,7 +4,6 @@ const Task = require("../models/tasks");
 const { sendWorkerOTPVerification } = require("../utils/otp");
 const bcrypt = require("bcrypt");
 const { createJWT } = require("../middleware/jwt");
-// mongodb+srv://Humza1011:Humza118056@cluster1.bgb1fvt.mongodb.net/modernFarm
 
 // GET ALL WORKERS
 const GetWorkers = async (req, res, next) => {
