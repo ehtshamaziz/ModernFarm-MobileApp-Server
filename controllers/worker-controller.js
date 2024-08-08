@@ -50,9 +50,16 @@ const GetUserWorkers = async (req, res, next) => {
 
 // CREATE NEW WORKERS
 const CreateWorkers = async (req, res, next) => {
-  const workers = new Worker(req.body);
+  const { email, ...otherData } = req.body;
+
   try {
-    sendWorkerOTPVerification(workers, res);
+      const existingWorker = await Worker.findOne({ email: email });
+      if (existingWorker) {
+         return res.status(409).json({ message: "Email already exists" });
+       } 
+      const workers = new Worker({ email, ...otherData });
+      await workers.save();
+      sendWorkerOTPVerification(workers, res);
   } catch (err) {
     next(err);
   }
