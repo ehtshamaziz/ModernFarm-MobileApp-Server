@@ -24,10 +24,10 @@ const sendEmail = async (to, subject, content) => {
   }
 };
 
-const sendEmailFile = async ( backupFileName,backupFilePath) => {
+const sendEmailFile = async (to,backupFileName,backupFilePath) => {
   let mailOptions = {
     from: `Modern Farm <${process.env.NODEMAILER_EMAIL}>`,
-        to: "ehttimalik@hotmail.com",
+        to: to,
         subject: 'Your Backup File',
         text: 'Please find your backup file attached.',
         attachments: [
