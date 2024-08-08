@@ -60,8 +60,7 @@ const UpdateContact = async (req, res, next) => {
 const DeleteContact = async (req, res, next) => {
   try {
     const bird = await Bird.find({ birdOwner: req.params.id });
-    console.log(bird,"HALO BIRD")
-    if (bird) {
+    if (bird.length>0) {
       return res.status(409).json(bird);
     } else {
       const contact = await Contact.findByIdAndDelete(req.params.id);
